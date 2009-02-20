@@ -101,7 +101,7 @@ bool CSigMngr::ResolveAddress(signature_t *sigmem)
 	sigmem->memSize = (unsigned long)end - (unsigned long)start;
 
 #ifdef DEBUG
-	Msg("Alloc base: %p\n", sigmem->allocBase);
+	DevMsg("Alloc base: %p\n", sigmem->allocBase);
 #endif
 
 	return true;

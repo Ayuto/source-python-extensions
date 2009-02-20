@@ -61,7 +61,7 @@ bool initializePython( char *pGameDir )
 
 	if( !pPythonDLL || !pMSVCRDLL )
 	{
-		Msg("[ESX] An error occured. Could not find msvcr71.dll or python25.DLL.\n");
+		DevMsg("[SPE] An error occured. Could not find msvcr71.dll or python25.DLL.\n");
 		return false;
 	}
 
@@ -73,13 +73,13 @@ bool initializePython( char *pGameDir )
 
 	if( !dlopen( pPythonSO, RTLD_GLOBAL ) )
 	{
-		Msg("[ESX] An error has occured. Could not find libpython2.5.so.1.0\n");
+		DevMsg("[SPE] An error has occured. Could not find libpython2.5.so.1.0\n");
 		return false;
 	}*/
 
 	if( !dlopen("libpython2.5.so.1.0", RTLD_NOW | RTLD_GLOBAL) )
 	{
-		Log("[ESX] An error has occured. Could not load libpython2.5.so.1.0\n!");
+		Log("[SPE] An error has occured. Could not load libpython2.5.so.1.0\n!");
 		return false;
 	}
 #endif

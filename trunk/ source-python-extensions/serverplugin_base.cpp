@@ -242,7 +242,7 @@ void CEmptyServerPlugin::FireGameEvent( KeyValues * event )
 //---------------------------------------------------------------------------------
 CON_COMMAND( empty_version, "prints the version of the empty plugin" )
 {
-	Msg( PLUGIN_VERSION );
+	DevMsg( PLUGIN_VERSION );
 }
 
 CON_COMMAND( empty_log, "logs the version of the empty plugin" )

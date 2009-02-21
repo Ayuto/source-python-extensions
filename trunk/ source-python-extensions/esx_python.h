@@ -77,10 +77,17 @@ bool initializePython( char *pGameDir )
 		return false;
 	}*/
 
-	if( !dlopen("libpython2.5.so.1.0", RTLD_NOW | RTLD_GLOBAL) )
+	if( !dlopen("libpython2.5.so.1.0", RTLD_LAZY) )
 	{
-		Log("[SPE] An error has occured. Could not load libpython2.5.so.1.0\n!");
-		return false;
+		/* Try to load it from the srcds/bin directory */
+		if( !dlopen("../../bin/libpython2.5.so.1.0") )
+		{
+			Log("[SPE] An error has occured. Could not load libpython2.5.so.1.0\n!");
+			return false;
+		}
+		
+		else
+			return true;
 	}
 #endif
 

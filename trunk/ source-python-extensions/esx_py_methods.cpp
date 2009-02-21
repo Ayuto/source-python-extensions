@@ -29,6 +29,9 @@
 #include "esx_py_methods.h"
 #include "esx_signature_manager.h"
 #include "esx_dyncall_py.h"
+#ifdef __linux__
+#include <dlfcn.h>
+#endif
 
 /* A new call VM */
 DCCallVM* vm = dcNewCallVM( 4096 );
@@ -44,7 +47,7 @@ PyObject* esx_GetPlayerPtr( PyObject* self, PyObject* args )
 	if( !PyArg_ParseTuple( args, "i", &userid ) )
 	{
 		DevMsg("[SPE] Could not parse tuple in GetPlayerPtr!\n");
-		return Py_BuildValue("");
+		return NULL;
 	}
 
 	void* ent = gPlayerManager->GetPlayerByUserID(userid)->GetUnknown()->GetBaseEntity();
@@ -63,14 +66,14 @@ PyObject* esx_FindFuncPtr( PyObject* self, PyObject* args )
 	if( !PyArg_ParseTuple( args, "Si", &p, &length ) )
 	{
 		DevMsg("[SPE] Could not parse tuple in FindFuncPtr\n");
-		return PyCObject_FromVoidPtr( NULL, NULL );
+		return NULL;
 	}
 
 	void* addr = gSigger->findFunction( PyString_AsString(p), length );
 	DevMsg("[SPE] Function ptr: %i\n", addr);
 	
 	if( !addr )
-		return Py_BuildValue("");
+		return NULL;
 	
 	return PyCObject_FromVoidPtr( addr , NULL );
 }
@@ -123,15 +126,58 @@ PyObject* esx_SetCallingConvention( PyObject* self, PyObject* args )
 	else
 	{
 		DevMsg("[SPE] Unknown calling convention type!\n");
-		return Py_BuildValue("");
+		return NULL;
 	}
 
-	return Py_BuildValue("");
+	return NULL;
 }
+
+//=============================================================================
+// >> Finds and returns the address of a function symbol on linux
+//=============================================================================
+PyObject* esx_FindSymbol( PyObject* self, PyObject* args )
+{
+	#ifdef _WIN32
+		DevMsg("[SPE]: You cannot use this function on windows!\n");
+		return Py_BuildValue("");
+	#else
+		/* Open a handle to server_i486.so */
+		void* handle = dlopen("../bin/server_i486.so");
+
+		/* Make sure it's valid */
+		if( !handle )
+		{
+			DevMsg("[SPE]: Couldn't open a handle to server_i486.so");
+			return NULL;
+		}
+
+		/* Otherwise, parse out the symbol */
+		const char* nix_symbol;
+
+		if( !PyArg_ParseTuple( args, "s", &nix_symbol ) )
+		{
+			DevMsg("[SPE]: esx_FindSymbol: Couldn't parse the symbol!\n");
+			return NULL;
+		}
+
+		/* Find the address of the symbol */
+		void* sym_addr = dlsym( handle, nix_symbol );
+
+		/* Print it out */
+		DevMsg("[SPE]: Symbol address: %i\n", sym_addr);
+
+		/* Close the handle */
+		dlclose( handle );
+
+		/* Return it as a CObject */
+		return PyCObject_FromVoidPtr( sym_addr, NULL );
+
+	#endif
+}
+
 //=============================================================================
 // >> Calls a function through the use of dyncall
 //=============================================================================
-/* Calls a function through the use of dyncall */
 PyObject* esx_CallFunction( PyObject* self, PyObject* args )
 {
 	PyObject* func_ptr = NULL;
@@ -146,7 +192,7 @@ PyObject* esx_CallFunction( PyObject* self, PyObject* args )
 	if( !PyArg_ParseTuple( args, "OsO", &func_ptr, &signature, &func_args ) )
 	{
 		DevMsg("[SPE] Error parsing out function args, signature, and pointer!\n");
-		return Py_BuildValue("");
+		return NULL;
 	}
 
 	/* Parse out the function pointer */
@@ -156,7 +202,7 @@ PyObject* esx_CallFunction( PyObject* self, PyObject* args )
 	if( !function_pointer )
 	{
 		DevMsg("[SPE] The function pointer is NULL!\n");
-		return Py_BuildValue("");
+		return NULL;
 	}
 
 	/* Make sure to flush the VM */
@@ -197,7 +243,7 @@ PyObject* esx_CallFunction( PyObject* self, PyObject* args )
 				if (l != 1)
 				{
 					DevMsg("[SPE] String mismatch. Expected a string!");
-					return Py_BuildValue("");
+					return NULL;
 				}
 
 				s = PyString_AsString(arg);          
@@ -215,7 +261,7 @@ PyObject* esx_CallFunction( PyObject* self, PyObject* args )
 				if ( (v < SHRT_MIN) || (v > SHRT_MAX) )
 				{
 					DevMsg( "[SPE] CallFunction: value out of range at argument %d - expecting a short value\n" );
-					return Py_BuildValue("");
+					return NULL;
 				}
 
 				s = (DCshort) v;
@@ -257,7 +303,7 @@ PyObject* esx_CallFunction( PyObject* self, PyObject* args )
 
 		default:
 			DevMsg("[SPE] Unknown char signature!\n");
-			return Py_BuildValue("");
+			return NULL;
 			break;
 		}
 
@@ -268,13 +314,13 @@ PyObject* esx_CallFunction( PyObject* self, PyObject* args )
 	if (pos != size)
 	{
 		DevMsg("[SPE] pos != size!\n");
-		return Py_BuildValue("");
+		return NULL;
 	}
 
 	if (ch == '\0')
 	{
 		DevMsg("[SPE] ch == null terminated\n");
-		return Py_BuildValue("");
+		return NULL;
 	}
 
 	ch = *++ptr;
@@ -290,7 +336,7 @@ PyObject* esx_CallFunction( PyObject* self, PyObject* args )
 	case DC_SIGCHAR_DOUBLE: p = Py_BuildValue("d", dcCallDouble( vm, function_pointer ) ); break;
 	case 's': p = Py_BuildValue("s", dcCallPointer( vm, function_pointer ) ); break;
 	case DC_SIGCHAR_POINTER: p = Py_BuildValue("p", dcCallPointer( vm, function_pointer ) ); break;
-	default:  DevMsg("[SPE] Invalid p = type signature.\n" ); p = Py_BuildValue(""); break;
+	default:  DevMsg("[SPE] Invalid p = type signature.\n" ); p = NULL; break;
 	}
 
 	return p;

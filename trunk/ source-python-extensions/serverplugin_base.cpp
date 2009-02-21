@@ -96,7 +96,7 @@ bool CEmptyServerPlugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterfa
 	char pGameDir[1024];
 	engine->GetGameDir( pGameDir, 1024 );
 	
-	//initializePython( pGameDir );
+	initializePython( pGameDir );
 	
 	return true;
 }

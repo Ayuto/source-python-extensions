@@ -361,6 +361,10 @@
 			Name="Dyncall"
 			>
 			<File
+				RelativePath=".\dyncall\dyncall\dyncall.c"
+				>
+			</File>
+			<File
 				RelativePath=".\esx_dyncall_py.h"
 				>
 			</File>

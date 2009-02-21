@@ -335,7 +335,7 @@ PyObject* esx_CallFunction( PyObject* self, PyObject* args )
 	case DC_SIGCHAR_FLOAT: p = Py_BuildValue("f", dcCallFloat( vm, function_pointer ) ); break; 
 	case DC_SIGCHAR_DOUBLE: p = Py_BuildValue("d", dcCallDouble( vm, function_pointer ) ); break;
 	case 's': p = Py_BuildValue("s", dcCallPointer( vm, function_pointer ) ); break;
-	case DC_SIGCHAR_POINTER: p = Py_BuildValue("p", dcCallPointer( vm, function_pointer ) ); break;
+	case DC_SIGCHAR_POINTER: p = Py_BuildValue("O", PyCObject_FromVoidPtr(dcCallPointer( vm, function_pointer ), NULL)); break;
 	default:  DevMsg("[SPE] Invalid p = type signature.\n" ); p = NULL; break;
 	}
 

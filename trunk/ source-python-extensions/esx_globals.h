@@ -24,39 +24,24 @@
 * this exception to all derivative works.  
 */
 
+#ifndef ESX_GLOBALS_H
+#define ESX_GLOBALS_H
 
-#include "esx_player_manager.h"
-#include "esx_globals.h"
+/* Includes */
+#include <eiface.h>
+#include <iplayerinfo.h>
 
-CPlayerManager* gPlayerManager;
-
-//=============================================================================//
-// >> Constructor
-//=============================================================================//
-CPlayerManager::CPlayerManager()
+//==================================================================================
+// >> Global Variables Class
+//==================================================================================
+class CGlobalManager
 {
-	return;
-}
+	public:
+		CGlobalManager( IVEngineServer* pEngine, IPlayerInfoManager* pInfoManager );
+		IVEngineServer* m_Engine;
+		IPlayerInfoManager* m_Info;
+};
 
-//=============================================================================//
-// >> Returns an edict_t to a player
-//=============================================================================//
-edict_t* CPlayerManager::GetPlayerByUserID(int userid)
-{
-	for(int i = 0; i < gGlobals->m_Info->GetGlobalVars()->maxClients; i++)
-	{
-		edict_t* player = gGlobals->m_Engine->PEntityOfEntIndex(i);
+extern CGlobalManager* gGlobals;
 
-		if(!player || player->IsFree())
-			continue;
-
-		if(gGlobals->m_Engine->GetPlayerUserId(player) == -1)
-			continue;
-
-		if(gGlobals->m_Engine->GetPlayerUserId(player) == userid)
-			return player;
-	}
-
-	return NULL;
-}
-
+#endif

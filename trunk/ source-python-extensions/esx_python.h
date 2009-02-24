@@ -41,20 +41,20 @@
 
 bool initializePython( char *pGameDir )
 {
-	char pAddonDir[1024];
+	char pAddonDir[2047];
 
 #ifdef _WIN32
-	V_snprintf( pAddonDir, 1024, "%s\\addons\\eventscripts", pGameDir );
+	V_snprintf( pAddonDir, 2047, "%s\\addons\\eventscripts", pGameDir );
 
 	/* Load the libraries */
 	HMODULE pPythonDLL = NULL;
 	HMODULE pMSVCRDLL = NULL;
 
-	char pDLL1[1024];
-	char pDLL2[1024];
+	char pDLL1[2047];
+	char pDLL2[2047];
 
-	V_snprintf( pDLL1, 1024, "%s\\_engines\\python\\Lib\\plat-win\\msvcr71.dll", pAddonDir );
-	V_snprintf( pDLL2, 1024, "%s\\_engines\\python\\Lib\\plat-win\\python25.dll", pAddonDir );
+	V_snprintf( pDLL1, 2047, "%s\\_engines\\python\\Lib\\plat-win\\msvcr71.dll", pAddonDir );
+	V_snprintf( pDLL2, 2047, "%s\\_engines\\python\\Lib\\plat-win\\python25.dll", pAddonDir );
 
 	pMSVCRDLL = LoadLibrary( pDLL1 );
 	pPythonDLL = LoadLibrary( pDLL2 );

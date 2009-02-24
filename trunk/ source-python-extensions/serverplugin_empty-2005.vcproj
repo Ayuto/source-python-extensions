@@ -235,6 +235,10 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
+				RelativePath=".\esx_globals.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\esx_player_manager.cpp"
 				>
 			</File>
@@ -308,6 +312,10 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl"
 			>
+			<File
+				RelativePath=".\esx_globals.h"
+				>
+			</File>
 			<File
 				RelativePath=".\esx_player_manager.h"
 				>

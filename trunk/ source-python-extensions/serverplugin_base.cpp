@@ -29,6 +29,7 @@
 #include "esx_player_manager.h"
 #include "esx_signature_manager.h"
 #include "esx_python.h"
+#include "esx_globals.h"
 
 // Interfaces from the engine
 IVEngineServer		*engine = NULL; // helper functions (messaging clients, loading content, making entities, running commands, etc)
@@ -90,11 +91,15 @@ bool CEmptyServerPlugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterfa
 	InitCVars( interfaceFactory ); // register any cvars we have defined
 
 	/* Initialize our classes */
-	gPlayerManager = new CPlayerManager( engine, playerinfomanager );
+	gGlobals = new CGlobalManager( engine, playerinfomanager );
+	gPlayerManager = new CPlayerManager();
 	gSigger = new CSigger( reinterpret_cast<void*>( gameServerFactory ) );
 
-	char pGameDir[1024];
-	engine->GetGameDir( pGameDir, 1024 );
+	char pGameDir[2047];
+	engine->GetGameDir( pGameDir, 2047 );
+
+	Msg("[SPE]: The GameDir is %s.\n", pGameDir);
+	Log("[SPE]: The GameDir is %s\n", pGameDir);
 	
 	initializePython( pGameDir );
 	

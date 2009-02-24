@@ -52,6 +52,7 @@ static PyMethodDef esxMethods[] = {
 	{ "findFunction", esx_FindFuncPtr, METH_VARARGS, "Returns a pointer to a function by signature." },
 	{ "findSymbol", esx_FindSymbol, METH_VARARGS, "Finds the address of a symbol in linux." },
 	{ "callFunction", esx_CallFunction, METH_VARARGS, "Calls a function through the use of a CObject." },
+	{ "ripPointer", esx_RipPointer, METH_VARARGS, "Rips a pointer from another pointer + an offset." },
 	{ "setCallingConvention", esx_SetCallingConvention, METH_VARARGS, "Sets the CallVM calling convention." },
 	{ NULL, NULL, 0, NULL }
 };

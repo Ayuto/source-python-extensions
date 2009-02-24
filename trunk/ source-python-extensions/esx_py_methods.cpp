@@ -29,6 +29,7 @@
 #include "esx_py_methods.h"
 #include "esx_signature_manager.h"
 #include "esx_dyncall_py.h"
+#include "esx_globals.h"
 #ifdef __linux__
 #include <dlfcn.h>
 #endif
@@ -141,8 +142,17 @@ PyObject* esx_FindSymbol( PyObject* self, PyObject* args )
 		DevMsg("[SPE]: You cannot use this function on windows!\n");
 		return Py_BuildValue("");
 	#else
+		/* Path to the game dir */
+		char szGameDir[2048];
+		gGlobals->m_Engine->GetGameDir( szGameDir, 2048 );
+
+		/* Get to the /bin/server_i486.so dir */
+		char szBinDir[2048];
+		V_snprintf(szBinDir, 2048, "%s/bin/server_i486.so", szGameDir);
+
 		/* Open a handle to server_i486.so */
-		void* handle = dlopen("../bin/server_i486.so");
+		Msg("[SPE]: Path to server_i486.so is %s\n", szBinDir);
+		void* handle = dlopen(szBinDir);
 
 		/* Make sure it's valid */
 		if( !handle )
@@ -173,6 +183,44 @@ PyObject* esx_FindSymbol( PyObject* self, PyObject* args )
 		return PyCObject_FromVoidPtr( sym_addr, NULL );
 
 	#endif
+}
+
+//=============================================================================
+// >> Rips a pointer out from an offset and another pointer
+//=============================================================================
+PyObject* esx_RipPointer( PyObject* self, PyObject* args )
+{
+	PyObject* func_ptr;
+	void* cfunc_ptr = NULL;
+	void* new_pointer = NULL;
+	char* offset;
+
+	if( !PyArg_ParseTuple( args, "Os", &func_ptr, &offset ) )
+	{
+		Msg("[SPE]: There was an error parsing the tuple!\n");
+		return NULL;
+	}
+
+	cfunc_ptr = PyCObject_AsVoidPtr( func_ptr );
+
+	Msg("[SPE]: The address is %i.\n", cfunc_ptr);
+	Msg("[SPE]: The offset is %i.\n", strtol(offset, NULL, 0));
+
+	/* Rip the pointer */
+	if( cfunc_ptr )
+	{
+		memcpy(&new_pointer, ((char *)cfunc_ptr + strtol(offset, NULL, 0)), sizeof(char *));
+		Msg("[SPE]: The new pointer %i.\n", new_pointer);
+		return PyCObject_FromVoidPtr( reinterpret_cast<void*>(new_pointer), NULL );
+	}
+
+	else
+	{
+		Msg("[SPE]: The given function pointer was null.\n");
+		return NULL;
+	}
+
+	return Py_BuildValue("");
 }
 
 //=============================================================================
@@ -227,13 +275,15 @@ PyObject* esx_CallFunction( PyObject* self, PyObject* args )
 		/* Do some comparisons */
 		switch( ch )
 		{			
-		case DC_SIGCHAR_BOOL:
-			DCbool b;
-			PyArg_ParseTuple( arg, "i", &b );
-			dcArgBool( vm, b );
-			break;
+			case DC_SIGCHAR_BOOL:
+			{
+				DCbool b;
+				PyArg_ParseTuple( arg, "i", &b );
+				dcArgBool( vm, b );
 
-		case DC_SIGCHAR_CHAR:
+			} break;
+
+			case DC_SIGCHAR_CHAR:
 			{
 				DCchar c;
 				size_t l;
@@ -249,10 +299,10 @@ PyObject* esx_CallFunction( PyObject* self, PyObject* args )
 				s = PyString_AsString(arg);          
 				c = (DCchar) s[0];
 				dcArgChar( vm, c );
-				break;
-			}
 
-		case DC_SIGCHAR_SHORT:
+			} break;
+
+			case DC_SIGCHAR_SHORT:
 			{
 				DCshort s;
 				long v;
@@ -266,45 +316,46 @@ PyObject* esx_CallFunction( PyObject* self, PyObject* args )
 
 				s = (DCshort) v;
 				dcArgShort( vm, s);
-				break;
-			} 
 
-		case DC_SIGCHAR_INT:
+			} break;
+
+			case DC_SIGCHAR_INT:
 			{
 				int v;
 				v = PyInt_AsLong( arg );
 				dcArgInt( vm, (DCint) v );
-				break;
-			}
+			} break;
 
-		case DC_SIGCHAR_FLOAT:
+			case DC_SIGCHAR_FLOAT:
 			{
 				DCfloat f;
 				f = (float) PyFloat_AsDouble( arg );
 				dcArgFloat( vm, f );
-				break;
-			}
+			
+			} break;
 
-		case DC_SIGCHAR_POINTER:
+			case DC_SIGCHAR_POINTER:
 			{
 				DCpointer ptr;
 				ptr = PyCObject_AsVoidPtr( arg );
-				dcArgPointer( vm, ptr );
-				break;
-			}
+				dcArgPointer( vm, reinterpret_cast<void*>(ptr) );
+			
+			} break;
 
-		case 'S':
+			case 'S':
 			{
 				char* p;
 				p = PyString_AsString(arg);
 				dcArgPointer( vm, (DCpointer) p );
-				break;
-			}
+			
+			} break;
 
-		default:
-			DevMsg("[SPE] Unknown char signature!\n");
-			return NULL;
-			break;
+			default:
+			{
+				DevMsg("[SPE] Unknown char signature!\n");
+				return NULL;
+			
+			} break;
 		}
 
 		++pos; ++ptr;

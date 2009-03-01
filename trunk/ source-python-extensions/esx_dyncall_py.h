@@ -33,11 +33,7 @@
 #endif
 
 /* Includes */
-#ifdef _WIN32
-#include "Python.h"
-#else
-#include "Python25/Include/Python.h"
-#endif
+#include <Python.h>
 #include "dyncall/dyncall/dyncall.h"
 #include "dyncall/dyncall/dyncall_signature.h"
 

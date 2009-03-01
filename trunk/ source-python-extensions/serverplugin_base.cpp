@@ -62,7 +62,7 @@ CEmptyServerPlugin::~CEmptyServerPlugin()
 //---------------------------------------------------------------------------------
 // Purpose: called when the plugin is loaded, load the interface we need from the engine
 //---------------------------------------------------------------------------------
-bool CEmptyServerPlugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn gameServerFactory )
+bool CEmptyServerPlugin::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn gameServerFactory )
 {
 	playerinfomanager = (IPlayerInfoManager *)gameServerFactory(INTERFACEVERSION_PLAYERINFOMANAGER,NULL);
 	if ( !playerinfomanager )
@@ -99,7 +99,6 @@ bool CEmptyServerPlugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterfa
 	engine->GetGameDir( pGameDir, 2047 );
 
 	Msg("[SPE]: The GameDir is %s.\n", pGameDir);
-	Log("[SPE]: The GameDir is %s\n", pGameDir);
 	
 	initializePython( pGameDir );
 	
@@ -112,7 +111,7 @@ bool CEmptyServerPlugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterfa
 void CEmptyServerPlugin::Unload( void )
 {
 	gameeventmanager->RemoveListener( this ); // make sure we are unloaded from the event system
-	Py_Finalize();
+	//Py_Finalize();
 }
 
 //---------------------------------------------------------------------------------

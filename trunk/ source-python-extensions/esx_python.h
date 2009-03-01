@@ -31,19 +31,30 @@
 /* Includes */
 #ifdef _WIN32
 #include <windows.h>
-#include <Python.h>
 #else
 #include <dlfcn.h>
-#include <Python25/Include/Python.h>
 #endif 
+#include <Python.h>
 #include "esx_dyncall_py.h"
 #include "esx_py_methods.h"
 
+/* Method table */
+static PyMethodDef esxMethods[] = {
+	{ "getPlayer", esx_GetPlayerPtr, METH_VARARGS, "Returns a pointer to a player by userid." },
+	{ "findFunction", esx_FindFuncPtr, METH_VARARGS, "Returns a pointer to a function by signature." },
+	{ "findSymbol", esx_FindSymbol, METH_VARARGS, "Finds the address of a symbol in linux." },
+	{ "callFunction", esx_CallFunction, METH_VARARGS, "Calls a function through the use of a CObject." },
+	{ "ripPointer", esx_RipPointer, METH_VARARGS, "Rips a pointer from another pointer + an offset." },
+	{ "setCallingConvention", esx_SetCallingConvention, METH_VARARGS, "Sets the CallVM calling convention." },
+	{ NULL, NULL, 0, NULL }
+};
+
+/* Python initialization Function */
 bool initializePython( char *pGameDir )
 {
-	char pAddonDir[2047];
 
 #ifdef _WIN32
+	char pAddonDir[2047];
 	V_snprintf( pAddonDir, 2047, "%s\\addons\\eventscripts", pGameDir );
 
 	/* Load the libraries */
@@ -66,28 +77,10 @@ bool initializePython( char *pGameDir )
 	}
 
 #else
-	/*V_snprintf( pAddonDir, 1024, "%s/addons/eventscripts", pGameDir );
-
-	char pPythonSO[1024];
-	V_snprintf( pPythonSO, 1024, "%s/_engines/python/Lib/plat-linux2/libpython2.5.so.1.0", pAddonDir );
-
-	if( !dlopen( pPythonSO, RTLD_GLOBAL ) )
-	{
-		DevMsg("[SPE] An error has occured. Could not find libpython2.5.so.1.0\n");
-		return false;
-	}*/
-
 	if( !dlopen("libpython2.5.so.1.0", RTLD_LAZY) )
 	{
-		/* Try to load it from the srcds/bin directory */
-		if( !dlopen("../../bin/libpython2.5.so.1.0") )
-		{
-			Log("[SPE] An error has occured. Could not load libpython2.5.so.1.0\n!");
-			return false;
-		}
-		
-		else
-			return true;
+		Msg("[SPE] Unable to open libpython2.5.so.1.0!\n");
+		return true;
 	}
 #endif
 

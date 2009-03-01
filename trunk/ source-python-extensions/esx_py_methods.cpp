@@ -152,7 +152,7 @@ PyObject* esx_FindSymbol( PyObject* self, PyObject* args )
 
 		/* Open a handle to server_i486.so */
 		Msg("[SPE]: Path to server_i486.so is %s\n", szBinDir);
-		void* handle = dlopen(szBinDir);
+		void* handle = dlopen(szBinDir, RTLD_NOW | RTLD_GLOBAL);
 
 		/* Make sure it's valid */
 		if( !handle )

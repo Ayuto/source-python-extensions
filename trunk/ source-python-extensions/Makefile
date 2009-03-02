@@ -1,7 +1,7 @@
 #(C)2004-2008 Deniz Sezen
 # Makefile derived from the work of David "BAILOPAN" Anderson
 
-HL2SDK = ../hl2sdk
+HL2SDK = ../../hl2sdk
 SRCDS = ~/srcds_l
 
 ### EDIT BELOW FOR OTHER PROJECTS ###
@@ -9,7 +9,7 @@ SRCDS = ~/srcds_l
 OPT_FLAGS = -O2 -funroll-loops -s -pipe
 GCC4_FLAGS = -fvisibility=hidden -fvisibility-inlines-hidden
 DEBUG_FLAGS = -g -ggdb3
-CPP = gcc
+CPP = /usr/bin/gcc34
 BINARY = es_extensions_i486.so
 
 HL2PUB = $(HL2SDK)/public
@@ -26,6 +26,8 @@ OBJECTS = esx_globals.cpp \
 LINK = $(HL2LIB)/tier1_i486.a  \
 	vstdlib_i486.so \
 	tier0_i486.so \
+	/usr/lib/gcc/i386-redhat-linux/3.4.6/libstdc++.a \
+	/usr/lib/gcc/i386-redhat-linux/3.4.6/libgcc_eh.a \
 	libpython2.5.so.1.0 \
 	libdyncall_s.a \
 	libdynload_s.a -static-libgcc
@@ -65,7 +67,8 @@ all:
 	$(MAKE) sourcemm
 	rm -rf $(BINARY)
 
-LINK += -Wl,--rpath,\$$ORIGIN/eventscripts/_engines/python/Lib/plat-linux2 -lpython2.5
+LINK += -Wl,--rpath,\$$ORIGIN/eventscripts/_engines/python/Lib/plat-linux2 
+
 
 sourcemm: $(OBJ_LINUX)
 	$(CPP) $(INCLUDE) -m32 $(CFLAGS) $(OBJ_LINUX) $(LINK) -shared -ldl -lm -o$(BIN_DIR)/$(BINARY)

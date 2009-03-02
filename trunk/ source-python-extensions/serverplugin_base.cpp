@@ -93,7 +93,7 @@ bool CEmptyServerPlugin::Load( CreateInterfaceFn interfaceFactory, CreateInterfa
 	/* Initialize our classes */
 	gGlobals = new CGlobalManager( engine, playerinfomanager );
 	gPlayerManager = new CPlayerManager();
-	gSigger = new CSigger( reinterpret_cast<void*>( gameServerFactory ) );
+	gSigger = new CSigger( (void*)gameServerFactory );
 
 	char pGameDir[2047];
 	engine->GetGameDir( pGameDir, 2047 );

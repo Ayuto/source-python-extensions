@@ -32,14 +32,16 @@
 #include "esx_globals.h"
 
 // Interfaces from the engine
-IVEngineServer		*engine = NULL; // helper functions (messaging clients, loading content, making entities, running commands, etc)
-IFileSystem		*filesystem = NULL; // file I/O 
-IGameEventManager 	*gameeventmanager = NULL; // game events interface
-IPlayerInfoManager 	*playerinfomanager = NULL; // game dll interface to interact with player
-IServerPluginHelpers 	*helpers = NULL; // special 3rd party plugin helpers from the engine
-IUniformRandomStream 	*randomStr = NULL;
-IEngineTrace 		*enginetrace = NULL;
-CGlobalVars 		*gpGlobals = NULL;
+IVEngineServer		 *engine = NULL; // helper functions (messaging clients, loading content, making entities, running commands, etc)
+IFileSystem			 *filesystem = NULL; // file I/O 
+IGameEventManager 	 *gameeventmanager = NULL; // game events interface
+IPlayerInfoManager 	 *playerinfomanager = NULL; // game dll interface to interact with player
+IServerPluginHelpers *helpers = NULL; // special 3rd party plugin helpers from the engine
+IUniformRandomStream *randomStr = NULL;
+IEngineTrace 		 *enginetrace = NULL;
+CGlobalVars 		 *gpGlobals = NULL;
+IVoiceServer		 *voiceServer = NULL;
+
 
 // 
 // The plugin is a static singleton that is exported as an interface
@@ -76,7 +78,8 @@ bool CEmptyServerPlugin::Load( CreateInterfaceFn interfaceFactory, CreateInterfa
 		!(filesystem = (IFileSystem*)interfaceFactory(FILESYSTEM_INTERFACE_VERSION, NULL)) ||
 		!(helpers = (IServerPluginHelpers*)interfaceFactory(INTERFACEVERSION_ISERVERPLUGINHELPERS, NULL)) || 
 		!(enginetrace = (IEngineTrace *)interfaceFactory(INTERFACEVERSION_ENGINETRACE_SERVER,NULL)) ||
-		!(randomStr = (IUniformRandomStream *)interfaceFactory(VENGINE_SERVER_RANDOM_INTERFACE_VERSION, NULL))
+		!(randomStr = (IUniformRandomStream *)interfaceFactory(VENGINE_SERVER_RANDOM_INTERFACE_VERSION, NULL)) ||
+		!(voiceServer = (IVoiceServer *)interfaceFactory(INTERFACEVERSION_VOICESERVER, NULL))
 		)
 	{
 		return false; // we require all these interface to function
@@ -91,7 +94,7 @@ bool CEmptyServerPlugin::Load( CreateInterfaceFn interfaceFactory, CreateInterfa
 	InitCVars( interfaceFactory ); // register any cvars we have defined
 
 	/* Initialize our classes */
-	gGlobals = new CGlobalManager( engine, playerinfomanager );
+	gGlobals = new CGlobalManager( engine, playerinfomanager, voiceServer );
 	gPlayerManager = new CPlayerManager();
 	gSigger = new CSigger( (void*)gameServerFactory );
 
@@ -257,4 +260,4 @@ CON_COMMAND( empty_log, "logs the version of the empty plugin" )
 //---------------------------------------------------------------------------------
 // Purpose: an example cvar
 //---------------------------------------------------------------------------------
-static ConVar empty_cvar("esx_version", "1.0a", 0, "Version of Eventscripts Extensions");
+static ConVar empty_cvar("spe_version", "1.0a", 0, "Version of Source Python Extensions");

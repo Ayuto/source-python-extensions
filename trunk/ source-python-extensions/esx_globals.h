@@ -30,6 +30,7 @@
 /* Includes */
 #include <eiface.h>
 #include <iplayerinfo.h>
+#include <ivoiceserver.h>
 
 //==================================================================================
 // >> Global Variables Class
@@ -37,9 +38,10 @@
 class CGlobalManager
 {
 	public:
-		CGlobalManager( IVEngineServer* pEngine, IPlayerInfoManager* pInfoManager );
+		CGlobalManager( IVEngineServer* pEngine, IPlayerInfoManager* pInfoManager, IVoiceServer* pVoiceServer );
 		IVEngineServer* m_Engine;
 		IPlayerInfoManager* m_Info;
+		IVoiceServer* m_Voice;
 };
 
 extern CGlobalManager* gGlobals;

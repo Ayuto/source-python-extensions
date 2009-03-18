@@ -36,7 +36,6 @@
 
 /* A new call VM */
 DCCallVM* vm = dcNewCallVM( 4096 );
-bool bThisCallActive = false;
 
 //=============================================================================
 // >> Returns a CObject to a userid.
@@ -101,8 +100,6 @@ PyObject* esx_SetCallingConvention( PyObject* self, PyObject* args )
 		#else
 			dcMode( vm, DC_CALL_C_X86_WIN32_THIS_GNU );
 		#endif
-		
-		bThisCallActive = true;
 
 		return Py_BuildValue("");
 	}
@@ -151,7 +148,7 @@ PyObject* esx_FindSymbol( PyObject* self, PyObject* args )
 		V_snprintf(szBinDir, 2048, "%s/bin/server_i486.so", szGameDir);
 
 		/* Open a handle to server_i486.so */
-		Msg("[SPE]: Path to server_i486.so is %s\n", szBinDir);
+		DevMsg("[SPE]: Path to server_i486.so is %s\n", szBinDir);
 		void* handle = dlopen(szBinDir, RTLD_NOW | RTLD_GLOBAL);
 
 		/* Make sure it's valid */
@@ -191,34 +188,23 @@ PyObject* esx_FindSymbol( PyObject* self, PyObject* args )
 PyObject* esx_RipPointer( PyObject* self, PyObject* args )
 {
 	PyObject* func_ptr;
-	void* cfunc_ptr = NULL;
-	void* new_pointer = NULL;
-	char* offset;
+	void* addr = NULL;
+	void** new_this = NULL;
+	int offset = 0;
 
-	if( !PyArg_ParseTuple( args, "Os", &func_ptr, &offset ) )
+	if( !PyArg_ParseTuple(args, "Oi", &func_ptr, &offset) )
 	{
-		Msg("[SPE]: There was an error parsing the tuple!\n");
+		Msg("[SPE]: Error parsing tuple in esx_RipPointer!\n");
 		return NULL;
 	}
 
-	cfunc_ptr = PyCObject_AsVoidPtr( func_ptr );
+	addr = PyCObject_AsVoidPtr( func_ptr );
 
-	Msg("[SPE]: The address is %i.\n", cfunc_ptr);
-	Msg("[SPE]: The offset is %i.\n", strtol(offset, NULL, 0));
-
-	/* Rip the pointer */
-	if( cfunc_ptr )
+	if( addr )
 	{
-		memcpy(&new_pointer, ((char *)cfunc_ptr + strtol(offset, NULL, 0)), sizeof(char *));
-		Msg("[SPE]: The new pointer %i.\n", new_pointer);
-		return PyCObject_FromVoidPtr( reinterpret_cast<void*>(new_pointer), NULL );
-	}
-
-	else
-	{
-		Msg("[SPE]: The given function pointer was null.\n");
-		return NULL;
-	}
+		new_this = *reinterpret_cast<void ***>((unsigned char*)addr + offset);
+		return Py_BuildValue("O", PyCObject_FromVoidPtr( new_this, NULL ));
+	}	
 
 	return Py_BuildValue("");
 }
@@ -386,9 +372,62 @@ PyObject* esx_CallFunction( PyObject* self, PyObject* args )
 	case DC_SIGCHAR_FLOAT: p = Py_BuildValue("f", dcCallFloat( vm, function_pointer ) ); break; 
 	case DC_SIGCHAR_DOUBLE: p = Py_BuildValue("d", dcCallDouble( vm, function_pointer ) ); break;
 	case 's': p = Py_BuildValue("s", dcCallPointer( vm, function_pointer ) ); break;
-	case DC_SIGCHAR_POINTER: p = Py_BuildValue("O", PyCObject_FromVoidPtr(dcCallPointer( vm, function_pointer ), NULL)); break;
+	case DC_SIGCHAR_POINTER:
+		{
+			/* Call the function */
+			void* ptr = dcCallPointer(vm, function_pointer);
+		
+			/* Is it valid*/
+			if( !ptr )
+			{
+				DevMsg("[SPE]Your function has returned a null pointer.\n");
+		
+				/* Return None */
+				return Py_BuildValue("");
+			}
+		
+			/* Assign it to p otherwise */
+			p = PyCObject_FromVoidPtr(ptr, NULL);
+
+			break;
+		}
+	
 	default:  DevMsg("[SPE] Invalid p = type signature.\n" ); p = NULL; break;
 	}
 
 	return p;
+}
+
+//=============================================================================
+// >> Mutes a player by userid
+//=============================================================================
+PyObject* esx_MutePlayer( PyObject* self, PyObject* args )
+{
+	int userid;
+	if( !PyArg_ParseTuple(args, "i", &userid) )
+	{
+		Msg("[SPE]: There was an error parsing the tuple!\n");
+		return NULL;
+	}
+
+	gPlayerManager->MutePlayer( userid );
+
+	return Py_BuildValue("");
+}
+
+//=============================================================================
+// >> UnMutes a player by userid
+//=============================================================================
+PyObject* esx_UnMutePlayer( PyObject* self, PyObject* args )
+{
+	int userid;
+	if( !PyArg_ParseTuple(args, "i", &userid) )
+	{
+		Msg("[SPE]: There was an error parsing the tuple!\n");
+		return NULL;
+	}
+
+	gPlayerManager->UnMutePlayer( userid );
+
+	return Py_BuildValue("");
 }

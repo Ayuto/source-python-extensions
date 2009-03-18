@@ -38,6 +38,12 @@ class CPlayerManager
 
 		/* Returns the edict of a player */
 		edict_t* GetPlayerByUserID( int userid );
+
+		/* Mutes a player */
+		void MutePlayer(int userid);
+
+		/* Unmutes a player */
+		void UnMutePlayer(int userid);
 };
 
 extern CPlayerManager* gPlayerManager;

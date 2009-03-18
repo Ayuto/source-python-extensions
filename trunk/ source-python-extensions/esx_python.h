@@ -46,6 +46,8 @@ static PyMethodDef esxMethods[] = {
 	{ "callFunction", esx_CallFunction, METH_VARARGS, "Calls a function through the use of a CObject." },
 	{ "ripPointer", esx_RipPointer, METH_VARARGS, "Rips a pointer from another pointer + an offset." },
 	{ "setCallingConvention", esx_SetCallingConvention, METH_VARARGS, "Sets the CallVM calling convention." },
+	{ "mutePlayer", esx_MutePlayer, METH_VARARGS, "Mutes a player." },
+	{ "unmutePlayer", esx_UnMutePlayer, METH_VARARGS, "Unmutes a player." },
 	{ NULL, NULL, 0, NULL }
 };
 
@@ -77,7 +79,7 @@ bool initializePython( char *pGameDir )
 	}
 
 #else
-	if( !dlopen("libpython2.5.so.1.0", RTLD_LAZY) )
+	if( !dlopen("libpython2.5.so.1.0", RTLD_NOW | RTLD_GLOBAL) )
 	{
 		Msg("[SPE] Unable to open libpython2.5.so.1.0!\n");
 		return true;

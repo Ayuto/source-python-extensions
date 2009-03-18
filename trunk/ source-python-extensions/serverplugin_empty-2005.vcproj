@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="es_extensions_ep1"
+	Name="sp_extensions_ep1"
 	ProjectGUID="{B6572CBE-7C7F-4FFF-94DE-AFBBBAB11C64}"
 	RootNamespace="es_extensions_ep1"
 	>
@@ -153,13 +153,14 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
-				InlineFunctionExpansion="2"
-				EnableIntrinsicFunctions="true"
-				FavorSizeOrSpeed="1"
+				Optimization="0"
+				InlineFunctionExpansion="0"
+				EnableIntrinsicFunctions="false"
+				FavorSizeOrSpeed="0"
 				AdditionalIncludeDirectories="&quot;C:\Silent Knights\src\public\dlls&quot;;&quot;C:\Silent Knights\src\public\tier2&quot;;&quot;C:\Silent Knights\src\public\tier1&quot;;&quot;C:\Silent Knights\src\public\tier0&quot;;&quot;C:\Silent Knights\src&quot;;&quot;C:\Silent Knights\src\public&quot;;&quot;C:\Silent Knights\src\tier1&quot;;&quot;C:\Silent Knights\src\dlls&quot;;C:\Python25\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;serverplugin_emptyONLY"
 				StringPooling="true"
+				BasicRuntimeChecks="0"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				RuntimeTypeInfo="true"
@@ -187,6 +188,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="odbc32.lib odbccp32.lib"
+				ShowProgress="0"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="&quot;C:\Silent Knights\src\dlls&quot;;&quot;C:\Silent Knights\src\public&quot;;&quot;C:\Silent Knights\src\tier1&quot;;C:\Python25\libs"
@@ -369,7 +371,7 @@
 			Name="Dyncall"
 			>
 			<File
-				RelativePath=".\dyncall\dyncall\dyncall.c"
+				RelativePath=".\dyncall\dyncall\dyncall_callvm_x86.c"
 				>
 			</File>
 			<File

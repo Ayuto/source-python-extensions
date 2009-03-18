@@ -31,8 +31,9 @@ CGlobalManager* gGlobals;
 //==================================================================================
 // >> Constructor
 //==================================================================================
-CGlobalManager::CGlobalManager(IVEngineServer *pEngine, IPlayerInfoManager *pInfoManager)
+CGlobalManager::CGlobalManager(IVEngineServer *pEngine, IPlayerInfoManager *pInfoManager, IVoiceServer* pVoice)
 {
 	m_Engine = pEngine;
 	m_Info = pInfoManager;
+	m_Voice = pVoice;
 }

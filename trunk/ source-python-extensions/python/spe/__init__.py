@@ -22,8 +22,9 @@ import os
 # Globals
 #================================================================================
 gSignatureDictionary = {}
-__version__ = '1.0.5a'
+__version__ = '1.0.5c'
 es.ServerVar('spe_version', __version__).makepublic()
+gamePathName = str(os.path.split(str(es.ServerVar('eventscripts_gamedir')))[1])
 
 #================================================================================
 # Exceptions
@@ -94,23 +95,27 @@ class Signature(object):
 # >> Parses an ini file and adds the signatures to a dictionary.
 #================================================================================
 def ParseSignatures( ini_name ):
-    global gSignatureDictionary
-    
     # Get gamedirectory
     gamedir = es.ServerVar('eventscripts_gamedir')
     
     # Create an INI object!
     INI = ConfigObj('%s/addons/eventscripts/_libs/python/spe/ini/%s.ini' % (gamedir, ini_name))
     
-    # Loop through each section in the soundpack
+    # Loop through each section in the INI
     for section in INI:
+        # Loop through each key in the section of the INI
         for key in INI[section]:
+            # Check to see if the OS is Windows
             if platform == 'nt':
+                # If the signature contains spaces, convert the signature to proper readable form
                 if ' ' in INI[section]['sig']:
                     sig = binascii.unhexlify(''.join(INI[section]['sig'].split()))
+                # If there are no spaces, read the signature as-is
                 else:
                     sig = INI[section]['sig']
+                # Add the signature to the gSignatureDictionary as a Signature() instance via the INI's "shortname"
                 gSignatureDictionary[INI[section]['shortname']] = Signature(sig, INI[section]['param'], INI[section]['convention'])
+            # If the OS is UNIX, add the symbol to the gSignatureDictionary as a Signature() instance via the INI's "shortname"
             else:
                 gSignatureDictionary[INI[section]['shortname']] = Signature(INI[section]['symbol'], INI[section]['param'], INI[section]['convention'])
 
@@ -118,13 +123,11 @@ def ParseSignatures( ini_name ):
 # >> Initializes Signatures
 #================================================================================
 def InitializeSignatures():
-    
     # Load the global INI first
-    ParseSignatures("generic")
+    ParseSignatures('shared')
     
     # Load the game specific INI
-    gameini = str(os.path.split(str(es.ServerVar('eventscripts_gamedir')))[1])
-    ParseSignatures( gameini )
+    ParseSignatures(gamePathName)
     
 # Initialize the signatures
 InitializeSignatures()
@@ -133,25 +136,26 @@ InitializeSignatures()
 # >> Calls a function
 #================================================================================
 def Call(name, *args):
-    global gSignatureDictionary
-    
-    # Make sure it's a tuple
+    # Make sure the argument is a tuple
     if not isinstance(args, tuple):
-            args = (args,)
+        args = (args,)
 
-    # If it's not found
+    # If the function name is not found
     if not gSignatureDictionary.has_key(name):
         # Raise an exception
         raise InvalidFunctionNameException("Could not find %s in the dictionary!" % name)
     
-    # Otherwise, call it
+    # Otherwise, call the function using the Signature() instance contained within the gSignatureDictionary via the function name
     return gSignatureDictionary[name].call(args)
 
 #================================================================================
 # >> Calls a function shortcut
 #================================================================================
 def CallShortcut(function, *args):
-    mod = __import__('spe.games.%s' %gameini, fromlist=['games'])
+    # Import the mod-specific module
+    mod = __import__('spe.games.%s' %gamePathName, fromlist=['games'])
+    
+    # Import the shared module
     shared = __import__('spe.games.shared', fromlist=['games'])
     
     # Attempt to call the "mod" function
@@ -167,4 +171,4 @@ def CallShortcut(function, *args):
     # No function found
     else:
         raise InvalidFunctionNameException('"%s" function not found in the "shared" or "%s" function list.'
-            %(str(function), gameini))
+            %(str(function), gamePathName))

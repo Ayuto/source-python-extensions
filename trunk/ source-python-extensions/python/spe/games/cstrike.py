@@ -54,7 +54,7 @@ def SwitchTeam( userid, team_index ):
     pPlayer = GetPlayer(userid)
     
     # Switch their team
-    Call("SwitchTeam", pPlayer, int(team_index))
+    Call("ChangeTeam", pPlayer, int(team_index))
 
 #================================================================================
 # Returns an instance to a player's active weapon (the weapon they are currently

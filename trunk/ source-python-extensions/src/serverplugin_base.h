@@ -51,6 +51,12 @@
 #include <engine/IEngineTrace.h>
 #include <ivoiceserver.h>
 
+// Source hook initialization
+#include <sourcehook_impl.h>
+using namespace SourceHook;
+
+
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include <tier0/memdbgon.h>
 
@@ -66,7 +72,7 @@ inline bool FStrEq(const char *sz1, const char *sz2)
 //---------------------------------------------------------------------------------
 // Purpose: a sample 3rd party plugin class
 //---------------------------------------------------------------------------------
-class CEmptyServerPlugin: public IServerPluginCallbacks, public IGameEventListener
+class CEmptyServerPlugin: public IServerPluginCallbacks, public IGameEventListener2
 {
 public:
 	CEmptyServerPlugin();
@@ -92,13 +98,17 @@ public:
 	virtual PLUGIN_RESULT	NetworkIDValidated( const char *pszUserName, const char *pszNetworkID );
 
 	// IGameEventListener Interface
-	virtual void FireGameEvent( KeyValues * event );
+	virtual void FireGameEvent( IGameEvent * event );
 
 	virtual int GetCommandIndex() { return m_iClientCommandIndex; }
 private:
 	int m_iClientCommandIndex;
 };
 
+//Sourcehook externs
+extern ISourceHook *g_SHPtr;
+extern CSourceHookImpl g_SourceHook;
+extern int g_PLID;
 
 #endif
 

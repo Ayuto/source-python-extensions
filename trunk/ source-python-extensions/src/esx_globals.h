@@ -31,6 +31,7 @@
 #include <eiface.h>
 #include <iplayerinfo.h>
 #include <ivoiceserver.h>
+#include "esx_hook_manager.h"
 
 //==================================================================================
 // >> Global Variables Class
@@ -38,10 +39,11 @@
 class CGlobalManager
 {
 	public:
-		CGlobalManager( IVEngineServer* pEngine, IPlayerInfoManager* pInfoManager, IVoiceServer* pVoiceServer );
+		CGlobalManager( IVEngineServer* pEngine, IPlayerInfoManager* pInfoManager, IVoiceServer* pVoiceServer, CSPEHookManager* pHookMan );
 		IVEngineServer* m_Engine;
 		IPlayerInfoManager* m_Info;
 		IVoiceServer* m_Voice;
+		CSPEHookManager* m_Hooker;
 };
 
 extern CGlobalManager* gGlobals;

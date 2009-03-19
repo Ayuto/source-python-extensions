@@ -67,13 +67,13 @@ void CPlayerManager::MutePlayer( int userid )
 {
 	//Get the person to be muted index
 	edict_t* pPlayer = GetPlayerByUserID( userid );
-	int iIndex = gGlobals->m_Engine->IndexOfEdict( pPlayer ) - 1;
+	int iIndex = gGlobals->m_Engine->IndexOfEdict( pPlayer );
 
 	for( int i = 0; i < gGlobals->m_Info->GetGlobalVars()->maxClients; i++ )
 	{
 		//Now loop through everyone and mute them
 		edict_t* pOtherPlayer = gGlobals->m_Engine->PEntityOfEntIndex( i );
-		int iOtherIndex = gGlobals->m_Engine->IndexOfEdict( pOtherPlayer ) - 1;
+		int iOtherIndex = gGlobals->m_Engine->IndexOfEdict( pOtherPlayer );
 
 		//Mute them
 		gGlobals->m_Voice->SetClientListening( iOtherIndex, iIndex, false );
@@ -87,12 +87,12 @@ void CPlayerManager::UnMutePlayer( int userid )
 {
 	edict_t* pPlayer = GetPlayerByUserID( userid );
 
-	int iIndex = gGlobals->m_Engine->IndexOfEdict( pPlayer ) - 1;
+	int iIndex = gGlobals->m_Engine->IndexOfEdict( pPlayer );
 
 	for( int i = 0; i < gGlobals->m_Info->GetGlobalVars()->maxClients; i++ )
 	{
 		edict_t* pOtherPlayer = gGlobals->m_Engine->PEntityOfEntIndex( i );
-		int iOtherIndex = gGlobals->m_Engine->IndexOfEdict( pOtherPlayer ) - 1;
+		int iOtherIndex = gGlobals->m_Engine->IndexOfEdict( pOtherPlayer );
 
 		//Unmute them to this player
 		gGlobals->m_Voice->SetClientListening( iOtherIndex, iIndex, true );

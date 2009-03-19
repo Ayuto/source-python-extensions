@@ -24,17 +24,21 @@
 * this exception to all derivative works.  
 */
 
-
 #include "serverplugin_base.h"
 #include "esx_player_manager.h"
 #include "esx_signature_manager.h"
 #include "esx_python.h"
 #include "esx_globals.h"
+#include "esx_hook_manager.h"
+
+CSourceHookImpl g_SourceHook;
+ISourceHook *g_SHPtr = &g_SourceHook;
+int g_PLID = 0;
 
 // Interfaces from the engine
 IVEngineServer		 *engine = NULL; // helper functions (messaging clients, loading content, making entities, running commands, etc)
 IFileSystem			 *filesystem = NULL; // file I/O 
-IGameEventManager 	 *gameeventmanager = NULL; // game events interface
+IGameEventManager2 	 *gameeventmanager = NULL; // game events interface
 IPlayerInfoManager 	 *playerinfomanager = NULL; // game dll interface to interact with player
 IServerPluginHelpers *helpers = NULL; // special 3rd party plugin helpers from the engine
 IUniformRandomStream *randomStr = NULL;
@@ -74,7 +78,7 @@ bool CEmptyServerPlugin::Load( CreateInterfaceFn interfaceFactory, CreateInterfa
 
 	// get the interfaces we want to use
 	if(	!(engine = (IVEngineServer*)interfaceFactory(INTERFACEVERSION_VENGINESERVER, NULL)) ||
-		!(gameeventmanager = (IGameEventManager *)interfaceFactory(INTERFACEVERSION_GAMEEVENTSMANAGER,NULL)) ||
+		!(gameeventmanager = (IGameEventManager2 *)interfaceFactory(INTERFACEVERSION_GAMEEVENTSMANAGER2,NULL)) ||
 		!(filesystem = (IFileSystem*)interfaceFactory(FILESYSTEM_INTERFACE_VERSION, NULL)) ||
 		!(helpers = (IServerPluginHelpers*)interfaceFactory(INTERFACEVERSION_ISERVERPLUGINHELPERS, NULL)) || 
 		!(enginetrace = (IEngineTrace *)interfaceFactory(INTERFACEVERSION_ENGINETRACE_SERVER,NULL)) ||
@@ -94,17 +98,17 @@ bool CEmptyServerPlugin::Load( CreateInterfaceFn interfaceFactory, CreateInterfa
 	InitCVars( interfaceFactory ); // register any cvars we have defined
 
 	/* Initialize our classes */
-	gGlobals = new CGlobalManager( engine, playerinfomanager, voiceServer );
+	CSPEHookManager* hookman = new CSPEHookManager( gameeventmanager );
+
+	gGlobals = new CGlobalManager( engine, playerinfomanager, voiceServer, hookman );
 	gPlayerManager = new CPlayerManager();
 	gSigger = new CSigger( (void*)gameServerFactory );
-
+	
 	char pGameDir[2047];
 	engine->GetGameDir( pGameDir, 2047 );
-
-	Msg("[SPE]: The GameDir is %s.\n", pGameDir);
 	
 	initializePython( pGameDir );
-	
+
 	return true;
 }
 
@@ -114,7 +118,7 @@ bool CEmptyServerPlugin::Load( CreateInterfaceFn interfaceFactory, CreateInterfa
 void CEmptyServerPlugin::Unload( void )
 {
 	gameeventmanager->RemoveListener( this ); // make sure we are unloaded from the event system
-	//Py_Finalize();
+	Py_Finalize();
 }
 
 //---------------------------------------------------------------------------------
@@ -144,7 +148,7 @@ const char *CEmptyServerPlugin::GetPluginDescription( void )
 //---------------------------------------------------------------------------------
 void CEmptyServerPlugin::LevelInit( char const *pMapName )
 {
-	gameeventmanager->AddListener( this, true );
+	//gameeventmanager->AddListener( this, true );
 }
 
 //---------------------------------------------------------------------------------
@@ -167,7 +171,7 @@ void CEmptyServerPlugin::GameFrame( bool simulating )
 //---------------------------------------------------------------------------------
 void CEmptyServerPlugin::LevelShutdown( void ) // !!!!this can get called multiple times per map change
 {
-	gameeventmanager->RemoveListener( this );
+	//gameeventmanager->RemoveListener( this );
 }
 
 //---------------------------------------------------------------------------------
@@ -218,13 +222,6 @@ PLUGIN_RESULT CEmptyServerPlugin::ClientConnect( bool *bAllowConnect, edict_t *p
 //---------------------------------------------------------------------------------
 PLUGIN_RESULT CEmptyServerPlugin::ClientCommand( edict_t *pEntity )
 {
-	/*const char *pcmd = engine->Cmd_Argv(0);
-
-	if ( !pEntity || pEntity->IsFree() ) 
-	{
-		return PLUGIN_CONTINUE;
-	}*/
-
 	return PLUGIN_CONTINUE;
 }
 
@@ -239,25 +236,20 @@ PLUGIN_RESULT CEmptyServerPlugin::NetworkIDValidated( const char *pszUserName, c
 //---------------------------------------------------------------------------------
 // Purpose: called when an event is fired
 //---------------------------------------------------------------------------------
-void CEmptyServerPlugin::FireGameEvent( KeyValues * event )
+void CEmptyServerPlugin::FireGameEvent( IGameEvent * event )
 {
-	//const char * name = event->GetName();
+	const char * name = event->GetName();
 }
 
 //---------------------------------------------------------------------------------
 // Purpose: an example of how to implement a new command
 //---------------------------------------------------------------------------------
-CON_COMMAND( empty_version, "prints the version of the empty plugin" )
+CON_COMMAND( spe_version, "prints the version of the empty plugin" )
 {
 	DevMsg( PLUGIN_VERSION );
-}
-
-CON_COMMAND( empty_log, "logs the version of the empty plugin" )
-{
-	engine->LogPrint( PLUGIN_VERSION );
 }
 
 //---------------------------------------------------------------------------------
 // Purpose: an example cvar
 //---------------------------------------------------------------------------------
-static ConVar empty_cvar("spe_version", "1.0a", 0, "Version of Source Python Extensions");
+static ConVar empty_cvar("spe_version", "1.0.5c", 0, "Version of Source Python Extensions");

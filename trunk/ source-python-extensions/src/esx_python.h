@@ -48,6 +48,8 @@ static PyMethodDef esxMethods[] = {
 	{ "setCallingConvention", esx_SetCallingConvention, METH_VARARGS, "Sets the CallVM calling convention." },
 	{ "mutePlayer", esx_MutePlayer, METH_VARARGS, "Mutes a player." },
 	{ "unmutePlayer", esx_UnMutePlayer, METH_VARARGS, "Unmutes a player." },
+	{ "registerPreHook", esx_PreHookEvent, METH_VARARGS, "Registers a prehook." },
+	{ "unregisterPreHook", esx_UnHookEvent, METH_VARARGS, "Removes a prehook for an event." },
 	{ NULL, NULL, 0, NULL }
 };
 

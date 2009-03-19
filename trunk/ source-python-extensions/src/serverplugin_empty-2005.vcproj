@@ -51,7 +51,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="C:\adplugin\public;C:\adplugin\public\tier0;C:\adplugin\public\tier1;C:\adplugin\tier1;C:\adplugin\dlls;C:\adplugin\game_shared;C:\Python25"
+				AdditionalIncludeDirectories="&quot;C:\Silent Knights\src\public\dlls&quot;;&quot;C:\Silent Knights\src\public&quot;;&quot;C:\Silent Knights\src\public\tier0&quot;;&quot;C:\Silent Knights\src\public\tier1&quot;;&quot;C:\Silent Knights\src\tier1&quot;;&quot;C:\Silent Knights\src\dlls&quot;;&quot;C:\Silent Knights\src\game_shared&quot;;C:\Python25"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;serverplugin_emptyONLY"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -82,7 +82,7 @@
 				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="C:\adplugin\lib\public;C:\adplugin\lib\common"
+				AdditionalLibraryDirectories="&quot;C:\Silent Knights\src\lib\public&quot;;&quot;C:\Silent Knights\src\lib\common&quot;"
 				IgnoreDefaultLibraryNames="LIBC,libcmt"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/serverplugin_empty.pdb"
@@ -157,7 +157,7 @@
 				InlineFunctionExpansion="0"
 				EnableIntrinsicFunctions="false"
 				FavorSizeOrSpeed="0"
-				AdditionalIncludeDirectories="&quot;C:\Silent Knights\src\public\dlls&quot;;&quot;C:\Silent Knights\src\public\tier2&quot;;&quot;C:\Silent Knights\src\public\tier1&quot;;&quot;C:\Silent Knights\src\public\tier0&quot;;&quot;C:\Silent Knights\src&quot;;&quot;C:\Silent Knights\src\public&quot;;&quot;C:\Silent Knights\src\tier1&quot;;&quot;C:\Silent Knights\src\dlls&quot;;C:\Python25\include"
+				AdditionalIncludeDirectories="C:\development\esx\src\sourcehook;&quot;C:\Silent Knights\src\public\dlls&quot;;&quot;C:\Silent Knights\src\public\tier2&quot;;&quot;C:\Silent Knights\src\public\tier1&quot;;&quot;C:\Silent Knights\src\public\tier0&quot;;&quot;C:\Silent Knights\src&quot;;&quot;C:\Silent Knights\src\public&quot;;&quot;C:\Silent Knights\src\tier1&quot;;&quot;C:\Silent Knights\src\dlls&quot;;C:\Python25\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;serverplugin_emptyONLY"
 				StringPooling="true"
 				BasicRuntimeChecks="0"
@@ -241,6 +241,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\esx_hook_manager.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\esx_player_manager.cpp"
 				>
 			</File>
@@ -309,6 +313,10 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath=".\sourcehook\sourcehook.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -316,6 +324,10 @@
 			>
 			<File
 				RelativePath=".\esx_globals.h"
+				>
+			</File>
+			<File
+				RelativePath=".\esx_hook_manager.h"
 				>
 			</File>
 			<File
@@ -351,19 +363,19 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\Silent Knights\src\lib\public\mathlib.lib"
+				RelativePath="..\..\..\Silent Knights\src\lib\public\mathlib.lib"
 				>
 			</File>
 			<File
-				RelativePath="..\..\Silent Knights\src\lib\public\tier0.lib"
+				RelativePath="..\..\..\Silent Knights\src\lib\public\tier0.lib"
 				>
 			</File>
 			<File
-				RelativePath="..\..\Silent Knights\src\lib\public\tier1.lib"
+				RelativePath="..\..\..\Silent Knights\src\lib\public\tier1.lib"
 				>
 			</File>
 			<File
-				RelativePath="..\..\Silent Knights\src\lib\public\vstdlib.lib"
+				RelativePath="..\..\..\Silent Knights\src\lib\public\vstdlib.lib"
 				>
 			</File>
 		</Filter>

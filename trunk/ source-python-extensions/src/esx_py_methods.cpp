@@ -24,12 +24,12 @@
 * this exception to all derivative works.  
 */
 
-
 #include "esx_player_manager.h"
 #include "esx_py_methods.h"
 #include "esx_signature_manager.h"
 #include "esx_dyncall_py.h"
 #include "esx_globals.h"
+#include "esx_hook_manager.h"
 #ifdef __linux__
 #include <dlfcn.h>
 #endif
@@ -428,6 +428,52 @@ PyObject* esx_UnMutePlayer( PyObject* self, PyObject* args )
 	}
 
 	gPlayerManager->UnMutePlayer( userid );
+
+	return Py_BuildValue("");
+}
+//=============================================================================
+// >> Registers a script block for a pre-event hook
+//=============================================================================
+PyObject* esx_PreHookEvent( PyObject* self, PyObject* args )
+{
+	char* szEventName;
+	PyObject* function;
+
+	if( !PyArg_ParseTuple(args, "sO", &szEventName, &function) )
+	{
+		Msg("[SPE]: Could not parse out objects for esx_preHookEvent!\n");
+		return NULL;
+	}
+
+	Py_XINCREF( function );
+
+	if( !PyCallable_Check( function ) )
+	{
+		Msg("[SPE]: Can't call function!\n");
+		return Py_BuildValue("");
+	}
+
+	//Hook the event
+	gGlobals->m_Hooker->addPreHook( szEventName, function );
+
+	return Py_BuildValue("");
+}
+//=============================================================================
+// >> Unregisters a script block for a pre-event hook.
+//=============================================================================
+PyObject* esx_UnHookEvent( PyObject* self, PyObject* args )
+{
+	char* szEventName;
+	PyObject* function;
+
+	if( !PyArg_ParseTuple(args, "sO", &szEventName, &function) )
+	{
+		Msg("[SPE]: Could not parse out objects for esx_UnHookPreEvent!\n");
+		return NULL;
+	}
+
+	//Unhook the event.
+	gGlobals->m_Hooker->removePreHook( szEventName, function );
 
 	return Py_BuildValue("");
 }

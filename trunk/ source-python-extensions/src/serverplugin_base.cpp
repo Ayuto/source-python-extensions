@@ -30,6 +30,7 @@
 #include "esx_python.h"
 #include "esx_globals.h"
 #include "esx_hook_manager.h"
+#include "esx_event_parser.h"
 
 CSourceHookImpl g_SourceHook;
 ISourceHook *g_SHPtr = &g_SourceHook;
@@ -100,9 +101,10 @@ bool CEmptyServerPlugin::Load( CreateInterfaceFn interfaceFactory, CreateInterfa
 	/* Initialize our classes */
 	CSPEHookManager* hookman = new CSPEHookManager( gameeventmanager );
 
-	gGlobals = new CGlobalManager( engine, playerinfomanager, voiceServer, hookman );
+	gGlobals = new CGlobalManager( engine, playerinfomanager, voiceServer, hookman, filesystem );
 	gPlayerManager = new CPlayerManager();
 	gSigger = new CSigger( (void*)gameServerFactory );
+	g_pParser = new CModEventParser();
 	
 	char pGameDir[2047];
 	engine->GetGameDir( pGameDir, 2047 );

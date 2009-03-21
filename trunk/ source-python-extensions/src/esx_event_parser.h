@@ -24,30 +24,50 @@
 * this exception to all derivative works.  
 */
 
-#ifndef ESX_GLOBALS_H
-#define ESX_GLOBALS_H
+#ifndef ESX_EVENT_PARSER_H
+#define ESX_EVENT_PARSER_H
 
-/* Includes */
-#include <eiface.h>
-#include <iplayerinfo.h>
-#include <ivoiceserver.h>
-#include <filesystem.h>
-#include "esx_hook_manager.h"
+#include <Python.h>
+#include <utlvector.h>
+#include <igameevents.h>
+
+// Buffer size
+#define EVENT_BUFFER_SIZE 255
 
 //==================================================================================
-// >> Global Variables Class
+// >> Mod event variable
 //==================================================================================
-class CGlobalManager
+struct mod_event_variable
 {
-	public:
-		CGlobalManager( IVEngineServer *pEngine, IPlayerInfoManager *pInfoManager, IVoiceServer* pVoice, CSPEHookManager* HookMan, IFileSystem* pSys);
-		IVEngineServer* m_Engine;
-		IPlayerInfoManager* m_Info;
-		IVoiceServer* m_Voice;
-		CSPEHookManager* m_Hooker;
-		IFileSystem* m_Sys;
+	char szVarName[EVENT_BUFFER_SIZE];
+	char szVarType[EVENT_BUFFER_SIZE];
 };
 
-extern CGlobalManager* gGlobals;
+//==================================================================================
+// >> Stores event information in a pythonic object.
+//==================================================================================
+struct mod_event
+{
+	char szEventName[EVENT_BUFFER_SIZE];
+	CUtlVector<mod_event_variable*> m_Vars;
+};
+
+//==================================================================================
+// >> ModEvent parsing class
+//==================================================================================
+class CModEventParser
+{
+	private:
+		CUtlVector<mod_event*> m_Events; //Stores all mod events.
+
+	public:
+		CModEventParser();
+		
+		void		  parseEvents();
+		mod_event*	  findEvent( const char* szEventName );
+		PyObject*	  getEventVariables( IGameEvent* pGameEvent );
+};
+
+extern CModEventParser* g_pParser;
 
 #endif

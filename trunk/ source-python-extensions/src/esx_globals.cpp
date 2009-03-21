@@ -31,10 +31,11 @@ CGlobalManager* gGlobals;
 //==================================================================================
 // >> Constructor
 //==================================================================================
-CGlobalManager::CGlobalManager(IVEngineServer *pEngine, IPlayerInfoManager *pInfoManager, IVoiceServer* pVoice, CSPEHookManager* HookMan)
+CGlobalManager::CGlobalManager(IVEngineServer *pEngine, IPlayerInfoManager *pInfoManager, IVoiceServer* pVoice, CSPEHookManager* HookMan, IFileSystem* pSys)
 {
 	m_Engine = pEngine;
 	m_Info = pInfoManager;
 	m_Voice = pVoice;
 	m_Hooker = HookMan;
+	m_Sys = pSys;
 }

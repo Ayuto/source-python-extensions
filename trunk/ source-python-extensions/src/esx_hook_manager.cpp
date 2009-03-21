@@ -25,6 +25,7 @@
 */
 
 #include "esx_hook_manager.h"
+#include "esx_event_parser.h"
 
 //Declare the sourcehook prototype!
 SH_DECL_HOOK2(IGameEventManager2, FireEvent, SH_NOATTRIB, 0, bool, IGameEvent *, bool);
@@ -174,7 +175,10 @@ bool CSPEHookManager::EventFire_Pre(IGameEvent *pEvent, bool bDontBroadcast)
 		if(pyFunc)
 		{
 			DevMsg("[SPE]: Calling the function!\n");
-			PyEval_CallObject( pyFunc, NULL );
+			
+			PyObject* pDict = g_pParser->getEventVariables( pEvent );
+			
+			PyEval_CallFunction( pyFunc, "(O)", pDict );
 		}
 	}
 

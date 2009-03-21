@@ -445,8 +445,6 @@ PyObject* esx_PreHookEvent( PyObject* self, PyObject* args )
 		return NULL;
 	}
 
-	Py_XINCREF( function );
-
 	if( !PyCallable_Check( function ) )
 	{
 		Msg("[SPE]: Can't call function!\n");

@@ -1,7 +1,7 @@
 #(C)2004-2008 Deniz Sezen
 # Makefile derived from the work of David "BAILOPAN" Anderson
 
-HL2SDK = ../../hl2sdk
+HL2SDK = ../../../hl2sdk
 SRCDS = ~/srcds_l
 
 ### EDIT BELOW FOR OTHER PROJECTS ###
@@ -16,12 +16,15 @@ HL2PUB = $(HL2SDK)/public
 HL2LIB = $(HL2SDK)/linux_sdk
 
 OBJECTS = esx_globals.cpp \
+	esx_hook_manager.cpp \
 	esx_player_manager.cpp \
 	esx_py_methods.cpp \
 	esx_scanner.cpp \
 	esx_signature_manager.cpp \
+	esx_event_parser.cpp \
 	serverplugin_convar.cpp \
-	serverplugin_base.cpp
+	serverplugin_base.cpp \
+	sourcehook.cpp
 
 LINK = $(HL2LIB)/tier1_i486.a  \
 	vstdlib_i486.so \
@@ -33,7 +36,7 @@ LINK = $(HL2LIB)/tier1_i486.a  \
 	libdynload_s.a -static-libgcc
 
 INCLUDE = -I. -I$(HL2PUB) -I$(HL2PUB)/dlls -I$(HL2PUB)/engine -I$(HL2PUB)/tier0 -I$(HL2PUB)/tier1 \
-          -I$(HL2PUB)/vstdlib -I$(HL2SDK)/tier1 -I. -I./Python25 -I./Python25/Include
+          -I$(HL2PUB)/vstdlib -I$(HL2SDK)/tier1 -I. -I./Python25 -I./Python25/Include -I./sourcehook
 
 ifeq "$(DEBUG)" "true"
 	BIN_DIR = Debug

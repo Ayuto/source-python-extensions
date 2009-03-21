@@ -35,8 +35,9 @@
  
 //==================================================================================
 // >> Pools the event_name and python function pointer into a single spot.
+//	  This can also be used for usermessage hooking as well.
 //==================================================================================
-struct PY_EVENT_HOOK
+struct PY_FUNC_HOOK
 {
 	char* szEventName;
 	CUtlVector<PyObject*> funcList; // All of these will be called before the event is fired.
@@ -50,14 +51,19 @@ class CSPEHookManager : public IGameEventListener2
 	public:
 		CSPEHookManager( IGameEventManager2* pManager );
 		~CSPEHookManager();
+
+		//Used for event prehooking
 		void addPreHook( char* szEventName, PyObject* pyFunc );
 		void removePreHook( char* szEventName, PyObject* pyFunc );
-		bool EventFire_Pre(IGameEvent *pEvent, bool bDontBroadcast);
-		void FireGameEvent(IGameEvent *pEvent);
+
+		//Handlers and overrides
+		bool EventFire_Pre( IGameEvent *pEvent, bool bDontBroadcast );
+		void FireGameEvent( IGameEvent *pEvent );
+		bf_write* UserMessageHook( IRecipientFilter* pFilter, int msg_type) ;
 
 	private:
 		IGameEventManager2* m_Manager;
-		CUtlVector<PY_EVENT_HOOK*> m_EventHooks;
+		CUtlVector<PY_FUNC_HOOK*> m_EventHooks;
 };
 
 #endif

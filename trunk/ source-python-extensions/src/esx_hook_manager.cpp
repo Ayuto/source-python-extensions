@@ -56,14 +56,14 @@ CSPEHookManager::~CSPEHookManager()
 void CSPEHookManager::addPreHook(char *szEventName, PyObject *pyFunc)
 {
 	//Loop through our event list, see if there already is an event with a registered hook.
-	PY_EVENT_HOOK *p = NULL;
+	PY_FUNC_HOOK *p = NULL;
 
 	DevMsg("[SPE]: Adding a hook for %s.\n", szEventName);
 
 	//Do we have a PY_EVENT_HOOK struct for this event?
 	for(int i = 0; i < m_EventHooks.Count(); i++)
 	{
-		PY_EVENT_HOOK* temp = m_EventHooks.Element(i);
+		PY_FUNC_HOOK* temp = m_EventHooks.Element(i);
 		
 		if(temp)
 		{
@@ -81,7 +81,7 @@ void CSPEHookManager::addPreHook(char *szEventName, PyObject *pyFunc)
 	{
 		DevMsg("Adding a py_event_hook.\n");
 		//Create a hook struct
-		p = new PY_EVENT_HOOK();
+		p = new PY_FUNC_HOOK();
 
 		//Set the event identifier
 		p->szEventName = szEventName;
@@ -116,7 +116,7 @@ void CSPEHookManager::removePreHook(char *szEventName, PyObject *pyFunc)
 	//Loop through existing python hooks
 	for(int i = 0; i < m_EventHooks.Count(); i++)
 	{
-		PY_EVENT_HOOK* p = m_EventHooks.Element(i);
+		PY_FUNC_HOOK* p = m_EventHooks.Element(i);
 
 		if( p )
 		{
@@ -139,14 +139,14 @@ bool CSPEHookManager::EventFire_Pre(IGameEvent *pEvent, bool bDontBroadcast)
 	const char* name = pEvent->GetName();
 	DevMsg("[SPE]: Event name %s\n", name);
 
-	PY_EVENT_HOOK* p = NULL;
+	PY_FUNC_HOOK* p = NULL;
 
 	DevMsg("[SPE]: Sizeof m_Eventhooks is %i\n", m_EventHooks.Count());
 
 	//Get the PY_EVENT_HOOK structure
 	for(int i = 0; i < m_EventHooks.Count(); i++)
 	{
-		PY_EVENT_HOOK* temp = m_EventHooks.Element(i);
+		PY_FUNC_HOOK* temp = m_EventHooks.Element(i);
 
 		if(temp)
 		{

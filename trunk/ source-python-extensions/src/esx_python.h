@@ -46,8 +46,6 @@ static PyMethodDef esxMethods[] = {
 	{ "callFunction", esx_CallFunction, METH_VARARGS, "Calls a function through the use of a CObject." },
 	{ "ripPointer", esx_RipPointer, METH_VARARGS, "Rips a pointer from another pointer + an offset." },
 	{ "setCallingConvention", esx_SetCallingConvention, METH_VARARGS, "Sets the CallVM calling convention." },
-	{ "mutePlayer", esx_MutePlayer, METH_VARARGS, "Mutes a player." },
-	{ "unmutePlayer", esx_UnMutePlayer, METH_VARARGS, "Unmutes a player." },
 	{ "registerPreHook", esx_PreHookEvent, METH_VARARGS, "Registers a prehook." },
 	{ "unregisterPreHook", esx_UnHookEvent, METH_VARARGS, "Removes a prehook for an event." },
 	{ NULL, NULL, 0, NULL }

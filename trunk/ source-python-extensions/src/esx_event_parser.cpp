@@ -201,23 +201,31 @@ PyObject* CModEventParser::getEventVariables(IGameEvent *pGameEvent)
 
 			else if( strcmp(szVarType, "float") == 0 )
 			{
-				val = Py_BuildValue("f", pGameEvent->GetFloat(szVarName));
+				float f = 0.0f;
+				f = pGameEvent->GetFloat(szVarName);
+				val = Py_BuildValue("f", f);
 			}
 			
 			else if( strcmp(szVarType, "bool") == 0 )
 			{
-				val = Py_BuildValue("i", pGameEvent->GetBool(szVarName));
+				int i = 0;
+				i = pGameEvent->GetBool(szVarName);
+				val = Py_BuildValue("i", i);
 			}
 
 			else if( strcmp(szVarType, "byte") == 0 )
 			{
-
-				val = Py_BuildValue("i", pGameEvent->GetInt(szVarType));
+				int i = 0;
+				i = pGameEvent->GetInt(szVarName);
+				val = Py_BuildValue("i", i);
 			}
 			
 			else if( strcmp(szVarType, "long") == 0 )
 			{
-				val = Py_BuildValue("i", pGameEvent->GetInt(szVarType));
+				//TODO: Change this to long
+				int i = 0;
+				i = pGameEvent->GetInt(szVarName);
+				val = Py_BuildValue("i", i);
 			}
 
 			//Now set the dict value!

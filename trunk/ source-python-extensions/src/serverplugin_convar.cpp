@@ -56,7 +56,11 @@ void InitCVars( CreateInterfaceFn cvarFactory )
 	s_pCVar = (ICvar*)cvarFactory( VENGINE_CVAR_INTERFACE_VERSION, NULL );
 	if ( s_pCVar )
 	{
+#if defined ORANGEBOX_BUILD
+		ConVar_Register(0, &s_BaseAccessor);
+#else
 		ConCommandBaseMgr::OneTimeInit( &g_ConVarAccessor );
+#endif
 	}
 }
 

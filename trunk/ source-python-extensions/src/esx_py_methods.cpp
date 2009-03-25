@@ -399,39 +399,6 @@ PyObject* esx_CallFunction( PyObject* self, PyObject* args )
 }
 
 //=============================================================================
-// >> Mutes a player by userid
-//=============================================================================
-PyObject* esx_MutePlayer( PyObject* self, PyObject* args )
-{
-	int userid;
-	if( !PyArg_ParseTuple(args, "i", &userid) )
-	{
-		Msg("[SPE]: There was an error parsing the tuple!\n");
-		return NULL;
-	}
-
-	gPlayerManager->MutePlayer( userid );
-
-	return Py_BuildValue("");
-}
-
-//=============================================================================
-// >> UnMutes a player by userid
-//=============================================================================
-PyObject* esx_UnMutePlayer( PyObject* self, PyObject* args )
-{
-	int userid;
-	if( !PyArg_ParseTuple(args, "i", &userid) )
-	{
-		Msg("[SPE]: There was an error parsing the tuple!\n");
-		return NULL;
-	}
-
-	gPlayerManager->UnMutePlayer( userid );
-
-	return Py_BuildValue("");
-}
-//=============================================================================
 // >> Registers a script block for a pre-event hook
 //=============================================================================
 PyObject* esx_PreHookEvent( PyObject* self, PyObject* args )

@@ -35,19 +35,22 @@ CModEventParser* g_pParser;
 //==================================================================================
 CModEventParser::CModEventParser()
 {
-	//Parse out the events
-	parseEvents();
+	//Parse out game specific events.
+	parseEvents("resource/ModEvents.res");
+	parseEvents("../hl2/resource/gameevents.res");
+	parseEvents("../hl2/resource/hltvevents.res");
+	parseEvents("../hl2/resource/serverevents.res");
 }
 
 //==================================================================================
 // >> Parses out the events for each mod
 //==================================================================================
-void CModEventParser::parseEvents()
+void CModEventParser::parseEvents(const char* szResFilePath)
 {
 	KeyValues* pModEventFile = new KeyValues("events");
 
 	//Load the mod event file
-	if( !pModEventFile->LoadFromFile(gGlobals->m_Sys, "resource/ModEvents.res") )
+	if( !pModEventFile->LoadFromFile(gGlobals->m_Sys, szResFilePath) )
 	{
 		DevMsg("[SPE]: Could not load the mod events file. Event vars are disabled.\n");
 		return;
@@ -108,7 +111,7 @@ void CModEventParser::parseEvents()
 		cur_event = cur_event->GetNextKey();
 	}
 
-	DevMsg("[SPE]: Size of m_Events is %d!\n", m_Events.Count());
+	DevMsg("[SPE]: Total number of parsed events is %d!\n", m_Events.Count());
 
 	//Get rid of our keyvalue
 	pModEventFile->deleteThis();
@@ -125,10 +128,6 @@ mod_event* CModEventParser::findEvent( const char* szEventName )
 		//Compare names
 		mod_event* temp = m_Events.Element( i );
 
-		DevMsg("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-		DevMsg("[SPE]: Event name in findEvent is %s.\n", temp->szEventName);
-		DevMsg("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-
 		if( strcmp( szEventName, temp->szEventName ) == 0 )
 		{
 			DevMsg("------------------------------------------------------------\n");
@@ -139,6 +138,7 @@ mod_event* CModEventParser::findEvent( const char* szEventName )
 		}
 	}
 
+	DevMsg("[SPE]: Could not find a mod_event structure with the name of %s.\n", szEventName);
 	return NULL;
 }
 			
@@ -151,16 +151,14 @@ PyObject* CModEventParser::getEventVariables(IGameEvent *pGameEvent)
 	//Make sure the game event is valid
 	if( !pGameEvent )
 	{
-		DevMsg("[SPE]: pGameEvent is invalid!\n");
+		DevMsg("[SPE]: [getEventVariables] -> pGameEvent is invalid!\n");
 		return NULL;
 	}
 
 	//Get the event name
 	const char* szEventName = pGameEvent->GetName();
 
-	DevMsg("****************************************\n");
-	DevMsg("[SPE]: Event name %s\n", szEventName);
-	DevMsg("****************************************\n");
+	DevMsg("[SPE]: [getEventVariables] -> Event name %s\n", szEventName);
 
 	//Create dict to store event info
 	PyObject* pDict = PyDict_New();
@@ -185,18 +183,20 @@ PyObject* CModEventParser::getEventVariables(IGameEvent *pGameEvent)
 
 			PyObject* val;
 
-			DevMsg("[SPE]: VarName is %s!\n[SPE]: VarType is %s!\n", szVarName, szVarType);
+			DevMsg("[SPE]: [getEventVariables] -> VarName is %s!\n[SPE]: [getEventVariables] -> VarType is %s!\n", szVarName, szVarType);
 
 			//Comparision statements!
 			if( strcmp(szVarType, "short") == 0 )
 			{
-				int value = pGameEvent->GetInt(szVarName);
-				val = Py_BuildValue("i", value);
+				int v = pGameEvent->GetInt(szVarName);
+				val = Py_BuildValue("i", v);
+				DevMsg("[SPE]: [getEventVariables] -> Building an integer.\n");
 			}
 
 			else if( strcmp(szVarType, "string") == 0 )
 			{
 				val = Py_BuildValue("s", pGameEvent->GetString(szVarName));
+				DevMsg("[SPE]: [getEventVariables] -> Building a string.\n");
 			}
 
 			else if( strcmp(szVarType, "float") == 0 )
@@ -204,6 +204,7 @@ PyObject* CModEventParser::getEventVariables(IGameEvent *pGameEvent)
 				float f = 0.0f;
 				f = pGameEvent->GetFloat(szVarName);
 				val = Py_BuildValue("f", f);
+				DevMsg("[SPE]: [getEventVariables] -> Building a float.\n");
 			}
 			
 			else if( strcmp(szVarType, "bool") == 0 )
@@ -211,6 +212,7 @@ PyObject* CModEventParser::getEventVariables(IGameEvent *pGameEvent)
 				int i = 0;
 				i = pGameEvent->GetBool(szVarName);
 				val = Py_BuildValue("i", i);
+				DevMsg("[SPE]: [getEventVariables] -> Building a boolean.\n");
 			}
 
 			else if( strcmp(szVarType, "byte") == 0 )
@@ -218,6 +220,7 @@ PyObject* CModEventParser::getEventVariables(IGameEvent *pGameEvent)
 				int i = 0;
 				i = pGameEvent->GetInt(szVarName);
 				val = Py_BuildValue("i", i);
+				DevMsg("[SPE]: [getEventVariables] -> Building a byte.\n");
 			}
 			
 			else if( strcmp(szVarType, "long") == 0 )
@@ -226,19 +229,17 @@ PyObject* CModEventParser::getEventVariables(IGameEvent *pGameEvent)
 				int i = 0;
 				i = pGameEvent->GetInt(szVarName);
 				val = Py_BuildValue("i", i);
+				DevMsg("[SPE]: [getEventVariables] -> Building a long.\n");
 			}
 
 			//Now set the dict value!
+			DevMsg("[SPE]: [getEventVariables] -> Setting the item in the dict.\n");
 			PyDict_SetItemString( pDict, szVarName, val );
-
-			//Decrement the references
-			Py_XDECREF( val );
 		}
 	
 		return pDict;
 	}
 		
-	DevMsg("[SPE]: pEvent was null.\n");
+	DevMsg("[SPE]: [getEventVariables] -> pEvent was null.\n");
 	return NULL;
 }
-

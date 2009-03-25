@@ -141,7 +141,7 @@ bool CSPEHookManager::EventFire_Pre(IGameEvent *pEvent, bool bDontBroadcast)
 
 	PY_FUNC_HOOK* p = NULL;
 
-	DevMsg("[SPE]: Sizeof m_Eventhooks is %i\n", m_EventHooks.Count());
+	DevMsg("[SPE]: There are %d hooks in m_EventHooks.Count()\n", m_EventHooks.Count());
 
 	//Get the PY_EVENT_HOOK structure
 	for(int i = 0; i < m_EventHooks.Count(); i++)
@@ -150,7 +150,6 @@ bool CSPEHookManager::EventFire_Pre(IGameEvent *pEvent, bool bDontBroadcast)
 
 		if(temp)
 		{
-			DevMsg("[SPE]: Found a python hook struct!\n");
 			if(strcmp(name, temp->szEventName) == 0)
 			{
 				DevMsg("Found a struct!\n");
@@ -162,9 +161,11 @@ bool CSPEHookManager::EventFire_Pre(IGameEvent *pEvent, bool bDontBroadcast)
 
 	if( !p )
 	{
-		DevMsg("[SPE]: Null pointer.\n");
+		DevMsg("[SPE]: Could not find a python function hook.\n");
 		RETURN_META_VALUE(MRES_HANDLED, false);
 	}
+
+	PyObject* pDict = g_pParser->getEventVariables( pEvent );
 
 	//Now, loop through each python function and call it.
 	for(int i = 0; i < p->funcList.Count(); i++)
@@ -175,8 +176,6 @@ bool CSPEHookManager::EventFire_Pre(IGameEvent *pEvent, bool bDontBroadcast)
 		if(pyFunc)
 		{
 			DevMsg("[SPE]: Calling the function!\n");
-			
-			PyObject* pDict = g_pParser->getEventVariables( pEvent );
 			
 			PyEval_CallFunction( pyFunc, "(O)", pDict );
 		}

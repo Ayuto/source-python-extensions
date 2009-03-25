@@ -63,7 +63,7 @@ class CModEventParser
 	public:
 		CModEventParser();
 		
-		void		  parseEvents();
+		void		  parseEvents( const char* szResFilePath );
 		mod_event*	  findEvent( const char* szEventName );
 		PyObject*	  getEventVariables( IGameEvent* pGameEvent );
 };

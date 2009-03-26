@@ -29,33 +29,36 @@
 #define SERVERPLUGIN_BASE
 
 /* YOUR PLUGIN NAME HERE! */
-#define PLUGIN_NAME "Eventscripts Extensions"
+#define PLUGIN_NAME "Source Python Extensions"
 
 /* YOUR PLUGIN AUTHOR HERE */
 #define PLUGIN_AUTHOR "your-name-here"
 
 /* YOUR PLUGIN VERSION HERE */
-#define PLUGIN_VERSION "1.0.0"
+#define PLUGIN_VERSION "1.0.6a"
 
 #include <stdio.h>
 
 #include <interface.h>
 #include <filesystem.h>
-#include <engine/iserverplugin.h>
-#include <dlls/iplayerinfo.h>
+#include <iserverplugin.h>
+#include <iplayerinfo.h>
 #include <eiface.h>
 #include <igameevents.h>
 #include <convar.h>
 #include <Color.h>
-#include <vstdlib/random.h>
-#include <engine/IEngineTrace.h>
+#include <random.h>
+#include <IEngineTrace.h>
 #include <ivoiceserver.h>
+
+#if defined ORANGE_BOX
+#include <tier2/tier2.h>
+#endif
+
 
 // Source hook initialization
 #include <sourcehook_impl.h>
 using namespace SourceHook;
-
-
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include <tier0/memdbgon.h>
@@ -94,7 +97,12 @@ public:
 	virtual void			SetCommandClient( int index );
 	virtual void			ClientSettingsChanged( edict_t *pEdict );
 	virtual PLUGIN_RESULT	ClientConnect( bool *bAllowConnect, edict_t *pEntity, const char *pszName, const char *pszAddress, char *reject, int maxrejectlen );
+#if defined ORANGE_BOX
+	virtual PLUGIN_RESULT	ClientCommand( edict_t *pEntity, const CCommand &args );
+	virtual void			OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *pPlayerEntity, EQueryCvarValueStatus eStatus, const char *pCvarName, const char *pCvarValue );
+#else
 	virtual PLUGIN_RESULT	ClientCommand( edict_t *pEntity );
+#endif
 	virtual PLUGIN_RESULT	NetworkIDValidated( const char *pszUserName, const char *pszNetworkID );
 
 	// IGameEventListener Interface

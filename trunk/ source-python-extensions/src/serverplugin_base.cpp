@@ -71,6 +71,12 @@ CEmptyServerPlugin::~CEmptyServerPlugin()
 //---------------------------------------------------------------------------------
 bool CEmptyServerPlugin::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn gameServerFactory )
 {
+
+#if defined ORANGE_BOX
+	ConnectTier1Libraries( &interfaceFactory, 1 );
+	ConnectTier2Libraries( &interfaceFactory, 1 );
+#endif
+
 	playerinfomanager = (IPlayerInfoManager *)gameServerFactory(INTERFACEVERSION_PLAYERINFOMANAGER,NULL);
 	if ( !playerinfomanager )
 	{
@@ -111,6 +117,10 @@ bool CEmptyServerPlugin::Load( CreateInterfaceFn interfaceFactory, CreateInterfa
 	
 	initializePython( pGameDir );
 
+#if defined ORANGE_BOX
+	ConVar_Register( 0 );
+#endif
+
 	return true;
 }
 
@@ -120,6 +130,13 @@ bool CEmptyServerPlugin::Load( CreateInterfaceFn interfaceFactory, CreateInterfa
 void CEmptyServerPlugin::Unload( void )
 {
 	gameeventmanager->RemoveListener( this ); // make sure we are unloaded from the event system
+
+#if defined ORANGE_BOX
+	ConVar_Unregister();
+	DisconnectTier2Libraries();
+	DisconnectTier1Libraries();
+#endif
+
 	Py_Finalize();
 }
 
@@ -142,7 +159,7 @@ void CEmptyServerPlugin::UnPause( void )
 //---------------------------------------------------------------------------------
 const char *CEmptyServerPlugin::GetPluginDescription( void )
 {
-	return "Eventscripts Extensions, your-name-here, 2009";
+	return "Source Python Extensions, your-name-here, 2009";
 }
 
 //---------------------------------------------------------------------------------
@@ -222,7 +239,11 @@ PLUGIN_RESULT CEmptyServerPlugin::ClientConnect( bool *bAllowConnect, edict_t *p
 //---------------------------------------------------------------------------------
 // Purpose: called when a client types in a command (only a subset of commands however, not CON_COMMAND's)
 //---------------------------------------------------------------------------------
+#if defined ORANGE_BOX
+PLUGIN_RESULT CEmptyServerPlugin::ClientCommand( edict_t *pEntity, const CCommand &args )
+#else
 PLUGIN_RESULT CEmptyServerPlugin::ClientCommand( edict_t *pEntity )
+#endif
 {
 	return PLUGIN_CONTINUE;
 }
@@ -246,12 +267,22 @@ void CEmptyServerPlugin::FireGameEvent( IGameEvent * event )
 //---------------------------------------------------------------------------------
 // Purpose: an example of how to implement a new command
 //---------------------------------------------------------------------------------
-CON_COMMAND( spe_version, "prints the version of the empty plugin" )
+CON_COMMAND( spe_version, "Prints the version of spe." )
 {
 	DevMsg( PLUGIN_VERSION );
 }
 
+#if defined ORANGE_BOX
+//---------------------------------------------------------------------------------
+// Purpose: called when a cvar value query is finished
+//---------------------------------------------------------------------------------
+void CEmptyServerPlugin::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *pPlayerEntity, EQueryCvarValueStatus eStatus, const char *pCvarName, const char *pCvarValue )
+{
+	// Do nothing
+}
+#endif
+
 //---------------------------------------------------------------------------------
 // Purpose: an example cvar
 //---------------------------------------------------------------------------------
-static ConVar empty_cvar("spe_version", "1.0.5c", 0, "Version of Source Python Extensions");
+static ConVar empty_cvar("spe_version_var", "1.0.6", 0, "Version of Source Python Extensions");

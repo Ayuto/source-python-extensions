@@ -157,7 +157,7 @@
 				InlineFunctionExpansion="0"
 				EnableIntrinsicFunctions="false"
 				FavorSizeOrSpeed="0"
-				AdditionalIncludeDirectories="C:\development\esx\src\sourcehook;&quot;C:\Silent Knights\src\public\dlls&quot;;&quot;C:\Silent Knights\src\public\tier2&quot;;&quot;C:\Silent Knights\src\public\tier1&quot;;&quot;C:\Silent Knights\src\public\tier0&quot;;&quot;C:\Silent Knights\src&quot;;&quot;C:\Silent Knights\src\public&quot;;&quot;C:\Silent Knights\src\tier1&quot;;&quot;C:\Silent Knights\src\dlls&quot;;C:\Python25\include"
+				AdditionalIncludeDirectories="C:\development\esx\src\sourcehook;&quot;C:\Silent Knights\src&quot;;&quot;C:\Silent Knights\src\public\engine&quot;;&quot;C:\Silent Knights\src\public\dlls&quot;;&quot;C:\Silent Knights\src\public\tier2&quot;;&quot;C:\Silent Knights\src\public\tier1&quot;;&quot;C:\Silent Knights\src\public\tier0&quot;;&quot;C:\Silent Knights\src\public\vstdlib&quot;;&quot;C:\Silent Knights\src\public&quot;;&quot;C:\Silent Knights\src\tier1&quot;;&quot;C:\Silent Knights\src\dlls&quot;;C:\Python25\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;serverplugin_emptyONLY"
 				StringPooling="true"
 				BasicRuntimeChecks="0"
@@ -264,12 +264,13 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/D &quot;ORANGE_BOX&quot;"
 				Optimization="0"
 				InlineFunctionExpansion="0"
 				EnableIntrinsicFunctions="false"
 				FavorSizeOrSpeed="0"
-				AdditionalIncludeDirectories="C:\development\esx\src\sourcehook;&quot;C:\Silent Knights\src\public\dlls&quot;;&quot;C:\Silent Knights\src\public\tier2&quot;;&quot;C:\Silent Knights\src\public\tier1&quot;;&quot;C:\Silent Knights\src\public\tier0&quot;;&quot;C:\Silent Knights\src&quot;;&quot;C:\Silent Knights\src\public&quot;;&quot;C:\Silent Knights\src\tier1&quot;;&quot;C:\Silent Knights\src\dlls&quot;;C:\Python25\include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;serverplugin_emptyONLY"
+				AdditionalIncludeDirectories="C:\development\esx\src\sourcehook;C:\orangebox\public\game;C:\orangebox\public\engine;C:\orangebox\public\game\server;C:\orangebox\public\tier2;C:\orangebox\public\vstdlib;C:\orangebox\public\tier1;C:\orangebox\public\tier0;C:\orangebox;C:\orangebox\public;C:\orangebox\tier1;C:\Python25\include"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;serverplugin_emptyONLY;ORANGE_BOX"
 				StringPooling="true"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="0"
@@ -302,7 +303,7 @@
 				ShowProgress="0"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;C:\Silent Knights\src\dlls&quot;;&quot;C:\Silent Knights\src\public&quot;;&quot;C:\Silent Knights\src\tier1&quot;;C:\Python25\libs"
+				AdditionalLibraryDirectories="C:\orangebox\lib\public;C:\Python25\libs"
 				IgnoreDefaultLibraryNames="msvcrt.lib"
 				DelayLoadDLLs="python25.dll"
 				GenerateDebugInformation="true"
@@ -502,22 +503,122 @@
 				RelativePath=".\dyncall\buildsys\vs2005\release\dyncall.lib"
 				>
 			</File>
-			<File
-				RelativePath="..\..\..\Silent Knights\src\lib\public\mathlib.lib"
+			<Filter
+				Name="OB Libs"
 				>
-			</File>
-			<File
-				RelativePath="..\..\..\Silent Knights\src\lib\public\tier0.lib"
+				<File
+					RelativePath="..\..\..\orangebox\lib\public\tier0.lib"
+					>
+					<FileConfiguration
+						Name="Release|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\orangebox\lib\public\tier1.lib"
+					>
+					<FileConfiguration
+						Name="Release|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\orangebox\lib\public\tier2.lib"
+					>
+					<FileConfiguration
+						Name="Release|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\orangebox\lib\public\tier3.lib"
+					>
+					<FileConfiguration
+						Name="Release|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\orangebox\lib\public\vstdlib.lib"
+					>
+					<FileConfiguration
+						Name="Release|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
+				</File>
+			</Filter>
+			<Filter
+				Name="EP1 Libs"
 				>
-			</File>
-			<File
-				RelativePath="..\..\..\Silent Knights\src\lib\public\tier1.lib"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\Silent Knights\src\lib\public\vstdlib.lib"
-				>
-			</File>
+				<File
+					RelativePath="..\..\..\Silent Knights\src\lib\public\tier0.lib"
+					>
+					<FileConfiguration
+						Name="OrangeBox|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\Silent Knights\src\lib\public\tier1.lib"
+					>
+					<FileConfiguration
+						Name="OrangeBox|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\Silent Knights\src\lib\public\tier2.lib"
+					>
+					<FileConfiguration
+						Name="OrangeBox|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\Silent Knights\src\lib\public\vstdlib.lib"
+					>
+					<FileConfiguration
+						Name="OrangeBox|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Dyncall"

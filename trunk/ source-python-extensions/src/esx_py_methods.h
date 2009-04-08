@@ -41,8 +41,6 @@ PyObject* esx_FindSymbol( PyObject* self, PyObject* args );
 PyObject* esx_CallFunction( PyObject* self, PyObject* args );
 PyObject* esx_SetCallingConvention( PyObject* self, PyObject* args );
 PyObject* esx_RipPointer( PyObject* self, PyObject* args );
-PyObject* esx_MutePlayer( PyObject* self, PyObject* args);
-PyObject* esx_UnMutePlayer( PyObject* self, PyObject* args );
 PyObject* esx_PreHookEvent( PyObject* self, PyObject* args );
 PyObject* esx_UnHookEvent( PyObject* self, PyObject* args );
 

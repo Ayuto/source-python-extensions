@@ -34,6 +34,12 @@
 #include <dlfcn.h>
 #endif
 
+//Does error handling for us
+#define SPE_PY_EXCEPTION( reason ) \
+	DevMsg( reason ); \
+	PyErr_SetString(NULL, reason ); \
+	return NULL;
+
 /* A new call VM */
 DCCallVM* vm = dcNewCallVM( 4096 );
 
@@ -46,12 +52,16 @@ PyObject* esx_GetPlayerPtr( PyObject* self, PyObject* args )
 
 	if( !PyArg_ParseTuple( args, "i", &userid ) )
 	{
-		DevMsg("[SPE] Could not parse tuple in GetPlayerPtr!\n");
-		return NULL;
+		SPE_PY_EXCEPTION( "[SPE] Could not parse tuple in esx_GetPlayerPtr!\n" );
 	}
 
 	void* ent = gPlayerManager->GetPlayerByUserID(userid)->GetUnknown()->GetBaseEntity();
-	DevMsg("[SPE] Player pointer: %i\n", ent);
+
+	if( !ent )
+	{
+		SPE_PY_EXCEPTION( "[SPE] The entity was null in esx_GetPlayerPtr!\n" );
+	}
+
 	return PyCObject_FromVoidPtr( ent, NULL );
 }
 
@@ -65,15 +75,16 @@ PyObject* esx_FindFuncPtr( PyObject* self, PyObject* args )
 
 	if( !PyArg_ParseTuple( args, "Si", &p, &length ) )
 	{
-		DevMsg("[SPE] Could not parse tuple in FindFuncPtr\n");
-		return NULL;
+		SPE_PY_EXCEPTION( "[SPE] Could not parse tuple in esx_FindfuncPtr!\n" );
 	}
 
 	void* addr = gSigger->findFunction( PyString_AsString(p), length );
 	DevMsg("[SPE] Function ptr: %i\n", addr);
 	
 	if( !addr )
-		return NULL;
+	{
+		SPE_PY_EXCEPTION( "[SPE] Error! Could not find signature!" )
+	}
 	
 	return PyCObject_FromVoidPtr( addr , NULL );
 }
@@ -87,8 +98,7 @@ PyObject* esx_SetCallingConvention( PyObject* self, PyObject* args )
 
 	if( !PyArg_ParseTuple( args, "s", &conv ) )
 	{
-		DevMsg("[SPE] Could not parse tuple in SetCallingConvention!\n");
-		return Py_BuildValue("");
+		SPE_PY_EXCEPTION( "[SPE] Could not parse tuple in esx_SetCallingConvention!\n" )
 	}
 
 	dcReset( vm );
@@ -100,8 +110,6 @@ PyObject* esx_SetCallingConvention( PyObject* self, PyObject* args )
 		#else
 			dcMode( vm, DC_CALL_C_X86_WIN32_THIS_GNU );
 		#endif
-
-		return Py_BuildValue("");
 	}
 
 	else if( strcmp( conv, "fastcall" ) == 0 )
@@ -111,23 +119,19 @@ PyObject* esx_SetCallingConvention( PyObject* self, PyObject* args )
 		#else
 			dcMode( vm, DC_CALL_C_X86_WIN32_FAST_GNU);
 		#endif
-
-		return Py_BuildValue("");
 	}
 
 	else if( strcmp( conv, "cdecl" ) == 0 )
 	{
 		dcMode( vm, DC_CALL_C_DEFAULT );
-		return Py_BuildValue("");
 	}
 
 	else
 	{
-		DevMsg("[SPE] Unknown calling convention type!\n");
-		return NULL;
+		SPE_PY_EXCEPTION( "[SPE] Unknown calling convention type!\n" );
 	}
 
-	return NULL;
+	return Py_BuildValue("");
 }
 
 //=============================================================================
@@ -136,8 +140,7 @@ PyObject* esx_SetCallingConvention( PyObject* self, PyObject* args )
 PyObject* esx_FindSymbol( PyObject* self, PyObject* args )
 {
 	#ifdef _WIN32
-		DevMsg("[SPE]: You cannot use this function on windows!\n");
-		return Py_BuildValue("");
+		SPE_PY_EXCEPTION("[SPE]: You cannot use this function on windows!\n");
 	#else
 		/* Path to the game dir */
 		char szGameDir[2048];
@@ -163,8 +166,7 @@ PyObject* esx_FindSymbol( PyObject* self, PyObject* args )
 
 		if( !PyArg_ParseTuple( args, "s", &nix_symbol ) )
 		{
-			DevMsg("[SPE]: esx_FindSymbol: Couldn't parse the symbol!\n");
-			return NULL;
+			SPE_PY_EXCEPTION("[SPE]: esx_FindSymbol: Couldn't parse the symbol!\n");
 		}
 
 		/* Find the address of the symbol */
@@ -194,8 +196,7 @@ PyObject* esx_RipPointer( PyObject* self, PyObject* args )
 
 	if( !PyArg_ParseTuple(args, "Oi", &func_ptr, &offset) )
 	{
-		Msg("[SPE]: Error parsing tuple in esx_RipPointer!\n");
-		return NULL;
+		SPE_PY_EXCEPTION("[SPE]: Error parsing tuple in esx_RipPointer!\n");
 	}
 
 	addr = PyCObject_AsVoidPtr( func_ptr );
@@ -206,7 +207,7 @@ PyObject* esx_RipPointer( PyObject* self, PyObject* args )
 		return Py_BuildValue("O", PyCObject_FromVoidPtr( new_this, NULL ));
 	}	
 
-	return Py_BuildValue("");
+	SPE_PY_EXCEPTION( "[SPE]: Could not rip out the pointer!\n" )
 }
 
 //=============================================================================
@@ -225,8 +226,7 @@ PyObject* esx_CallFunction( PyObject* self, PyObject* args )
 
 	if( !PyArg_ParseTuple( args, "OsO", &func_ptr, &signature, &func_args ) )
 	{
-		DevMsg("[SPE] Error parsing out function args, signature, and pointer!\n");
-		return NULL;
+		SPE_PY_EXCEPTION("[SPE] Error parsing out function args, signature, and pointer!\n");
 	}
 
 	/* Parse out the function pointer */
@@ -235,8 +235,7 @@ PyObject* esx_CallFunction( PyObject* self, PyObject* args )
 	/* Make sure it's valid */
 	if( !function_pointer )
 	{
-		DevMsg("[SPE] The function pointer is NULL!\n");
-		return NULL;
+		SPE_PY_EXCEPTION("[SPE] The function pointer is NULL!\n");
 	}
 
 	/* Make sure to flush the VM */
@@ -278,8 +277,7 @@ PyObject* esx_CallFunction( PyObject* self, PyObject* args )
 
 				if (l != 1)
 				{
-					DevMsg("[SPE] String mismatch. Expected a string!");
-					return NULL;
+					SPE_PY_EXCEPTION("[SPE] String mismatch. Expected a string!");
 				}
 
 				s = PyString_AsString(arg);          
@@ -296,8 +294,7 @@ PyObject* esx_CallFunction( PyObject* self, PyObject* args )
 
 				if ( (v < SHRT_MIN) || (v > SHRT_MAX) )
 				{
-					DevMsg( "[SPE] CallFunction: value out of range at argument %d - expecting a short value\n" );
-					return NULL;
+					SPE_PY_EXCEPTION( "[SPE] CallFunction: value out of range at argument %d - expecting a short value\n" );
 				}
 
 				s = (DCshort) v;
@@ -338,9 +335,7 @@ PyObject* esx_CallFunction( PyObject* self, PyObject* args )
 
 			default:
 			{
-				DevMsg("[SPE] Unknown char signature!\n");
-				return NULL;
-			
+				SPE_PY_EXCEPTION("[SPE] Unknown char signature!\n");
 			} break;
 		}
 
@@ -350,14 +345,12 @@ PyObject* esx_CallFunction( PyObject* self, PyObject* args )
 
 	if (pos != size)
 	{
-		DevMsg("[SPE] pos != size!\n");
-		return NULL;
+		SPE_PY_EXCEPTION("[SPE] pos != size!\n");
 	}
 
 	if (ch == '\0')
 	{
-		DevMsg("[SPE] ch == null terminated\n");
-		return NULL;
+		SPE_PY_EXCEPTION("[SPE] ch == null terminated\n");
 	}
 
 	ch = *++ptr;
@@ -380,10 +373,7 @@ PyObject* esx_CallFunction( PyObject* self, PyObject* args )
 			/* Is it valid*/
 			if( !ptr )
 			{
-				DevMsg("[SPE]Your function has returned a null pointer.\n");
-		
-				/* Return None */
-				return Py_BuildValue("");
+				SPE_PY_EXCEPTION("[SPE]Your function has returned a null pointer.\n");
 			}
 		
 			/* Assign it to p otherwise */
@@ -392,7 +382,7 @@ PyObject* esx_CallFunction( PyObject* self, PyObject* args )
 			break;
 		}
 	
-	default:  DevMsg("[SPE] Invalid p = type signature.\n" ); p = NULL; break;
+	default:  SPE_PY_EXCEPTION("[SPE] Invalid p = type signature.\n" ); break;
 	}
 
 	return p;
@@ -408,14 +398,12 @@ PyObject* esx_PreHookEvent( PyObject* self, PyObject* args )
 
 	if( !PyArg_ParseTuple(args, "sO", &szEventName, &function) )
 	{
-		Msg("[SPE]: Could not parse out objects for esx_preHookEvent!\n");
-		return NULL;
+		SPE_PY_EXCEPTION("[SPE]: Could not parse out objects for esx_preHookEvent!\n");
 	}
 
 	if( !PyCallable_Check( function ) )
 	{
-		Msg("[SPE]: Can't call function!\n");
-		return Py_BuildValue("");
+		SPE_PY_EXCEPTION("[SPE]: Can't call function!\n");
 	}
 
 	//Hook the event
@@ -433,8 +421,7 @@ PyObject* esx_UnHookEvent( PyObject* self, PyObject* args )
 
 	if( !PyArg_ParseTuple(args, "sO", &szEventName, &function) )
 	{
-		Msg("[SPE]: Could not parse out objects for esx_UnHookPreEvent!\n");
-		return NULL;
+		SPE_PY_EXCEPTION("[SPE]: Could not parse out objects for esx_UnHookPreEvent!\n");
 	}
 
 	//Unhook the event.

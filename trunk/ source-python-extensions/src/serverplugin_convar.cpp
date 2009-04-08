@@ -38,7 +38,7 @@ class CPluginConVarAccessor : public IConCommandBaseAccessor
 public:
 	virtual bool	RegisterConCommandBase( ConCommandBase *pCommand )
 	{
-#if defined ORANGE_BOX
+#if defined ORANGE_BOX || defined ENGINE_LEFT4DEAD 
 		pCommand->AddFlags( FCVAR_NONE );
 #else
 		pCommand->AddFlags( FCVAR_PLUGIN );
@@ -58,7 +58,7 @@ CPluginConVarAccessor g_ConVarAccessor;
 
 void InitCVars( CreateInterfaceFn cvarFactory )
 {
-#if defined ORANGE_BOX
+#if defined ORANGE_BOX || defined ENGINE_LEFT4DEAD 
 	s_pCVar = (ICvar*)cvarFactory( CVAR_INTERFACE_VERSION, NULL );
 #else
 	s_pCVar = (ICvar*)cvarFactory( VENGINE_CVAR_INTERFACE_VERSION, NULL );
@@ -66,7 +66,7 @@ void InitCVars( CreateInterfaceFn cvarFactory )
 
 	if ( s_pCVar )
 	{
-#if defined ORANGE_BOX
+#if defined ORANGE_BOX || defined ENGINE_LEFT4DEAD 
 		ConVar_Register(0, &g_ConVarAccessor);
 #else
 		ConCommandBaseMgr::OneTimeInit( &g_ConVarAccessor );

@@ -40,7 +40,12 @@
 class CGlobalManager
 {
 	public:
-		CGlobalManager( IVEngineServer *pEngine, IPlayerInfoManager *pInfoManager, IVoiceServer* pVoice, CSPEHookManager* HookMan, IFileSystem* pSys);
+		CGlobalManager( IVEngineServer *pEngine, 
+			IPlayerInfoManager *pInfoManager, 
+			IVoiceServer* pVoice, 
+			CSPEHookManager* HookMan, 
+			IFileSystem* pSys);
+
 		IVEngineServer* m_Engine;
 		IPlayerInfoManager* m_Info;
 		IVoiceServer* m_Voice;

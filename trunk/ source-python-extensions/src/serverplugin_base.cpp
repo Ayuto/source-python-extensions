@@ -72,7 +72,7 @@ CEmptyServerPlugin::~CEmptyServerPlugin()
 bool CEmptyServerPlugin::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn gameServerFactory )
 {
 
-#if defined ORANGE_BOX
+#if defined ORANGE_BOX || defined ENGINE_LEFT4DEAD 
 	ConnectTier1Libraries( &interfaceFactory, 1 );
 	ConnectTier2Libraries( &interfaceFactory, 1 );
 #endif
@@ -117,7 +117,7 @@ bool CEmptyServerPlugin::Load( CreateInterfaceFn interfaceFactory, CreateInterfa
 	
 	initializePython( pGameDir );
 
-#if defined ORANGE_BOX
+#if defined ORANGE_BOX || defined ENGINE_LEFT4DEAD 
 	ConVar_Register( 0 );
 #endif
 
@@ -131,7 +131,7 @@ void CEmptyServerPlugin::Unload( void )
 {
 	gameeventmanager->RemoveListener( this ); // make sure we are unloaded from the event system
 
-#if defined ORANGE_BOX
+#if defined ORANGE_BOX || defined ENGINE_LEFT4DEAD 
 	ConVar_Unregister();
 	DisconnectTier2Libraries();
 	DisconnectTier1Libraries();
@@ -239,7 +239,7 @@ PLUGIN_RESULT CEmptyServerPlugin::ClientConnect( bool *bAllowConnect, edict_t *p
 //---------------------------------------------------------------------------------
 // Purpose: called when a client types in a command (only a subset of commands however, not CON_COMMAND's)
 //---------------------------------------------------------------------------------
-#if defined ORANGE_BOX
+#if defined ORANGE_BOX || defined ENGINE_LEFT4DEAD 
 PLUGIN_RESULT CEmptyServerPlugin::ClientCommand( edict_t *pEntity, const CCommand &args )
 #else
 PLUGIN_RESULT CEmptyServerPlugin::ClientCommand( edict_t *pEntity )
@@ -272,7 +272,7 @@ CON_COMMAND( spe_version, "Prints the version of spe." )
 	DevMsg( PLUGIN_VERSION );
 }
 
-#if defined ORANGE_BOX
+#if defined ORANGE_BOX || defined ENGINE_LEFT4DEAD 
 //---------------------------------------------------------------------------------
 // Purpose: called when a cvar value query is finished
 //---------------------------------------------------------------------------------
@@ -285,4 +285,4 @@ void CEmptyServerPlugin::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, ed
 //---------------------------------------------------------------------------------
 // Purpose: an example cvar
 //---------------------------------------------------------------------------------
-static ConVar empty_cvar("spe_version_var", "1.0.6", 0, "Version of Source Python Extensions");
+static ConVar version_cvar("spe_version_var", "1.1.0", 0, "Version of Source Python Extensions");

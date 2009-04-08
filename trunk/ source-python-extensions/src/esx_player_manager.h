@@ -29,6 +29,7 @@
 
 #include <eiface.h>
 #include <iplayerinfo.h>
+#include "esx_globals.h"
 
 class CPlayerManager
 {
@@ -39,11 +40,23 @@ class CPlayerManager
 		/* Returns the edict of a player */
 		edict_t* GetPlayerByUserID( int userid );
 
-		/* Mutes a player */
-		void MutePlayer(int userid);
 
-		/* Unmutes a player */
-		void UnMutePlayer(int userid);
+#if defined( ENGINE_LEFT4DEAD )
+		inline int IndexOfEdict(const edict_t *pEdict)
+		{
+			return (int)(pEdict - gGlobals->m_Info->GetGlobalVars()->baseEdict);
+		}
+		
+		inline edict_t *PEntityOfEntIndex(int iEntIndex)
+		{
+			if (iEntIndex >= 0 && iEntIndex < gGlobals->m_Info->GetGlobalVars()->maxEntities)
+			{
+				return (edict_t *)(gGlobals->m_Info->GetGlobalVars()->baseEdict + iEntIndex);
+			}
+			return NULL;
+		}
+#endif
+
 };
 
 extern CPlayerManager* gPlayerManager;

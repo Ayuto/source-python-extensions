@@ -45,7 +45,11 @@ edict_t* CPlayerManager::GetPlayerByUserID(int userid)
 {
 	for(int i = 0; i < gGlobals->m_Info->GetGlobalVars()->maxClients; i++)
 	{
+#if defined( ENGINE_LEFT4DEAD )
+		edict_t* player = PEntityOfEntIndex(i);
+#else
 		edict_t* player = gGlobals->m_Engine->PEntityOfEntIndex(i);
+#endif
 
 		if(!player || player->IsFree())
 			continue;
@@ -58,43 +62,4 @@ edict_t* CPlayerManager::GetPlayerByUserID(int userid)
 	}
 
 	return NULL;
-}
-
-//=============================================================================
-// >> Mutes a player
-//=============================================================================
-void CPlayerManager::MutePlayer( int userid )
-{
-	//Get the person to be muted index
-	edict_t* pPlayer = GetPlayerByUserID( userid );
-	int iIndex = gGlobals->m_Engine->IndexOfEdict( pPlayer );
-
-	for( int i = 0; i < gGlobals->m_Info->GetGlobalVars()->maxClients; i++ )
-	{
-		//Now loop through everyone and mute them
-		edict_t* pOtherPlayer = gGlobals->m_Engine->PEntityOfEntIndex( i );
-		int iOtherIndex = gGlobals->m_Engine->IndexOfEdict( pOtherPlayer );
-
-		//Mute them
-		gGlobals->m_Voice->SetClientListening( iOtherIndex, iIndex, false );
-	}
-}
-
-//=============================================================================
-// >> Unmutes a player
-//=============================================================================
-void CPlayerManager::UnMutePlayer( int userid )
-{
-	edict_t* pPlayer = GetPlayerByUserID( userid );
-
-	int iIndex = gGlobals->m_Engine->IndexOfEdict( pPlayer );
-
-	for( int i = 0; i < gGlobals->m_Info->GetGlobalVars()->maxClients; i++ )
-	{
-		edict_t* pOtherPlayer = gGlobals->m_Engine->PEntityOfEntIndex( i );
-		int iOtherIndex = gGlobals->m_Engine->IndexOfEdict( pOtherPlayer );
-
-		//Unmute them to this player
-		gGlobals->m_Voice->SetClientListening( iOtherIndex, iIndex, true );
-	}
 }

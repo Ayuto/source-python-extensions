@@ -7,6 +7,7 @@ SRCDS_BASE = ~/srcds_l
 ### ADD OTHER SDKS HERE ###
 ###########################
 HL2SDK_OB = ../../../hl2sdk-ob
+HL2SDK_L4D = ../../../hl2sdk-l4d
 HL2SDK_EP1 = ../../../hl2sdk
 
 ####################
@@ -31,18 +32,9 @@ GCC4_FLAGS = -fvisibility=hidden -fvisibility-inlines-hidden
 DEBUG_FLAGS = -g -ggdb3
 CPP = /usr/bin/gcc34
 
-#######################
-### LINKING OPTIONS ###
-#######################
-LINK = $(HL2LIB)/tier1_i486.a  \
-	vstdlib_i486.so \
-	tier0_i486.so \
-	/usr/lib/gcc/i386-redhat-linux/3.4.6/libstdc++.a \
-	/usr/lib/gcc/i386-redhat-linux/3.4.6/libgcc_eh.a \
-	libpython2.5.so.1.0 \
-	libdyncall_s.a \
-	libdynload_s.a -static-libgcc
-
+###########################
+### INCLUDE DIRECTORIES ###
+###########################
 INCLUDE = -I. \
 	-I$(HL2PUB) \
 	-I$(HL2PUB)/dlls \
@@ -68,6 +60,21 @@ endif
 #################################
 override ENGSET = false
 
+# Using the Left4Dead engine?
+ifeq "$(ENGINE)" "l4d"
+ HL2SDK = $(HL2SDK_L4D)
+ HL2PUB = $(HL2SDK_L4D)/public
+ HL2LIB = $(HL2SDK_L4D)/lib/linux
+ INCLUDE += -I$(HL2PUB)/game/server
+ SRCDS = $(SRCDS_BASE)/orangebox
+ BINARY = sp_extensions_l4d_i486.so
+ CFLAGS += -DORANGE_BOX -DENGINE_LEFT4DEAD
+ LINK += $(HL2LIB)/tier2_i486.a \
+	$(HL2LIB)/tier3_i486.a \
+	-lstdc++
+ override ENGSET = true
+endif
+
 # Using the OB engine?
 ifeq "$(ENGINE)" "orangebox"
  HL2SDK = $(HL2SDK_OB)
@@ -76,8 +83,6 @@ ifeq "$(ENGINE)" "orangebox"
  INCLUDE += -I$(HL2PUB)/game/server
  SRCDS = $(SRCDS_BASE)/orangebox
  BINARY = sp_extensions_ep2_i486.so
- LINK += $(HL2LIB)/tier2_i486.a \
-         $(HL2LIB)/tier3_i486.a
  CFLAGS += -DORANGE_BOX 
  override ENGSET = true
 endif
@@ -91,6 +96,20 @@ ifeq "$(ENGINE)" "ep1"
  BINARY = sp_extensions_ep1_i486.so
  override ENGSET = true
 endif
+
+#######################
+### LINKING OPTIONS ###
+#######################
+LINK += $(HL2LIB)/tier1_i486.a \
+	vstdlib_i486.so \
+	tier0_i486.so \
+	/usr/lib/gcc/i386-redhat-linux/3.4.6/libstdc++.a \
+	/usr/lib/gcc/i386-redhat-linux/3.4.6/libgcc_eh.a \
+	libpython2.5.so.1.0 \
+	libdyncall_s.a \
+	libdynload_s.a -static-libgcc
+
+LINK += -Wl,--rpath,\$$ORIGIN/eventscripts/_engines/python/Lib/plat-linux2
 
 GCC_VERSION := $(shell $(CPP) -dumpversion >&1 | cut -b1)
 
@@ -116,11 +135,9 @@ all: check
 	$(MAKE) sourcemm
 	rm -rf $(BINARY)
 
-LINK += -Wl,--rpath,\$$ORIGIN/eventscripts/_engines/python/Lib/plat-linux2 
-
 check:
 	if [ "$(ENGSET)" = "false" ]; then \
-		echo "You must supply ENGINE=orangebox or ENGINE=ep1"; \
+		echo "You must supply ENGINE=orangebox or ENGINE=ep1 or ENGINE=l4d."; \
 		exit 1; \
 	fi
 

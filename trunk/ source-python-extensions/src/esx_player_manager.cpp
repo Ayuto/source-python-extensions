@@ -45,7 +45,7 @@ edict_t* CPlayerManager::GetPlayerByUserID(int userid)
 {
 	for(int i = 0; i < gGlobals->m_Info->GetGlobalVars()->maxClients; i++)
 	{
-#if defined( ENGINE_LEFT4DEAD )
+#if defined ENGINE_LEFT4DEAD
 		edict_t* player = PEntityOfEntIndex(i);
 #else
 		edict_t* player = gGlobals->m_Engine->PEntityOfEntIndex(i);

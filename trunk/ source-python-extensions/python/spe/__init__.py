@@ -6,25 +6,24 @@
 #================================================================================
 # Imports
 #================================================================================
-# EventScripts Imports
-import es
-
-# Source-Python Extensions Imports
-from esx_C import *
-
 # Python Imports
 from os import name as platform
 from configobj import ConfigObj
 import binascii
 import os
 
+# EventScripts Imports
+import es
+
+# SPE Imports
+from esx_C import *
+from spe.games.shared import *
+
 #================================================================================
-# Globals
+# Global variables
 #================================================================================
-gSignatureDictionary = {}
-__version__ = '1.0.5c'
+__version__ = '1.1.0a'
 es.ServerVar('spe_version', __version__).makepublic()
-gamePathName = str(os.path.split(str(es.ServerVar('eventscripts_gamedir')))[1])
 
 #================================================================================
 # Exceptions
@@ -34,6 +33,10 @@ class InvalidFunctionNameException(Exception):
 
 class ConventionError(Exception):
     pass
+
+#================================================================================
+# >> Classes
+#================================================================================
 
 #================================================================================
 # >> Signature Class
@@ -81,94 +84,177 @@ class Signature(object):
         self.convention = str(convention)
             
     def call(self, args=()):
-        # Convert the arguments to a tuple
-        if not isinstance(args, tuple):
-            args = (args,)
-            
+
         # Set the calling convention
         setCallingConvention(self.convention)
         
         # Call the function and return the results
-        return callFunction(self.function, self.param_format, args)
+        return callFunction(self.function, self.param_format, *args)
+        
+#================================================================================
+# >> SPE Manager class
+#================================================================================
+class CSPEManager(object):
+    '''
+    This class is the main SPE module manager.
+    Do not access any methods from this class directly.
+    Instead, use the exported functions down below.
+    '''
 
-#================================================================================
-# >> Parses an ini file and adds the signatures to a dictionary.
-#================================================================================
-def ParseSignatures( ini_name ):
-    # Get gamedirectory
-    gamedir = es.ServerVar('eventscripts_gamedir')
+
+    def __init__(self):
+        # Setup the game name
+        self.game_name = str(os.path.split(str(es.ServerVar('eventscripts_gamedir')))[1])
+        
+        # Setup signature dictionary
+        self.Signatures = {}
+
+        # Initialize SPE
+        self.initializeSPE()
+        
+    def initializeSPE(self):
+        '''
+        Parses shared and game-specific signatures from the ini files.
+        Loads up the game specific module so it can be used by SPE.
+        '''
+        # Setup signatures
+        self.parseINI("_libs/python/spe/ini/shared.ini")
+        self.parseINI("_libs/python/spe/ini/%s.ini" % self.game_name)
+        
+        # Import game module
+        self.loadModule("spe.games.%s" % self.game_name)
+     
+    def parseINI(self, path):
+        '''
+        Parses signatures from an INI file.
+        '''
+        gamedir = es.ServerVar("eventscripts_gamedir")
     
-    # Create an INI object!
-    INI = ConfigObj('%s/addons/eventscripts/_libs/python/spe/ini/%s.ini' % (gamedir, ini_name))
+        # Create an INI object!
+        INI = ConfigObj('%s/addons/eventscripts/%s' % (gamedir, path))
     
-    # Loop through each section in the INI
-    for section in INI:
-        # Loop through each key in the section of the INI
-        for key in INI[section]:
-            # Check to see if the OS is Windows
-            if platform == 'nt':
-                # If the signature contains spaces, convert the signature to proper readable form
-                if ' ' in INI[section]['sig']:
-                    sig = binascii.unhexlify(''.join(INI[section]['sig'].split()))
-                # If there are no spaces, read the signature as-is
+        # Loop through each section in the INI
+        for section in INI:
+            # Loop through each key in the section of the INI
+            for key in INI[section]:
+                # Check to see if the OS is Windows
+                if platform == 'nt':
+                    # If the signature contains spaces, convert the signature to proper readable form
+                    if ' ' in INI[section]['sig']:
+                        sig = binascii.unhexlify(''.join(INI[section]['sig'].split()))
+                    # If there are no spaces, read the signature as-is
+                    else:
+                        sig = INI[section]['sig']
+
+                    # Add the signature to the gSignatureDictionary as a Signature() instance via the INI's "shortname"
+                    self.Signatures[INI[section]['shortname']] = Signature(sig, INI[section]['param'], INI[section]['convention'])
+            
+                # If the OS is UNIX, add the symbol to the gSignatureDictionary as a Signature() instance via the INI's "shortname"
                 else:
-                    sig = INI[section]['sig']
-                # Add the signature to the gSignatureDictionary as a Signature() instance via the INI's "shortname"
-                gSignatureDictionary[INI[section]['shortname']] = Signature(sig, INI[section]['param'], INI[section]['convention'])
-            # If the OS is UNIX, add the symbol to the gSignatureDictionary as a Signature() instance via the INI's "shortname"
-            else:
-                gSignatureDictionary[INI[section]['shortname']] = Signature(INI[section]['symbol'], INI[section]['param'], INI[section]['convention'])
+                    self.Signatures[INI[section]['shortname']] = Signature(INI[section]['symbol'], INI[section]['param'], INI[section]['convention'])
+
+    def moduleExists(self, module_name ):
+        '''
+        Tests to see if a particular module can be imported.
+        '''
+        try:
+            mod = __import__(module_name)
+        except ImportError:
+            return False
+        else:
+            return True
+            
+    def loadModule(self, module_name ):
+        '''
+        - Written by XE_ManUp! -
+        
+        ** THIS FUNCTION IS HIGHLY UNPYTHONIC **
+        
+        This basically takes all of the methods and class instances
+        within the module of module_name and adds them to SPE.
+        This way, you can call functions within that module
+        directly from SPE. Example: spe.<functionInModule>(args).
+        '''
+        import inspect
+    
+        if self.moduleExists(module_name):
+            mod = __import__(module_name, globals(), locals(), [''])
+            for item in mod.__dict__:
+                if callable(mod.__dict__[item]) or inspect.isclass(mod.__dict__[item]):
+                    globals()[item] = mod.__dict__[item]
+                elif mod.__dict__.has_key(type(mod.__dict__[item]).__name__):
+                    if inspect.isclass(mod.__dict__[type(mod.__dict__[item]).__name__]):
+                        globals()[item] = mod.__dict__[item]
+
+    def call(self, name, *args):
+        '''
+        Calls a function that is already in the global signature
+            dictionary. These functions must be present within either
+            the shared.ini or the mod specific ini file. The name
+            parameter corresponds to the shortname of the function
+            in the ini file.
+        '''
+        
+        # If the function name is not found
+        if not self.Signatures.has_key(name):
+            # Raise an exception
+            raise InvalidFunctionNameException("Could not find %s in the dictionary!" % name)
+    
+        # Otherwise, call the function using the Signature() instance contained within the self.Signatures via the function name
+        return self.Signatures[name].call(args)
+
+gSPE = CSPEManager()
 
 #================================================================================
-# >> Initializes Signatures
+# >> Exported functions
 #================================================================================
-def InitializeSignatures():
-    # Load the global INI first
-    ParseSignatures('shared')
-    
-    # Load the game specific INI
-    ParseSignatures(gamePathName)
-    
-# Initialize the signatures
-InitializeSignatures()
+def loadModule( module_name ):
+    '''
+    Puts the methods and class instances within module_name
+    into SPE's module, allowing for direct calling of module
+    specific functions by just using the spe module. (See above.)
+    '''
+    gSPE.loadModule( module_name )
 
-#================================================================================
-# >> Calls a function
-#================================================================================
-def Call(name, *args):
-    # Make sure the argument is a tuple
-    if not isinstance(args, tuple):
-        args = (args,)
+def parseINI( path ):
+    '''
+    This function parses signatures from an INI file.
+    Path represents the path to the INI file, with the
+    base being cstrike/addons/eventscripts/. You must
+    put in the .ini extension manually into the path.
+    It is not done for you.
+    '''
+    gSPE.parseINI( path )
+    
+def call( name, *args ):
+    '''
+    Calls a sigscanned function based upon its shortname
+    in the INI file. args of course are the arguments to
+    said function.
+    '''
+    gSPE.call( name, args )
+    
+def getPointer( signature, offset ):
+    '''
+    This function is very low level. It allows one to rip
+    out C++ class instances directly from memory which are
+    not normally accessible by server plugins. The signature
+    parameter (which requires that the signature that is
+    passed in uses hex escape characters) is the signature
+    of the function that the instance is referenced in. The
+    offset parameter is the number of bytes away from the
+    beginning of the signature that the instance itself
+    is referenced at (the beginning of the address bytes
+    of the instance).
+    
+    IF YOU DO NOT KNOW WHAT YOU ARE DOING, DON'T USE THIS!
+    '''
+    
+    # Find the function
+    pFunc = findFunction(signature, len(signature.decode('string_escape')))
+    
+    # Rip the pointer
+    return ripPointer(pFunc, offset)
+    
+    
 
-    # If the function name is not found
-    if not gSignatureDictionary.has_key(name):
-        # Raise an exception
-        raise InvalidFunctionNameException("Could not find %s in the dictionary!" % name)
-    
-    # Otherwise, call the function using the Signature() instance contained within the gSignatureDictionary via the function name
-    return gSignatureDictionary[name].call(args)
-
-#================================================================================
-# >> Calls a function shortcut
-#================================================================================
-def CallShortcut(function, *args):
-    # Import the mod-specific module
-    mod = __import__('spe.games.%s' %gamePathName, fromlist=['games'])
-    
-    # Import the shared module
-    shared = __import__('spe.games.shared', fromlist=['games'])
-    
-    # Attempt to call the "mod" function
-    if mod.__dict__.has_key(function):
-        if not callable(mod.__dict__[function]):
-            return
-        mod.__dict__[function](*args)
-    # Attempt to call the "shared" function
-    elif shared.__dict__.has_key(function):
-        if not callable(shared.__dict__[function]):
-            return
-        shared.__dict__[function](*args)
-    # No function found
-    else:
-        raise InvalidFunctionNameException('"%s" function not found in the "shared" or "%s" function list.'
-            %(str(function), gamePathName))

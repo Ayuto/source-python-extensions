@@ -9,59 +9,53 @@
 import spe
 
 #================================================================================
-# Returns a player instance
-#================================================================================
-def GetPlayer( userid ):
-    return spe.getPlayer( int(userid) )
-
-#================================================================================
 # Creates an entity by name, and returns an instance to it.
 #================================================================================
-def CreateEntity( entity_name ):
+def createEntity( entity_name ):
     
     # Call the function
-    return spe.Call("CreateEntity", entity_name, -1) # Last parameter must be -1.
+    return spe.call("CreateEntity", entity_name, -1) # Last parameter must be -1.
 
 #================================================================================
 # Returns an entity instance by its index.
 #================================================================================
-def EntityByIndex( entity_index ):
+def entityByIndex( entity_index ):
     
     # Make sure the index is an int
     entity_index = int(entity_index)
 
     # Call and return
-    return spe.Call("EntityByIndex", entity_index)
+    return spe.call("EntityByIndex", entity_index)
 
 #================================================================================
 # Returns the instance of a player's weapon of type weapon_name.
 #   Returns None if player doesn't own that particular weapon.
 #================================================================================
-def OwnsWeapon( userid, weapon_name ):
+def ownsWeapon( userid, weapon_name ):
 
     # Get player instance
-    pPlayer = GetPlayer(userid)
+    pPlayer = spe.getPlayer(userid)
     
     ''' TODO: Make sure the weapon name is valid. '''
     
     # Call function and return weapon instance
-    return spe.Call("OwnsWeapon", pPlayer, weapon_name)
+    return spe.call("OwnsWeapon", pPlayer, weapon_name)
 
 #================================================================================
 # Returns a weapon instance from a player's slot.
 #================================================================================
-def GetWeaponFromSlot( userid, weapon_slot ):
+def getWeaponFromSlot( userid, weapon_slot ):
 
     # Get player instance
-    pPlayer = GetPlayer(userid)
+    pPlayer = spe.getPlayer(userid)
     
     # Call function and return player weapon instance
-    return spe.Call("GetWeapon", pPlayer, int(weapon_slot))
+    return spe.call("GetWeapon", pPlayer, int(weapon_slot))
     
 #================================================================================
 # Removes an entity by it's index.
 #================================================================================   
-def RemoveEntityByIndex( entity_index ):
+def removeEntityByIndex( entity_index ):
     
     # Get entity instance
     pEntity = EntityByIndex( int(entity_index) )
@@ -70,7 +64,7 @@ def RemoveEntityByIndex( entity_index ):
     if pEntity != None:
         
         # Remove it!
-        spe.Call("Remove", pEntity)
+        spe.call("Remove", pEntity)
         
         return True
     
@@ -80,13 +74,13 @@ def RemoveEntityByIndex( entity_index ):
 #================================================================================
 # Removes an entity by its instance
 #================================================================================   
-def RemoveEntityByInstance( entity_instance ):
+def removeEntityByInstance( entity_instance ):
 
     # Make sure it's valid
     if entity_instance != None:
     
         # Remove it!
-        spe.Call("Remove", entity_instance)
+        spe.call("Remove", entity_instance)
         
         return True
     
@@ -95,7 +89,7 @@ def RemoveEntityByInstance( entity_instance ):
 #================================================================================
 # Sets an entity's string keyvalue.
 #================================================================================  
-def SetStringKeyvalue( entity_index, keyvalue_name, new_value ):
+def setStringKeyvalue( entity_index, keyvalue_name, new_value ):
 
     # Get entity instance
     pEntity = EntityByIndex( int(entity_index) )
@@ -104,7 +98,7 @@ def SetStringKeyvalue( entity_index, keyvalue_name, new_value ):
     if pEntity != None:
     
         # Set the keyvalue
-        spe.Call("setkv_string", pEntity, keyvalue_name, new_value)
+        spe.call("setkv_string", pEntity, keyvalue_name, new_value)
         
         return True
     

@@ -115,7 +115,7 @@ private:
 
 //Sourcehook externs
 extern ISourceHook *g_SHPtr;
-extern CSourceHookImpl g_SourceHook;
+extern SourceHook::Impl::CSourceHookImpl g_SourceHook;
 extern int g_PLID;
 
 #endif

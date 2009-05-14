@@ -25,14 +25,15 @@
 */
 
 #include "serverplugin_base.h"
-#include "esx_player_manager.h"
-#include "esx_signature_manager.h"
-#include "esx_python.h"
-#include "esx_globals.h"
-#include "esx_hook_manager.h"
-#include "esx_event_parser.h"
+#include "spe_player_manager.h"
+#include "spe_signature_manager.h"
+#include "spe_python.h"
+#include "spe_globals.h"
+#include "spe_hook_manager.h"
+#include "spe_event_parser.h"
+#include "spe_dyncall_py.h"
 
-CSourceHookImpl g_SourceHook;
+SourceHook::Impl::CSourceHookImpl  g_SourceHook;
 ISourceHook *g_SHPtr = &g_SourceHook;
 int g_PLID = 0;
 
@@ -46,13 +47,14 @@ IUniformRandomStream *randomStr = NULL;
 IEngineTrace 		 *enginetrace = NULL;
 CGlobalVars 		 *gpGlobals = NULL;
 IVoiceServer		 *voiceServer = NULL;
-
+DCCallVM			 *vm = NULL;
 
 // 
 // The plugin is a static singleton that is exported as an interface
 //
 CEmptyServerPlugin g_EmtpyServerPlugin;
-EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CEmptyServerPlugin, IServerPluginCallbacks, INTERFACEVERSION_ISERVERPLUGINCALLBACKS, g_EmtpyServerPlugin );
+EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CEmptyServerPlugin, IServerPluginCallbacks, 
+								  INTERFACEVERSION_ISERVERPLUGINCALLBACKS, g_EmtpyServerPlugin );
 
 //---------------------------------------------------------------------------------
 // Purpose: constructor/destructor
@@ -105,12 +107,13 @@ bool CEmptyServerPlugin::Load( CreateInterfaceFn interfaceFactory, CreateInterfa
 	InitCVars( interfaceFactory ); // register any cvars we have defined
 
 	/* Initialize our classes */
-	CSPEHookManager* hookman = new CSPEHookManager( gameeventmanager );
+	gpHookMan = new CSPEHookManager( gameeventmanager );
 
-	gGlobals = new CGlobalManager( engine, playerinfomanager, voiceServer, hookman, filesystem );
 	gPlayerManager = new CPlayerManager();
 	gSigger = new CSigger( (void*)gameServerFactory );
 	g_pParser = new CModEventParser();
+
+	vm = dcNewCallVM( 4096 );
 	
 	char pGameDir[2047];
 	engine->GetGameDir( pGameDir, 2047 );

@@ -413,6 +413,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				ShowProgress="0"
+				OutputFile="$(OutDir)\sp_extensions_l4d.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="C:\Left4Dead\lib\public;C:\Python25\libs"
@@ -460,34 +461,6 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
-			<File
-				RelativePath=".\esx_event_parser.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\esx_globals.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\esx_hook_manager.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\esx_player_manager.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\esx_py_methods.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\esx_scanner.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\esx_signature_manager.cpp"
-				>
-			</File>
 			<File
 				RelativePath=".\serverplugin_base.cpp"
 				>
@@ -587,45 +560,77 @@
 				RelativePath=".\sourcehook\sourcehook.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\spe_call_manager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\spe_event_parser.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\spe_hook_manager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\spe_player_manager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\spe_py_methods.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\spe_scanner.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\spe_signature_manager.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
-				RelativePath=".\esx_event_parser.h"
-				>
-			</File>
-			<File
-				RelativePath=".\esx_globals.h"
-				>
-			</File>
-			<File
-				RelativePath=".\esx_hook_manager.h"
-				>
-			</File>
-			<File
-				RelativePath=".\esx_player_manager.h"
-				>
-			</File>
-			<File
-				RelativePath=".\esx_py_methods.h"
-				>
-			</File>
-			<File
-				RelativePath=".\esx_python.h"
-				>
-			</File>
-			<File
-				RelativePath=".\esx_scanner.h"
-				>
-			</File>
-			<File
-				RelativePath=".\esx_signature_manager.h"
-				>
-			</File>
-			<File
 				RelativePath=".\serverplugin_base.h"
+				>
+			</File>
+			<File
+				RelativePath=".\spe_call_manager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\spe_event_parser.h"
+				>
+			</File>
+			<File
+				RelativePath=".\spe_globals.h"
+				>
+			</File>
+			<File
+				RelativePath=".\spe_hook_manager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\spe_player_manager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\spe_py_methods.h"
+				>
+			</File>
+			<File
+				RelativePath=".\spe_python.h"
+				>
+			</File>
+			<File
+				RelativePath=".\spe_scanner.h"
+				>
+			</File>
+			<File
+				RelativePath=".\spe_signature_manager.h"
 				>
 			</File>
 		</Filter>
@@ -643,7 +648,7 @@
 					RelativePath="..\..\..\orangebox\lib\public\tier0.lib"
 					>
 					<FileConfiguration
-						Name="Left4Dead|Win32"
+						Name="Release|Win32"
 						ExcludedFromBuild="true"
 						>
 						<Tool
@@ -655,7 +660,7 @@
 					RelativePath="..\..\..\orangebox\lib\public\tier1.lib"
 					>
 					<FileConfiguration
-						Name="Left4Dead|Win32"
+						Name="Release|Win32"
 						ExcludedFromBuild="true"
 						>
 						<Tool
@@ -667,7 +672,7 @@
 					RelativePath="..\..\..\orangebox\lib\public\tier2.lib"
 					>
 					<FileConfiguration
-						Name="Left4Dead|Win32"
+						Name="Release|Win32"
 						ExcludedFromBuild="true"
 						>
 						<Tool
@@ -679,7 +684,7 @@
 					RelativePath="..\..\..\orangebox\lib\public\tier3.lib"
 					>
 					<FileConfiguration
-						Name="Left4Dead|Win32"
+						Name="Release|Win32"
 						ExcludedFromBuild="true"
 						>
 						<Tool
@@ -691,7 +696,7 @@
 					RelativePath="..\..\..\orangebox\lib\public\vstdlib.lib"
 					>
 					<FileConfiguration
-						Name="Left4Dead|Win32"
+						Name="Release|Win32"
 						ExcludedFromBuild="true"
 						>
 						<Tool
@@ -790,22 +795,62 @@
 				<File
 					RelativePath="..\..\..\Left4Dead\lib\public\tier0.lib"
 					>
+					<FileConfiguration
+						Name="Release|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\..\Left4Dead\lib\public\tier1.lib"
 					>
+					<FileConfiguration
+						Name="Release|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\..\Left4Dead\lib\public\tier2.lib"
 					>
+					<FileConfiguration
+						Name="Release|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\..\Left4Dead\lib\public\tier3.lib"
 					>
+					<FileConfiguration
+						Name="Release|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\..\Left4Dead\lib\public\vstdlib.lib"
 					>
+					<FileConfiguration
+						Name="Release|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
 				</File>
 			</Filter>
 		</Filter>
@@ -817,7 +862,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\esx_dyncall_py.h"
+				RelativePath=".\spe_dyncall_py.h"
 				>
 			</File>
 		</Filter>

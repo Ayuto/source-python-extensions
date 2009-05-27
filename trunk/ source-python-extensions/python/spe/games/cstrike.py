@@ -12,6 +12,7 @@ from os import name as platform
 
 # SPE imports
 import spe
+from spe.games.shared import *
 
 #================================================================================
 # Globals

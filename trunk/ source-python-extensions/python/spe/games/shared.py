@@ -39,7 +39,7 @@ def ownsWeapon( userid, weapon_name ):
     ''' TODO: Make sure the weapon name is valid. '''
     
     # Call function and return weapon instance
-    return spe.call("OwnsWeapon", pPlayer, weapon_name)
+    return spe.call("OwnsWeapon", pPlayer, weapon_name, 0)
 
 #================================================================================
 # Returns a weapon instance from a player's slot.
@@ -58,7 +58,7 @@ def getWeaponFromSlot( userid, weapon_slot ):
 def removeEntityByIndex( entity_index ):
     
     # Get entity instance
-    pEntity = EntityByIndex( int(entity_index) )
+    pEntity = entityByIndex( int(entity_index) )
     
     # Make sure it's valid
     if pEntity != None:
@@ -92,7 +92,7 @@ def removeEntityByInstance( entity_instance ):
 def setStringKeyvalue( entity_index, keyvalue_name, new_value ):
 
     # Get entity instance
-    pEntity = EntityByIndex( int(entity_index) )
+    pEntity = entityByIndex( int(entity_index) )
     
     # Make sure the entity is valid
     if pEntity != None:

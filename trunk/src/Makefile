@@ -13,7 +13,7 @@ HL2SDK_L4D = ../sourcesdk-l4d
 #######################
 PYTHON  = ../Python25
 DYNCALL = ../dyncall
-
+SOURCEHOOK = ./sourcehook
 ###################################
 ### SOURCE DEDICATED SERVER DIR ###
 ###################################
@@ -24,11 +24,15 @@ SRCDS_BASE = ~/srcds
 ####################
 OBJECTS = spe_binutils.cpp \
 	spe_convar.cpp \
-	spe_main.cpp \
-	spe_player.cpp \
-	spe_python.cpp \
-	spe_scanner.cpp
-
+    spe_dyncall.cpp \
+    spe_event_parser.cpp \
+    spe_hook_manager.cpp \
+    spe_main.cpp \
+    spe_player.cpp \
+    spe_python.cpp \
+    spe_scanner.cpp \
+    sourcehook.cpp
+    
 ######################
 ### COMPILER FLAGS ###
 ######################
@@ -82,6 +86,8 @@ endif
 #######################
 LINK = $(HL2LIB)/tier1_i486.a \
 	$(HL2LIB)/mathlib_i486.a \
+    libdyncall_s.a \
+    libdynload_s.a \
 	vstdlib_i486.so \
 	tier0_i486.so \
 	/usr/lib/gcc/i386-redhat-linux/3.4.6/libstdc++.a \
@@ -102,7 +108,8 @@ INCLUDE = -I. \
 	-I$(HL2PUB)/vstdlib \
 	-I$(HL2SDK)/tier1 \
 	-I$(HL2SDK)/dlls \
-	-I$(PYTHON)/Include
+	-I$(PYTHON)/Include \
+    -I$(SOURCEHOOK)
 
 ifeq "$(DEBUG)" "true"
 	BIN_DIR = Debug

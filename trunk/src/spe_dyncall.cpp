@@ -105,9 +105,6 @@ DECLARE_PYCMD( callFunction, "Calls the sigscanned function." )
 		return Py_BuildValue("");
 	}
 
-	/* Parse out the function pointer */
-	//function_pointer = (int)PyCObject_AsVoidPtr( func_ptr );
-
 	/* Make sure it's valid */
 	if( !function_pointer )
 	{
@@ -260,7 +257,7 @@ DECLARE_PYCMD( callFunction, "Calls the sigscanned function." )
 
 
 			/* Assign it to p otherwise */
-			p = PyCObject_FromVoidPtr(ptr, NULL);
+			p = Py_BuildValue("i", (int)ptr);
 
 			break;
 		}

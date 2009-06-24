@@ -155,7 +155,7 @@
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="..\Python25\include;&quot;..\sourcesdk-ep1\public&quot;;&quot;..\sourcesdk-ep1\public\tier0&quot;;&quot;..\sourcesdk-ep1\public\tier1&quot;;&quot;..\sourcesdk-ep1\dlls&quot;;&quot;..\sourcesdk-ep1\game_shared&quot;;&quot;..\sourcesdk-ep1\public\engine&quot;"
+				AdditionalIncludeDirectories="..\Python25\include;&quot;..\sourcesdk-ep1\public&quot;;&quot;..\sourcesdk-ep1\public\tier0&quot;;&quot;..\sourcesdk-ep1\public\tier1&quot;;&quot;..\sourcesdk-ep1\dlls&quot;;&quot;..\sourcesdk-ep1\game_shared&quot;;&quot;..\sourcesdk-ep1\public\engine&quot;;.\sourcehook"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -245,6 +245,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\sourcehook\sourcehook.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\spe_binutils.cpp"
 				>
 			</File>
@@ -276,6 +280,14 @@
 			</File>
 			<File
 				RelativePath=".\spe_dyncall.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\spe_event_parser.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\spe_hook_manager.cpp"
 				>
 			</File>
 			<File
@@ -327,7 +339,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\spe_event_parser.h"
+				>
+			</File>
+			<File
 				RelativePath=".\spe_globals.h"
+				>
+			</File>
+			<File
+				RelativePath=".\spe_hook_manager.h"
 				>
 			</File>
 			<File

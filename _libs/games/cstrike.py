@@ -38,7 +38,7 @@ def initGameRules():
     
     else:
         # Find the symbol address
-        gpGameRules = spe.findSymbol("@g_pGameRules")
+        gpGameRules = spe.findSymbol("g_pGameRules")
 
 initGameRules()
 
@@ -53,6 +53,9 @@ def respawn( userid ):
     
     # Get player instance
     pPlayer = spe.getPlayer(userid)
+    
+    if pPlayer == None:
+        return
 
     # Respawn the player
     spe.call("Respawn", pPlayer)
@@ -64,6 +67,9 @@ def switchTeam( userid, team_index ):
 
     # Get player instance
     pPlayer = spe.getPlayer(userid)
+    
+    if pPlayer == None:
+        return
     
     # Switch their team
     spe.call("ChangeTeam", pPlayer, int(team_index))
@@ -77,17 +83,10 @@ def getActiveWeapon( userid ):
     # Get player instance
     pPlayer = spe.getPlayer( userid )
     
+    if pPlayer == None:
+        return None
+    
     # Call and return player's active weapon
     return spe.call("GetActiveWeapon", pPlayer)
-
-#================================================================================
-# Restarts the round with a specific win reason!
-#================================================================================
-def terminateRound( time_delay, win_reason ):
-
-    if not isinstance(time_delay, float):   
-        time_delay = float(time_delay)
-    
-    spe.call("TerminateRound", gpGameRules, time_delay, win_reason)
 
 

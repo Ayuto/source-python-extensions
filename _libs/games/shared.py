@@ -36,7 +36,8 @@ def ownsWeapon( userid, weapon_name ):
     # Get player instance
     pPlayer = spe.getPlayer(userid)
     
-    ''' TODO: Make sure the weapon name is valid. '''
+    if pPlayer == None:
+		return None
     
     # Call function and return weapon instance
     return spe.call("OwnsWeapon", pPlayer, weapon_name, 0)
@@ -48,6 +49,9 @@ def getWeaponFromSlot( userid, weapon_slot ):
 
     # Get player instance
     pPlayer = spe.getPlayer(userid)
+    
+    if pPlayer == None:
+        return None
     
     # Call function and return player weapon instance
     return spe.call("GetWeapon", pPlayer, int(weapon_slot))

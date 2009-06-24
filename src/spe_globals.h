@@ -34,12 +34,14 @@
 //=================================================================================
 // Includes
 //=================================================================================
+#include "Python.h"
 #include "eiface.h"
 #include "filesystem.h"
 #include "playerinfomanager.h"
 #include "igameevents.h"
 #include "IEngineTrace.h"
-#include "Python.h"
+#include "sourcehook_impl.h"
+#include "sourcehook.h"
 #include "spe_dyncall.h"
 
 //=================================================================================
@@ -62,6 +64,17 @@ extern CGlobalVars					*gpGlobals;
 //=================================================================================
 extern DCCallVM						*vm;
 extern void							*laddr;
+
+#ifdef _LINUX
 extern void							*server_handle;
+#endif
+
+//=================================================================================
+// SourceHook related variables.
+//=================================================================================
+using namespace SourceHook;
+extern SourceHook::ISourceHook				*g_SHPtr;
+extern SourceHook::Impl::CSourceHookImpl	 g_SourceHook;
+extern int									 g_PLID;
 
 #endif // SPE_GLOBALS_H

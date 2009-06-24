@@ -30,6 +30,10 @@
 #include "spe_main.h"
 #include "spe_globals.h"
 #include "spe_python.h"
+
+#include "spe_hook_manager.h"
+#include "spe_event_parser.h"
+
 #ifdef _LINUX
 #include <dlfcn.h>
 #endif
@@ -47,6 +51,13 @@ DCCallVM					*vm					= NULL;
 void						*laddr				= NULL;
 void						*server_handle		= NULL;
 
+//////////////////////////////////////////////////////////////////////////
+// Sourcehook variables
+//////////////////////////////////////////////////////////////////////////
+SourceHook::ISourceHook				*g_SHPtr;
+SourceHook::Impl::CSourceHookImpl	 g_SourceHook;
+int									 g_PLID;
+
 //=================================================================================
 // Function to initialize any cvars/command in this plugin
 //=================================================================================
@@ -62,6 +73,11 @@ EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CSPE_Plugin, IServerPluginCallbacks, INTERFACE
 // Purpose: Source Python Extensions version variable.
 //=================================================================================
 static ConVar spe_version_var("spe_version_var", PLUGIN_VERSION, 0, "Version of Source Python Extensions.");
+
+//=================================================================================
+// Purpose: Source Python Extensions engine variable
+//=================================================================================
+static ConVar spe_engine_version("spe_engine", "ep1", 0);
 
 //=================================================================================
 // Purpose: constructor/destructor
@@ -131,6 +147,17 @@ bool CSPE_Plugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn ga
         Msg("[SPE]: Handle address is %d.\n", server_handle);
     }
 #endif
+
+	// Setup sourcehook
+	g_SHPtr = &g_SourceHook;
+	g_PLID = 0;
+
+	// Setup the event parser
+	g_pParser = new CModEventParser();
+
+	// Setup the hook manager.
+	gpHookMan = new CSPEHookManager( gameeventmanager );
+
 
 	// Make the version variable public
 	spe_version_var.AddFlags(FCVAR_REPLICATED | FCVAR_NOTIFY);

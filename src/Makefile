@@ -4,16 +4,17 @@
 ###########################
 ### ADD OTHER SDKs HERE ###
 ###########################
-HL2SDK_EP1 = ../sourcesdk-ep1
-HL2SDK_EP2 = ../sourcesdk-ep2
-HL2SDK_L4D = ../sourcesdk-l4d
+HL2SDK_EP1 = ../../sourcesdk-ep1
+HL2SDK_EP2 = ../../sourcesdk-ep2
+HL2SDK_L4D = ../../sourcesdk-l4d
 
 #######################
 ### OTHER LIBRARIES ###
 #######################
-PYTHON  = ../Python25
-DYNCALL = ../dyncall
+PYTHON  = ../../Python25
+DYNCALL = ../../dyncall
 SOURCEHOOK = ./sourcehook
+
 ###################################
 ### SOURCE DEDICATED SERVER DIR ###
 ###################################

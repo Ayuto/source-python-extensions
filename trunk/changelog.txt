@@ -1,0 +1,27 @@
+###########################################
+### Source Python Extensions changelog! ###
+###########################################
+
+============================
+VERSION: 1.5.0a
+DATE: 8/27/2009
+THANKS:
+ - Einlanzers (testing)
+============================
+
+### CODE CHANGES ###
+-+ Completely rewrote SPE's internals. Much cleaner.
+-+ Fixed crash bug when servers would start with a script that used SPE in autoexec.cfg.
+-+ Rewrote SPE's python API, and documented everything.
+
+-+ Added a new console variable called "spe_engine_ver"
+-++ Returns "ep1" for now, because SPE's rewrite isn't done for OB (yet) ;-)
+
+-== POINTERS ARE NOW PASSED AS INTEGERS!
+-=== This allows for cool things like comparing pointers directly in python.
+
+### OTHER CHANGES ###
+-+ Ported the .vcproj files to VS2008.
+
+### OTHER NOTES ###
+-+ There will be a nice API update coming at some point ;)

@@ -175,6 +175,9 @@ PyObject* CModEventParser::GetEventVariables(IGameEvent *pGameEvent)
 	//If it's valid, start parsing!
 	if( pEvent )
 	{
+		// Set event name
+		PyDict_SetItemString(pDict, "spe_eventname", Py_BuildValue("s", pEvent->szEventName));
+
 		//Loop through each of the event vars
 		for( int i = 0; i < pEvent->m_Vars.Count(); i++ )
 		{

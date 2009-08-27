@@ -3,6 +3,18 @@
 ###########################################
 
 ============================
+VERSION: 1.5.0b
+DATE: 8/27/2009
+THANKS:
+ - Einlanzers (testing)
+ - GunGame5 team (testing)
+============================
+
+### CODE CHANGES ###
+-+ Changed shared.ini to shared.ep1.ini. This will allow for a shared.ep2.ini in the future.
+-+ Added an event variable called "spe_eventname" to all the dictionary passed into the python prehook functions.
+
+============================
 VERSION: 1.5.0a
 DATE: 8/27/2009
 THANKS:

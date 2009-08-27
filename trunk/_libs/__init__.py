@@ -21,7 +21,7 @@ from spe_C import *
 #================================================================================
 # Global variables
 #================================================================================
-__version__ = '1.5.0a'
+__version__ = '1.5.0b'
 
 #================================================================================
 # Exceptions
@@ -116,7 +116,7 @@ class CSPEManager(object):
         Loads up the game specific module so it can be used by SPE.
         '''
         # Setup signatures
-        self.parseINI("_libs/python/spe/ini/shared.ini")
+        self.parseINI("_libs/python/spe/ini/shared.%s.ini" % es.ServerVar("spe_engine"))
         self.parseINI("_libs/python/spe/ini/%s.ini" % self.game_name)
      
     def parseINI(self, path):

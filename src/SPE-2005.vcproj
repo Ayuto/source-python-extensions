@@ -155,7 +155,7 @@
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="&quot;..\..\python-spe\include&quot;;..\..\hl2sdk\public;..\..\hl2sdk\public\tier0;..\..\hl2sdk\public\tier1;..\..\hl2sdk\dlls;..\..\hl2sdk\game_shared;..\..\hl2sdk\public\engine;.\sourcehook"
+				AdditionalIncludeDirectories="&quot;..\..\python-spe\include&quot;;..\..\hl2sdk\public;..\..\hl2sdk\public\tier0;..\..\hl2sdk\public\tier1;..\..\hl2sdk\dlls;..\..\hl2sdk\game_shared;..\..\hl2sdk\public\engine;.\sourcehook;.\dyncall\dyncall"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				StringPooling="true"
 				RuntimeLibrary="0"

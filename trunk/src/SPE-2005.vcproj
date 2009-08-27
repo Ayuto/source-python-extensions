@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="SPE"
 	ProjectGUID="{B6572CBE-7C7F-4FFF-94DE-AFBBBAB11C64}"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -88,6 +89,8 @@
 				GenerateMapFile="true"
 				MapFileName=".\Debug/serverplugin_empty.map"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Debug/serverplugin_empty.lib"
 				TargetMachine="1"
 			/>
@@ -110,9 +113,6 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -132,7 +132,7 @@
 			<Tool
 				Name="VCCustomBuildTool"
 				CommandLine="attrib -r .\bin\sp_extensions_ep1.dll&#x0D;&#x0A;copy &quot;$(TargetPath)&quot; .\bin\sp_extensions_ep1.dll&#x0D;&#x0A;"
-				Outputs="..\..\..\bin\serverplugin_empty.dll"
+				Outputs=""
 			/>
 			<Tool
 				Name="VCXMLDataGeneratorTool"
@@ -155,7 +155,7 @@
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="..\Python25\include;&quot;..\sourcesdk-ep1\public&quot;;&quot;..\sourcesdk-ep1\public\tier0&quot;;&quot;..\sourcesdk-ep1\public\tier1&quot;;&quot;..\sourcesdk-ep1\dlls&quot;;&quot;..\sourcesdk-ep1\game_shared&quot;;&quot;..\sourcesdk-ep1\public\engine&quot;;.\sourcehook"
+				AdditionalIncludeDirectories="&quot;..\..\python-spe\include&quot;;..\..\hl2sdk\public;..\..\hl2sdk\public\tier0;..\..\hl2sdk\public\tier1;..\..\hl2sdk\dlls;..\..\hl2sdk\game_shared;..\..\hl2sdk\public\engine;.\sourcehook"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -185,10 +185,9 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="odbc32.lib odbccp32.lib python25.lib"
-				OutputFile=".\Release/serverplugin_empty.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;..\sourcesdk-ep1\lib\public&quot;;&quot;..\sourcesdk-ep1\lib\common&quot;;..\Python25\libs"
+				AdditionalLibraryDirectories="..\..\hl2sdk\lib\public;..\..\hl2sdk\lib\common;&quot;..\..\python-spe\libs&quot;"
 				IgnoreDefaultLibraryNames="libcmtd.lib"
 				DelayLoadDLLs="python25.dll"
 				GenerateDebugInformation="true"
@@ -196,6 +195,8 @@
 				GenerateMapFile="true"
 				MapFileName=".\Release/serverplugin_empty.map"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Release/serverplugin_empty.lib"
 				TargetMachine="1"
 			/>
@@ -216,9 +217,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -245,7 +243,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\sourcehook\sourcehook.cpp"
+				RelativePath=".\sourcehook.cpp"
 				>
 			</File>
 			<File
@@ -378,19 +376,19 @@
 				Name="EP1"
 				>
 				<File
-					RelativePath="..\sourcesdk-ep1\lib\public\mathlib.lib"
+					RelativePath="..\..\hl2sdk\lib\public\mathlib.lib"
 					>
 				</File>
 				<File
-					RelativePath="..\sourcesdk-ep1\lib\public\tier0.lib"
+					RelativePath="..\..\hl2sdk\lib\public\tier0.lib"
 					>
 				</File>
 				<File
-					RelativePath="..\sourcesdk-ep1\lib\public\tier1.lib"
+					RelativePath="..\..\hl2sdk\lib\public\tier1.lib"
 					>
 				</File>
 				<File
-					RelativePath="..\sourcesdk-ep1\lib\public\vstdlib.lib"
+					RelativePath="..\..\hl2sdk\lib\public\vstdlib.lib"
 					>
 				</File>
 			</Filter>

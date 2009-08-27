@@ -35,7 +35,7 @@
 // Includes
 //=================================================================================
 #include "Python.h"
-#include "dyncall/dyncall/dyncall.h"
-#include "dyncall/dyncall/dyncall_signature.h"
+#include "dyncall.h"
+#include "dyncall_signature.h"
 
 #endif // SPE_DYNCALL_H

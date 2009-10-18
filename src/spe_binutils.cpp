@@ -32,6 +32,154 @@
 #include "spe_scanner.h"
 
 //=================================================================================
+// Creates and returns a pointer to some space
+//=================================================================================
+DECLARE_PYCMD( alloc, "Allocates space and returns a pointer to it." )
+{
+	int iBytesToAlloc;
+	void *addr = NULL;
+
+	if( !PyArg_ParseTuple(args, "i", &iBytesToAlloc ) )
+	{
+		Warning("[SPE]: spe_alloc: Could not parse arguments.\n");
+		return Py_BuildValue("");
+	}
+
+	void* pAlloc = malloc( iBytesToAlloc );
+
+	if( !pAlloc )
+	{
+		Warning("[SPE]: Could not create memory!\n");
+		return Py_BuildValue("");
+	}
+
+	return Py_BuildValue("i", pAlloc);
+}
+
+//=================================================================================
+// Deallocates passed in memory
+//=================================================================================
+DECLARE_PYCMD( dealloc, "Deallocates memory" )
+{
+	void *addr = NULL;
+
+	if( !PyArg_ParseTuple(args, "i", &addr) )
+	{
+		Warning("[SPE]: spe_alloc: Could not parse arguments.\n");
+		return Py_BuildValue("");
+	}
+	
+	if( !addr )
+		return Py_BuildValue("");
+
+	free( addr );
+	addr = NULL;
+
+	return Py_BuildValue("");
+}
+
+//=================================================================================
+// Modifies memory at a particular memory location
+//=================================================================================
+DECLARE_PYCMD( setLocVal, "Sets the contents of a particular memory location" )
+{
+	char      type = NULL;
+	void*     addr = NULL;
+	PyObject* val  = NULL;
+
+	if( !PyArg_ParseTuple(args, "ciO", &type, &addr, &val) )
+	{
+		Warning("[SPE]: spe_setLocVal: Can't parse arguments.\n");
+		return Py_BuildValue("");
+	}
+
+	if(!addr)
+		return Py_BuildValue("");
+
+	switch(type)
+	{
+		case DC_SIGCHAR_BOOL:
+		{
+			bool b;
+			PyArg_ParseTuple( val, "i", &b );
+			*(bool *)((char *)addr) = b;
+		}
+
+		case DC_SIGCHAR_INT:
+		{	
+			int v = PyInt_AsLong( val );
+			*(int *)((char *)addr) = v;
+		} break;
+
+		case DC_SIGCHAR_POINTER:
+		{
+			DCpointer ptr;
+			ptr = (DCpointer) ( (DCint) PyLong_AsLongLong(val) );
+			*(DCpointer *)((char *)addr) = ptr;
+		} break;
+
+		case DC_SIGCHAR_FLOAT:
+		{
+			float f;
+			f = (float) PyFloat_AsDouble( val );
+			*(float *)((char *)addr) = f;
+		} break;
+
+		default:
+		{
+			Warning("[SPE]: setLocVal: A valid type indicator was not passed in!\n");
+		} break;
+	}
+
+	return Py_BuildValue("");
+}
+
+//=================================================================================
+// Returns what is stored at a particular memory location
+//=================================================================================
+DECLARE_PYCMD( getLocVal, "Sets the contents of a particular memory location" )
+{
+	char      type = NULL;
+	void*     addr = NULL;
+
+	if( !PyArg_ParseTuple(args, "ci", &type, &addr) )
+	{
+		Warning("[SPE]: spe_setLocVal: Can't parse arguments.\n");
+		return Py_BuildValue("");
+	}
+
+	if(!addr)
+		return Py_BuildValue("");
+
+	switch(type)
+	{
+		case DC_SIGCHAR_BOOL:
+			return Py_BuildValue("b", *(bool *)((char *)addr));
+
+		case DC_SIGCHAR_INT:
+			return Py_BuildValue("i", *(int *)((char *)addr));
+		
+		case DC_SIGCHAR_POINTER:
+		{
+			void* temp = NULL;
+			memcpy(temp, *(DCpointer *)((char *)addr), sizeof(char *));
+			return Py_BuildValue("i", temp);
+		};
+
+		case DC_SIGCHAR_FLOAT:
+			return Py_BuildValue("f", *(float *)((char *)addr));
+		
+		default:
+		{
+			Warning("[SPE]: setLocVal: A valid type indicator was not passed in!\n");
+		} break;
+	}
+
+	return Py_BuildValue("");
+}
+
+
+//=================================================================================
 // Returns the address of a signature.
 //=================================================================================
 #ifdef _WIN32
@@ -89,14 +237,3 @@ DECLARE_PYCMD( findSymbol, "Returns the address of a symbol." )
 }
 
 #endif // _WIN32
-
-
-
-
-
-
-
-
-
-
-

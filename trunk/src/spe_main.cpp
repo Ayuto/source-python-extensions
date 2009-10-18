@@ -77,7 +77,13 @@ static ConVar spe_version_var("spe_version_var", PLUGIN_VERSION, 0, "Version of 
 //=================================================================================
 // Purpose: Source Python Extensions engine variable
 //=================================================================================
+#if( ENGINE_VERSION == 1 )
 static ConVar spe_engine_version("spe_engine", "ep1", 0);
+#elif( ENGINE_VERSION == 2 )
+static ConVar spe_engine_version("spe_engine", "ep2", 0);
+#elif ( ENGINE_VERSION == 3 )
+static ConVar spe_engine_version("spe_engine", "l4d", 0);
+#endif
 
 //=================================================================================
 // Purpose: constructor/destructor
@@ -98,6 +104,11 @@ CSPE_Plugin::~CSPE_Plugin()
 //=================================================================================
 bool CSPE_Plugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn gameServerFactory )
 {
+#if( ENGINE_VERSION >= 2 )
+	ConnectTier1Libraries( &interfaceFactory, 1 );
+	ConnectTier2Libraries( &interfaceFactory, 1 );
+#endif
+
 	playerinfomanager = (IPlayerInfoManager *)gameServerFactory(INTERFACEVERSION_PLAYERINFOMANAGER,NULL);
 	if ( !playerinfomanager )
 	{
@@ -162,6 +173,10 @@ bool CSPE_Plugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn ga
 	// Make the version variable public
 	spe_version_var.AddFlags(FCVAR_REPLICATED | FCVAR_NOTIFY);
 	
+#if( ENGINE_VERSION >= 2 )
+	ConVar_Register( 0 );
+#endif
+
     // Initialize python
 	return EnablePython();
 }
@@ -172,6 +187,12 @@ bool CSPE_Plugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn ga
 void CSPE_Plugin::Unload( void )
 {
 	gameeventmanager->RemoveListener( this ); // make sure we are unloaded from the event system
+
+#if( ENGINE_VERSION >= 2 )
+	ConVar_Unregister();
+	DisconnectTier2Libraries();
+	DisconnectTier1Libraries();
+#endif
 
 #ifdef _LINUX
     if( server_handle )
@@ -284,7 +305,11 @@ PLUGIN_RESULT CSPE_Plugin::ClientConnect( bool *bAllowConnect, edict_t *pEntity,
 //=================================================================================
 // Purpose: called when a client types in a command (only a subset of commands however, not CON_COMMAND's)
 //=================================================================================
+#if( ENGINE_VERSION >= 2 )
+PLUGIN_RESULT CSPE_Plugin::ClientCommand(edict_t* pEdict, const CCommand &args)
+#else
 PLUGIN_RESULT CSPE_Plugin::ClientCommand( edict_t *pEntity )
+#endif
 {
 	return PLUGIN_CONTINUE;
 }
@@ -304,6 +329,16 @@ void CSPE_Plugin::FireGameEvent( IGameEvent * event )
 {
 
 }
+
+//=================================================================================
+// Called when a cvar query value is finished
+//=================================================================================
+#if( ENGINE_VERSION >= 2 )
+void CSPE_Plugin::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *pPlayerEntity, EQueryCvarValueStatus eStatus, const char *pCvarName, const char *pCvarValue )
+{
+	// Do nothing
+}
+#endif
 
 //=================================================================================
 // Purpose: an example of how to implement a new command

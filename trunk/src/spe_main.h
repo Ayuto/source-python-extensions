@@ -47,6 +47,10 @@
 #include "strtools.h"
 #include "igameevents.h"
 
+#if( ENGINE_VERSION >= 2 )
+#include <tier2/tier2.h>
+#endif
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
@@ -83,7 +87,13 @@ public:
 	virtual void			SetCommandClient( int index );
 	virtual void			ClientSettingsChanged( edict_t *pEdict );
 	virtual PLUGIN_RESULT	ClientConnect( bool *bAllowConnect, edict_t *pEntity, const char *pszName, const char *pszAddress, char *reject, int maxrejectlen );
+
+#if( ENGINE_VERSION >= 2 )
+	virtual PLUGIN_RESULT	ClientCommand(edict_t* pEdict, const CCommand &args);
+	void					OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *pPlayerEntity, EQueryCvarValueStatus eStatus, const char *pCvarName, const char *pCvarValue );
+#else
 	virtual PLUGIN_RESULT	ClientCommand( edict_t *pEntity );
+#endif
 	virtual PLUGIN_RESULT	NetworkIDValidated( const char *pszUserName, const char *pszNetworkID );
 
 	// IGameEventListener Interface

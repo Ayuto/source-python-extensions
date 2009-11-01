@@ -1,5 +1,5 @@
-#(C)2004-2008 SourceMM Development Team
-# Makefile written by David "BAILOPAN" Anderson
+#(C)2009 - Source Python Extensions
+# Makefile written by Deniz "your-name-here" Sezen
 
 ###########################
 ### ADD OTHER SDKs HERE ###
@@ -7,11 +7,12 @@
 HL2SDK_EP1 = ../../sourcesdk-ep1
 HL2SDK_EP2 = ../../sourcesdk-ep2
 HL2SDK_L4D = ../../sourcesdk-l4d
+HL2SDK_L4D2 = ../../sourcesdk-l4d2
 
 #######################
 ### OTHER LIBRARIES ###
 #######################
-PYTHON  = ../../Python25
+PYTHON  = ../../Python2.5.1
 DYNCALL = ../../dyncall
 SOURCEHOOK = ./sourcehook
 
@@ -24,7 +25,7 @@ SRCDS_BASE = ~/srcds
 ### SOURCE FILES ###
 ####################
 OBJECTS = spe_binutils.cpp \
-	spe_convar.cpp \
+    spe_convar.cpp \
     spe_dyncall.cpp \
     spe_event_parser.cpp \
     spe_hook_manager.cpp \
@@ -47,12 +48,26 @@ CPP = /usr/bin/gcc34
 #################################
 override ENGSET = false
 
+####################################
+### Using the Left4Dead2 Engine? ###
+####################################
+ifeq "$(ENGINE)" "l4d2"
+ HL2SDK = $(HL2SDK_L4D2)
+ HL2LIB = $(HL2SDK)/lib/linux
+ HL2PUB = $(HL2SDK)/public
+ CFLAGS += -DENGINE_VERSION=4
+ INCLUDE += -I$(HL2SDK)/game/server
+ SRCDS = $(SRCDS_BASE)/left4dead2_demo
+ BINARY = sp_extensions_l4d2_linux.so
+ override ENGSET = true
+endif
+
 # Using the Left4Dead Engine?
 ifeq "$(ENGINE)" "l4d"
  HL2SDK = $(HL2SDK_L4D)
  HL2PUB = $(HL2SDK_L4D)/public
  HL2LIB = $(HL2SDK_L4D)/linux_sdk
- CFLAGS = -DENGINE_VER=3
+ CFLAGS = -DENGINE_VERSION=3
  INCLUDE += -I$(HL2SDK_L4D)/public/game/server
  SRCDS = $(SRCDS_BASE)/l4d
  BINARY = sp_extensions_l4d_i486.so
@@ -64,7 +79,7 @@ ifeq "$(ENGINE)" "ob"
  HL2SDK = $(HL2SDK_OB)
  HL2PUB = $(HL2SDK_OB)/public
  HL2LIB = $(HL2SDK_OB)/linux_sdk
- CFLAGS += -DENGINE_VER=2
+ CFLAGS += -DENGINE_VERSION=2
  INCLUDE += -I$(HL2SDK_OB)/public/game/server
  SRCDS = $(SRCDS_BASE)/orangebox
  BINARY = sp_extensions_ep2_i486.so
@@ -76,8 +91,8 @@ ifeq "$(ENGINE)" "ep1"
  HL2SDK = $(HL2SDK_EP1)
  HL2PUB = $(HL2SDK_EP1)/public
  HL2LIB = $(HL2SDK_EP1)/linux_sdk
- CFLAGS = -DENGINE_VER=1
- SRCDS = $(SRCDS_BASE)/ep1
+ CFLAGS = -DENGINE_VERSION=1
+ SRCDS = $(SRCDS_BASE)
  BINARY = sp_extensions_ep1_i486.so
  override ENGSET = true
 endif
@@ -89,18 +104,23 @@ LINK = $(HL2LIB)/tier1_i486.a \
 	$(HL2LIB)/mathlib_i486.a \
     libdyncall_s.a \
     libdynload_s.a \
-	vstdlib_i486.so \
-	tier0_i486.so \
 	/usr/lib/gcc/i386-redhat-linux/3.4.6/libstdc++.a \
 	/usr/lib/gcc/i386-redhat-linux/3.4.6/libgcc_eh.a \
 	libpython2.5.so.1.0 -static-libgcc
+
+ifeq "$(ENGINE)" "l4d2"
+	LINK +=	vstdlib_linux.so tier0_linux.so
+else
+	LINK += vstdlib_i486.so tier0_i486.so 
+endif
+
 
 LINK += -Wl,--rpath,\$$ORIGIN/eventscripts/_engines/python/Lib/plat-linux2
 
 ###########################
 ### INCLUDE DIRECTORIES ###
 ###########################
-INCLUDE = -I. \
+INCLUDE += -I. \
 	-I$(HL2PUB) \
 	-I$(HL2PUB)/dlls \
 	-I$(HL2PUB)/engine \
@@ -110,14 +130,15 @@ INCLUDE = -I. \
 	-I$(HL2SDK)/tier1 \
 	-I$(HL2SDK)/dlls \
 	-I$(PYTHON)/Include \
-    -I$(SOURCEHOOK)
+    -I$(SOURCEHOOK) \
+    -I$(DYNCALL)/dyncall
 
 ifeq "$(DEBUG)" "true"
 	BIN_DIR = Debug
-	CFLAGS = $(DEBUG_FLAGS)
+	CFLAGS += $(DEBUG_FLAGS)
 else
 	BIN_DIR = Release
-	CFLAGS = $(OPT_FLAGS)
+	CFLAGS += $(OPT_FLAGS)
 endif
 
 GCC_VERSION := $(shell $(CPP) -dumpversion >&1 | cut -b1)
@@ -138,8 +159,13 @@ $(BIN_DIR)/%.o: %.cpp
 
 all: check
 	mkdir -p $(BIN_DIR)
+ifeq "$(ENGINE)" "l4d2"
+	ln -sf $(SRCDS)/bin/vstdlib_linux.so vstdlib_linux.so
+	ln -sf $(SRCDS)/bin/tier0_linux.so tier0_linux.so
+else
 	ln -sf $(SRCDS)/bin/vstdlib_i486.so vstdlib_i486.so
 	ln -sf $(SRCDS)/bin/tier0_i486.so tier0_i486.so
+endif
 	$(MAKE) sourcemm
 	rm -rf $(BINARY)
 

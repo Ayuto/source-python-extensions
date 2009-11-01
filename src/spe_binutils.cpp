@@ -37,7 +37,7 @@
 DECLARE_PYCMD( alloc, "Allocates space and returns a pointer to it." )
 {
 	int iBytesToAlloc;
-	void *addr = NULL;
+	void *pAlloc = NULL;
 
 	if( !PyArg_ParseTuple(args, "i", &iBytesToAlloc ) )
 	{
@@ -45,7 +45,7 @@ DECLARE_PYCMD( alloc, "Allocates space and returns a pointer to it." )
 		return Py_BuildValue("");
 	}
 
-	void* pAlloc = malloc( iBytesToAlloc );
+	pAlloc = malloc( iBytesToAlloc );
 
 	if( !pAlloc )
 	{
@@ -73,7 +73,6 @@ DECLARE_PYCMD( dealloc, "Deallocates memory" )
 		return Py_BuildValue("");
 
 	free( addr );
-	addr = NULL;
 
 	return Py_BuildValue("");
 }
@@ -237,3 +236,4 @@ DECLARE_PYCMD( findSymbol, "Returns the address of a symbol." )
 }
 
 #endif // _WIN32
+

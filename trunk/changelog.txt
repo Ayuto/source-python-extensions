@@ -3,6 +3,35 @@
 ###########################################
 
 ============================
+VERSION: 1.5.0d
+DATE: 10/30/2009
+THANKS:
+ - Einlanzers
+ - XE_ManUp
+ - Mattie
+============================
+
+### CODE CHANGES ###
+-+ Bumped up version number.
+-+ Added the ability to just do spe.<method> from script.
+
+============================
+VERSION: 1.5.0c
+DATE: 10/17/2009
+THANKS:
+ - XE_ManUp
+ - Einlanzers
+============================
+
+### CODE CHANGES ###
+-+ Bumped up version number.
+
+-+ Added some extremely low level memory functions.
+-++ setLocVal and getLocVal set and get info from memory locations respectively.
+
+-+ Added L4D (tested) and TF2 support (untested)
+ 
+============================
 VERSION: 1.5.0b
 DATE: 8/27/2009
 THANKS:

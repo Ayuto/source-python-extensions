@@ -10,37 +10,11 @@
 # Python imports
 from os import name as platform
 
+# Eventscripts imports.
 import es
 
 # SPE imports
 import spe
-from spe.games.shared import *
-
-#================================================================================
-# Globals
-#================================================================================
-gpGameRules = None
-
-#================================================================================
-# GameRules initialization function.
-#================================================================================
-def initGameRules():
-    '''
-    Rips out a pointer to an instance of CCSGameRules from memory.
-    '''
-    global gpGameRules
-    
-    # If we're on windows, we need this signature
-    if platform == 'nt':
-    
-        # Rip out gamerules
-        gpGameRules = spe.getPointer("\x8B\x0D\x2A\x2A\x2A\x2A\x85\xC9\x74\x2A\x8B\x01\x6A\x01\xFF\x50", 2)
-    
-    else:
-        # Find the symbol address
-        gpGameRules = spe.findSymbol("g_pGameRules")
-
-initGameRules()
 
 #================================================================================
 # Exported Functions

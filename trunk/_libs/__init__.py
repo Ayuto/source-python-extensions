@@ -6,13 +6,14 @@
 #================================================================================
 # Imports
 #================================================================================
-# Python Imports
-from os import name as platform
-from configobj import ConfigObj
-import binascii
-import os
 
-# EventScripts Imports
+# Python Imports
+import os
+import binascii
+from configobj import ConfigObj
+from os import name as platform
+
+# Eventscripts Imports
 import es
 
 # SPE Imports
@@ -116,8 +117,12 @@ class CSPEManager(object):
         Loads up the game specific module so it can be used by SPE.
         '''
         # Setup signatures
-        self.parseINI("_libs/python/spe/ini/shared.%s.ini" % es.ServerVar("spe_engine"))
-        self.parseINI("_libs/python/spe/ini/%s.ini" % self.game_name)
+        self.parseINI("_libs/python/spe/ini/engines/shared.%s.ini" % es.ServerVar("spe_engine"))
+        self.parseINI("_libs/python/spe/ini/games/%s.ini" % self.game_name)
+        
+        # Load the shared and game module
+        self.loadModule("spe.games.shared")
+        self.loadModule("spe.games.%s" % self.game_name)
      
     def parseINI(self, path):
         '''
@@ -158,6 +163,28 @@ class CSPEManager(object):
             return False
         else:
             return True
+    
+    def loadModule(self, module_name ):
+        '''
+        - Written by XE_ManUp! -
+        
+        ** THIS FUNCTION IS HIGHLY UNPYTHONIC **
+        
+        This basically takes all of the methods and class instances
+        within the module of module_name and adds them to SPE.
+        This way, you can call functions within that module
+        directly from SPE. Example: spe.<functionInModule>(args).
+        '''
+        import inspect
+    
+        if self.moduleExists(module_name):
+            mod = __import__(module_name, globals(), locals(), [''])
+            for item in mod.__dict__:
+                if callable(mod.__dict__[item]) or inspect.isclass(mod.__dict__[item]):
+                    globals()[item] = mod.__dict__[item]
+                elif mod.__dict__.has_key(type(mod.__dict__[item]).__name__):
+                    if inspect.isclass(mod.__dict__[type(mod.__dict__[item]).__name__]):
+                        globals()[item] = mod.__dict__[item]
 
     def call(self, name, *args):
         '''

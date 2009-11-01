@@ -22,6 +22,8 @@
 * by the Valve Corporation.  You must obey the GNU General Public License in
 * all respects for all other code used.  Additionally, I (Deniz Sezen) grants
 * this exception to all derivative works.  
+*
+* Original Author: David "BAILOPAN" Anderson
 */
 
 #ifdef _WIN32
@@ -172,4 +174,3 @@ void *CSigMngr::ResolveSig(void *memInBase, const char *pattern, int siglen)
 
 	return sig.offset;
 }
-

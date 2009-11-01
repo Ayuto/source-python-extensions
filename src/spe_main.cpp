@@ -83,6 +83,8 @@ static ConVar spe_engine_version("spe_engine", "ep1", 0);
 static ConVar spe_engine_version("spe_engine", "ep2", 0);
 #elif ( ENGINE_VERSION == 3 )
 static ConVar spe_engine_version("spe_engine", "l4d", 0);
+#elif ( ENGINE_VERSION == 4 )
+static ConVar spe_engine_version("spe_engine", "l4d2", 0);
 #endif
 
 //=================================================================================

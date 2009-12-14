@@ -6,6 +6,7 @@
 #================================================================================
 # Imports
 #================================================================================
+import es
 import spe
 
 #================================================================================
@@ -26,6 +27,24 @@ def entityByIndex( entity_index ):
 
     # Call and return
     return spe.call("EntityByIndex", entity_index)
+
+#================================================================================
+# Courtesy of Einlanzers:
+#   Returns the index of an entity. -1 means no entity exists at this index.
+#================================================================================
+def instanceToIndex(entity_instance, classname=None):
+    if not entity_instance:
+        return -1
+        
+	if classname:
+		entlist = es.createentitylist(classname)
+	else:
+		entlist = es.createentitylist()
+        
+	for index in entlist:
+		if pointer == entityByIndex(index):
+			return index
+	return -1
 
 #================================================================================
 # Returns the instance of a player's weapon of type weapon_name.

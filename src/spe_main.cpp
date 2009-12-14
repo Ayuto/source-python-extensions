@@ -76,6 +76,7 @@ static ConVar spe_version_var("spe_version_var", PLUGIN_VERSION, 0, "Version of 
 
 //=================================================================================
 // Purpose: Source Python Extensions engine variable
+// TODO: Just set this to engine version.
 //=================================================================================
 #if( ENGINE_VERSION == 1 )
 static ConVar spe_engine_version("spe_engine", "ep1", 0);

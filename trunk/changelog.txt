@@ -3,6 +3,27 @@
 ###########################################
 
 ============================
+VERSION: 1.5.0e
+DATE: 1/6/2010
+THANKS:
+ - Einlanzers
+ - XE_ManUp
+ - The GunGame Development Team
+============================
+
+C++-SIDE:
+    * Bumped version number
+    * Replaced all instances of Warning with DevMsg to prevent ungodly spam.
+    * Added a new function called getEntityClassName which should return the classname of a particular entity.
+
+PYTHON-SIDE:
+    * Removed __version__ as it's no longer needed.
+    * Renamed entityByIndex to getEntityByIndex and instanceToIndex to getEntityOfIndex.
+ 
+FUNCTIONALITY:
+    * Added GetEntityClassName which returns a string containing the given entity instance's classname.
+
+============================
 VERSION: 1.5.0d
 DATE: 10/30/2009
 THANKS:

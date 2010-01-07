@@ -38,14 +38,14 @@ DECLARE_PYCMD( setCallingConvention, "Sets the calling convention of the virtual
 {
 	if( !vm )
 	{
-		Warning("[SPE]: spe_setCallingConvention: The virtual machine pointer is invalid.\n");
+		DevMsg("[SPE]: spe_setCallingConvention: The virtual machine pointer is invalid.\n");
 		return Py_BuildValue("i", -1);
 	}
 
 	const char* conv;
 	if( !PyArg_ParseTuple(args, "s", &conv) )
 	{
-		Warning("[SPE]: spe_setCallingConvention: Couldn't parse the arguments.\n");
+		DevMsg("[SPE]: spe_setCallingConvention: Couldn't parse the arguments.\n");
 		return Py_BuildValue("i", -1);
 	}
 
@@ -78,7 +78,7 @@ DECLARE_PYCMD( setCallingConvention, "Sets the calling convention of the virtual
 
 	else
 	{
-		Warning("[SPE]: spe_setCallingConvention: Unknown calling convention passed in.\n");
+		DevMsg("[SPE]: spe_setCallingConvention: Unknown calling convention passed in.\n");
 		return Py_BuildValue("i", -1);
 	}
 
@@ -101,14 +101,14 @@ DECLARE_PYCMD( callFunction, "Calls the sigscanned function." )
 
 	if( !PyArg_ParseTuple( args, "isO", &function_pointer, &signature, &func_args ) )
 	{
-		Warning("[SPE] Error parsing out function args, signature, and pointer!\n");
+		DevMsg("[SPE] Error parsing out function args, signature, and pointer!\n");
 		return Py_BuildValue("");
 	}
 
 	/* Make sure it's valid */
 	if( !function_pointer )
 	{
-		Warning("[SPE] The function pointer is NULL!\n");
+		DevMsg("[SPE] The function pointer is NULL!\n");
 		return Py_BuildValue("");
 	}
 
@@ -151,7 +151,7 @@ DECLARE_PYCMD( callFunction, "Calls the sigscanned function." )
 
 				if (l != 1)
 				{
-					Warning("[SPE] String mismatch. Expected a string!");
+					DevMsg("[SPE] String mismatch. Expected a string!");
 					return Py_BuildValue("");
 				}
 
@@ -169,7 +169,7 @@ DECLARE_PYCMD( callFunction, "Calls the sigscanned function." )
 
 				if ( (v < SHRT_MIN) || (v > SHRT_MAX) )
 				{
-					Warning( "[SPE] CallFunction: value out of range at argument %d - expecting a short value\n" );
+					DevMsg( "[SPE] CallFunction: value out of range at argument %d - expecting a short value\n" );
 					return Py_BuildValue("");
 				}
 
@@ -210,7 +210,7 @@ DECLARE_PYCMD( callFunction, "Calls the sigscanned function." )
 
 			default:
 			{
-				Warning("[SPE] Unknown char signature!\n");
+				DevMsg("[SPE] Unknown char signature!\n");
 				return Py_BuildValue("");
 			} break;
 		}
@@ -221,13 +221,13 @@ DECLARE_PYCMD( callFunction, "Calls the sigscanned function." )
 
 	if (pos != size)
 	{
-		Warning("[SPE] pos != size!\n");
+		DevMsg("[SPE] pos != size!\n");
 		return Py_BuildValue("");
 	}
 
 	if (ch == '\0')
 	{
-		Warning("[SPE] ch == null terminated\n");
+		DevMsg("[SPE] ch == null terminated\n");
 		return Py_BuildValue("");
 	}
 
@@ -250,11 +250,7 @@ DECLARE_PYCMD( callFunction, "Calls the sigscanned function." )
 
 			/* Is it valid*/
 			if( !ptr )
-			{
-				Warning("[SPE]Your function has returned a null pointer.\n");
 				return Py_BuildValue("");
-			}
-
 
 			/* Assign it to p otherwise */
 			p = Py_BuildValue("i", (int)ptr);
@@ -264,7 +260,7 @@ DECLARE_PYCMD( callFunction, "Calls the sigscanned function." )
 
 		default:
 		{
-			Warning("[SPE] Invalid p = type signature.\n" ); 
+			DevMsg("[SPE] Invalid p = type signature.\n" ); 
 			return Py_BuildValue("");
 		}
 	}

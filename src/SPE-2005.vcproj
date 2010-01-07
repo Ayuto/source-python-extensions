@@ -705,6 +705,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\spe_misc.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\spe_player.cpp"
 				>
 			</File>

@@ -62,7 +62,7 @@ DECLARE_PYCMD( getPlayer, "Returns the address of the instance of the player." )
 	int userid;
 	if( !PyArg_ParseTuple(args, "i", &userid) )
 	{
-		Warning("[SPE]: spe_getPlayer: The arguments could not be parsed.\n");
+		DevMsg("[SPE]: spe_getPlayer: The arguments could not be parsed.\n");
 		return Py_BuildValue("");
 	}
 
@@ -83,18 +83,10 @@ DECLARE_PYCMD( getPlayer, "Returns the address of the instance of the player." )
 			continue;
 
 		if(engine->GetPlayerUserId(player) == userid)
-		{	
-			pPlayer = player;
-			break;
-		}
+			return Py_BuildValue("i", (int)player->GetUnknown()->GetBaseEntity());
 	}
 
-	if( !pPlayer )
-	{
-		Warning("[SPE]: spe_getPlayer: Could not find a player with the userid of %d.\n", userid);
-		return Py_BuildValue("");
-	}
-
-	// Return the player address
-	return Py_BuildValue("i", (int)pPlayer->GetUnknown()->GetBaseEntity());
+	// If we are here, we didn't find a player with that userid.
+	DevMsg("[SPE]: spe_getPlayer: Could not find a player with the userid of %d.\n", userid);
+	return Py_BuildValue("");
 }

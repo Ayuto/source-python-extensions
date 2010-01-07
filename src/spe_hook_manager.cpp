@@ -52,6 +52,9 @@ CSPEHookManager::~CSPEHookManager()
 {
 	//Remove the hook
 	SH_REMOVE_HOOK_MEMFUNC(IGameEventManager2, FireEvent, m_Manager, this, &CSPEHookManager::EventFire_Pre, false);
+
+	// Free up memory
+	m_EventHooks.PurgeAndDeleteElements();
 }
 
 //==================================================================================
@@ -84,6 +87,7 @@ void CSPEHookManager::AddPreHook(char *szEventName, PyObject *pyFunc)
 	if(!p)
 	{
 		DevMsg("Adding a py_event_hook.\n");
+		
 		//Create a hook struct
 		p = new EventHook_t();
 

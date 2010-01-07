@@ -115,7 +115,7 @@ bool CSPE_Plugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn ga
 	playerinfomanager = (IPlayerInfoManager *)gameServerFactory(INTERFACEVERSION_PLAYERINFOMANAGER,NULL);
 	if ( !playerinfomanager )
 	{
-		Warning( "Unable to load playerinfomanager, ignoring\n" ); // this isn't fatal, we just won't be able to access specific player data
+		DevMsg( "Unable to load playerinfomanager, ignoring\n" ); // this isn't fatal, we just won't be able to access specific player data
 	}
 
 	// get the interfaces we want to use
@@ -154,7 +154,7 @@ bool CSPE_Plugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn ga
 
         if( server_handle == NULL )
         {
-            Warning("[SPE]: Failed to open server image.\n");
+            DevMsg("[SPE]: Failed to open server image.\n");
             return false;
         }
     
@@ -190,6 +190,10 @@ bool CSPE_Plugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn ga
 void CSPE_Plugin::Unload( void )
 {
 	gameeventmanager->RemoveListener( this ); // make sure we are unloaded from the event system
+
+	delete g_pParser;
+	delete gpHookMan;
+	dcFree(vm);
 
 #if( ENGINE_VERSION >= 2 )
 	ConVar_Unregister();

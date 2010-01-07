@@ -41,7 +41,7 @@ DECLARE_PYCMD( alloc, "Allocates space and returns a pointer to it." )
 
 	if( !PyArg_ParseTuple(args, "i", &iBytesToAlloc ) )
 	{
-		Warning("[SPE]: spe_alloc: Could not parse arguments.\n");
+		DevMsg("[SPE]: spe_alloc: Could not parse arguments.\n");
 		return Py_BuildValue("");
 	}
 
@@ -49,7 +49,7 @@ DECLARE_PYCMD( alloc, "Allocates space and returns a pointer to it." )
 
 	if( !pAlloc )
 	{
-		Warning("[SPE]: Could not create memory!\n");
+		DevMsg("[SPE]: Could not create memory!\n");
 		return Py_BuildValue("");
 	}
 
@@ -65,7 +65,7 @@ DECLARE_PYCMD( dealloc, "Deallocates memory" )
 
 	if( !PyArg_ParseTuple(args, "i", &addr) )
 	{
-		Warning("[SPE]: spe_alloc: Could not parse arguments.\n");
+		DevMsg("[SPE]: spe_alloc: Could not parse arguments.\n");
 		return Py_BuildValue("");
 	}
 	
@@ -88,7 +88,7 @@ DECLARE_PYCMD( setLocVal, "Sets the contents of a particular memory location" )
 
 	if( !PyArg_ParseTuple(args, "ciO", &type, &addr, &val) )
 	{
-		Warning("[SPE]: spe_setLocVal: Can't parse arguments.\n");
+		DevMsg("[SPE]: spe_setLocVal: Can't parse arguments.\n");
 		return Py_BuildValue("");
 	}
 
@@ -126,7 +126,7 @@ DECLARE_PYCMD( setLocVal, "Sets the contents of a particular memory location" )
 
 		default:
 		{
-			Warning("[SPE]: setLocVal: A valid type indicator was not passed in!\n");
+			DevMsg("[SPE]: setLocVal: A valid type indicator was not passed in!\n");
 		} break;
 	}
 
@@ -143,7 +143,7 @@ DECLARE_PYCMD( getLocVal, "Sets the contents of a particular memory location" )
 
 	if( !PyArg_ParseTuple(args, "ci", &type, &addr) )
 	{
-		Warning("[SPE]: spe_setLocVal: Can't parse arguments.\n");
+		DevMsg("[SPE]: spe_setLocVal: Can't parse arguments.\n");
 		return Py_BuildValue("");
 	}
 
@@ -170,7 +170,7 @@ DECLARE_PYCMD( getLocVal, "Sets the contents of a particular memory location" )
 		
 		default:
 		{
-			Warning("[SPE]: setLocVal: A valid type indicator was not passed in!\n");
+			DevMsg("[SPE]: setLocVal: A valid type indicator was not passed in!\n");
 		} break;
 	}
 
@@ -193,7 +193,7 @@ DECLARE_PYCMD( findFunction, "Finds and returns the address of a signature." )
     // Parse the tuple
     if( !PyArg_ParseTuple(args, "Oi", &pIdent, &iSigLength) )
     {
-        Warning("[SPE]: Could not parse the tuple in spe_findFunction.\n");
+        DevMsg("[SPE]: Could not parse the tuple in spe_findFunction.\n");
         return Py_BuildValue("");
     }
 
@@ -211,7 +211,7 @@ DECLARE_PYCMD( findSymbol, "Returns the address of a symbol." )
 
     if( !PyArg_ParseTuple(args, "s", &symbol) )
     {
-        Warning("[SPE]: spe_findSymbol: Couldn't parse function arguments.\n");
+        DevMsg("[SPE]: spe_findSymbol: Couldn't parse function arguments.\n");
         return Py_BuildValue("");
     }
 
@@ -221,7 +221,7 @@ DECLARE_PYCMD( findSymbol, "Returns the address of a symbol." )
     // Validate it
     if( !addr )
     {
-        Warning("[SPE]: Could not find symbol %s!\n", symbol);
+        DevMsg("[SPE]: Could not find symbol %s!\n", symbol);
         return Py_BuildValue("");
     }
 

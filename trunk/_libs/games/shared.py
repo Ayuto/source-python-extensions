@@ -16,11 +16,11 @@ def createEntity( entity_name ):
     
     # Call the function
     return spe.call("CreateEntity", entity_name, -1) # Last parameter must be -1.
-
+    
 #================================================================================
 # Returns an entity instance by its index.
 #================================================================================
-def entityByIndex( entity_index ):
+def getEntityOfIndex( entity_index ):
     
     # Make sure the index is an int
     entity_index = int(entity_index)
@@ -29,22 +29,32 @@ def entityByIndex( entity_index ):
     return spe.call("EntityByIndex", entity_index)
 
 #================================================================================
-# Courtesy of Einlanzers:
+# Courtesy of Einlanzers and XE_Manup:
 #   Returns the index of an entity. -1 means no entity exists at this index.
 #================================================================================
-def instanceToIndex(entity_instance, classname=None):
+def getIndexOfEntity( entity_instance, classname=None ):
     if not entity_instance:
-        return -1
+        return None
         
-	if classname:
-		entlist = es.createentitylist(classname)
-	else:
-		entlist = es.createentitylist()
-        
-	for index in entlist:
-		if pointer == entityByIndex(index):
-			return index
-	return -1
+    if classname:
+        entlist = es.createentitylist(classname)
+    else:
+        entlist = es.createentitylist()
+
+    for index in entlist:
+        if entity_instance == entityByIndex(index):
+            return index
+    return None
+    
+#================================================================================
+# These are for backwards compatibility.
+#================================================================================
+def entityByIndex( entity_index ):
+    return getEntityOfIndex( entity_index )
+    
+def instanceToIndex( entity_instance, classname=None ):
+    return getIndexOfEntity( entity_instance, classname )
+
 
 #================================================================================
 # Returns the instance of a player's weapon of type weapon_name.
@@ -56,7 +66,7 @@ def ownsWeapon( userid, weapon_name ):
     pPlayer = spe.getPlayer(userid)
     
     if pPlayer == None:
-		return None
+        return None
     
     # Call function and return weapon instance
     return spe.call("OwnsWeapon", pPlayer, weapon_name, 0)
@@ -126,11 +136,3 @@ def setStringKeyvalue( entity_index, keyvalue_name, new_value ):
         return True
     
     return False
-
-
-
-
-    
-    
-    
-    

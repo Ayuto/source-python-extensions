@@ -353,6 +353,6 @@ void CSPE_Plugin::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *
 CON_COMMAND( spe_version, "prints the version of the empty plugin" )
 {
 	char szInfo[1024];
-	V_snprintf(szInfo, 1024, "%s, %s, %s", PLUGIN_NAME, PLUGIN_VERSION, PLUGIN_AUTHOR);
+	V_snprintf(szInfo, 1024, "%s, %s, %s\n", PLUGIN_NAME, PLUGIN_VERSION, PLUGIN_AUTHOR);
 	Msg(szInfo);
 }

@@ -53,6 +53,37 @@ edict_t* BaseEntityToEdict( CBaseEntity* pEntity )
 }
 
 //=================================================================================
+// Returns the index of an entity.
+//=================================================================================
+DECLARE_PYCMD( getEntityIndex, "Returns the index of an entity." )
+{
+	CBaseEntity* pEnt   = NULL;
+	edict_t* pEdict		= NULL;
+	
+	if( !PyArg_ParseTuple(args, "i", &pEnt) )
+	{
+		DevMsg("[SPE]: spe_getEntityIndex: The arguments could not be parsed.\n");
+		return Py_BuildValue("");
+	}
+
+	if( !pEnt )
+	{
+		DevMsg("[SPE]: spe_getEntityIndex: Invalid entity passed in!\n");
+		return Py_BuildValue("");
+	}
+
+	pEdict = BaseEntityToEdict( pEnt );
+
+	if( !pEdict )
+	{
+		DevMsg("[SPE]: spe_getEntityIndex: Could not convert entity to edict!\n");
+		return Py_BuildValue("");
+	}
+
+	return Py_BuildValue("i", engine->IndexOfEdict(pEdict));
+}
+
+//=================================================================================
 // Returns the classname of a particular edict.
 // Courtesy of the SourceMod Team.
 //=================================================================================
@@ -90,5 +121,5 @@ DECLARE_PYCMD( getEntityClassName, "Returns the classname of an entity." )
 		return Py_BuildValue("");
 	}
 
-	return PyString_FromString(szClassName);
+	return Py_BuildValue("s", szClassName);
 }

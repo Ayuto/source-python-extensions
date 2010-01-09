@@ -73,8 +73,8 @@ def giveNamedItem( userid, item_name ):
 
     # Is the player instance valid?
     if not pPlayer:
-        # Return False since the player instance was not valid
-        return False
+        # Return None since the player instance was not valid
+        return None
 
     # Give the player the item
     return spe.call('GiveNamedItem', pPlayer, str(item_name), 0)

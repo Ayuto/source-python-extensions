@@ -7,7 +7,7 @@ VERSION: 1.5.0e
 DATE: 1/6/2010
 THANKS:
  - Einlanzers
- - XE_ManUp
+ - (MAJOR THANKS) XE_ManUp
  - The GunGame Development Team
 ============================
 
@@ -15,13 +15,38 @@ C++-SIDE:
     * Bumped version number
     * Replaced all instances of Warning with DevMsg to prevent ungodly spam.
     * Added a new function called getEntityClassName which should return the classname of a particular entity.
+    * Added a new function called getEntityOfIndex which returns the index of an entity (by instance).
+    * Replaced all instances of Warning with DevMsg to prevent ungodly spam.
 
 PYTHON-SIDE:
     * Removed __version__ as it's no longer needed.
-    * Renamed entityByIndex to getEntityByIndex and instanceToIndex to getEntityOfIndex.
+    * Reorganized all functions to "return None" at the top of the function as opposed to the bottom of the function  to improve readability.
+    * Removed "pPlayer = spe.getPlayer(userid)" calls where we never reused the player instance.
+    * Removed deprecated functions:
+        - entityByInstance()
+        - instanceToIndex()
+        
+    * Updated comment for getIndexOfEntity() to state that it returns "None" instead of "-1" if an invalid index is passed.
+    * Optimized several "if...else" statements in various functions by optimizing return value locations.
+    * getWeaponDict():
+        - Added the key "index" to return the entity's index using spe.getEntityIndex(wPointer).
+        - Removed a second function call for spe.ownsWeapon() for the "instance" key. I had already retrieved the instance as "wPointer." Therefore, I used wPointer instead.
+        
+    * Cleaned up spacing.
+    * Redirected instanceToIndex to spe.getEntityIndex.
+    * Replaced instances of '== None' with if not.
  
 FUNCTIONALITY:
-    * Added GetEntityClassName which returns a string containing the given entity instance's classname.
+    * Added the following functions to shared.py:
+        * getWeaponIndex
+        * getWeaponNameList
+        * getWeaponInstanceList
+        * getWeaponIndexList
+        * getWeaponDict
+    
+    * Added the following functions to cstrike.py:
+        * GiveNamedItem
+        * DropWeapon
 
 ============================
 VERSION: 1.5.0d

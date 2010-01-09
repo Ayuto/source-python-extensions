@@ -35,6 +35,11 @@ PYTHON-SIDE:
     * Cleaned up spacing.
     * Redirected instanceToIndex to spe.getEntityIndex.
     * Replaced instances of '== None' with if not.
+    
+    * Removed unused imports. (import es, from os import name as platform).
+    * Added return values to all functions so that scripters can check of successful completion.
+    * Added comments to all methods within the functions.
+    * Ordered the function calls to return None or False as checks progressed in order to improve readability of the logic.
  
 FUNCTIONALITY:
     * Added the following functions to shared.py:

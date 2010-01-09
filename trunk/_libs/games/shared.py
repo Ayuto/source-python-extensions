@@ -6,7 +6,6 @@
 #================================================================================
 # Imports
 #================================================================================
-import es
 import spe
 
 #================================================================================
@@ -28,7 +27,7 @@ def getEntityOfIndex( entity_index ):
 
 #================================================================================
 # Courtesy of Einlanzers and XE_Manup:
-#   Returns the index of an entity. -1 means no entity exists at this index.
+#   Returns the index of an entity. None means no entity exists at this index.
 #================================================================================
 def getIndexOfEntity( entity_instance ):
     return spe.getEntityIndex( entity_instance )
@@ -158,14 +157,11 @@ def getWeaponNameList( userid ):
                 # Append the weapon name to the list
                 weapon_names.append(spe.getEntityClassName(wPointer))
 
-    # Invalid player instance
-    else:
+        # Return the populated list
+        return weapon_names
 
-        # Return None due to the invalid player instance
-        return None
-
-    # Return the populated list
-    return weapon_names
+    # Return None due to the invalid player instance
+    return None
 
 #==============================================================================
 # Retrieve a list of weapon instances that the player has in their inventory
@@ -192,14 +188,11 @@ def getWeaponInstanceList( userid ):
                 # Append the valid instance/pointer to the list
                 weapon_pointers.append(wPointer)
 
-    # Invalid player instance
-    else:
+        # Return the populated list
+        return weapon_pointers
 
-        # Return None due to the invalid player instance
-        return None
-
-    # Return the populated list
-    return weapon_pointers
+    # Return None due to the invalid player instance
+    return None
 
 #==============================================================================
 # Retrieve a list of weapon indexes that the player has in their inventory
@@ -213,11 +206,8 @@ def getWeaponIndexList( userid ):
         # Return a list of weapon indexes
         return [spe.getEntityIndex(i) for i in spe.getWeaponInstanceList(userid)]
 
-    # Invalid player instance
-    else:
-
-        # Return None due to the invalid player instance
-        return None
+    # Return None due to the invalid player instance
+    return None
 
 #==============================================================================
 # Retrieve a dictionary of weapons in the player's inventory where the key is
@@ -248,14 +238,12 @@ def getWeaponDict( userid ):
 
                 # Create the valid key:value pair
                 weapons[spe.getEntityClassName(wPointer)] = {
-                    "instance":spe.getWeaponFromSlot(userid, i),
-                    "slot":i}
+                    "instance":wPointer,
+                    "slot":i,
+                    "index":spe.getEntityIndex(wPointer)}
 
-    # Invalid player instance
-    else:
+        # Return the populated dictionary
+        return weapons
 
-        # Return None due to the invalid player instance
-        return None
-
-    # Return the populated dictionary
-    return weapons
+    # Return None due to the invalid player instance
+    return None

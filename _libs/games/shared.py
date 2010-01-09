@@ -19,11 +19,8 @@ def createEntity( entity_name ):
 # Returns an entity instance by its index.
 #================================================================================
 def getEntityOfIndex( entity_index ):
-    # Make sure the index is an int
-    entity_index = int(entity_index)
-
     # Call and return
-    return spe.call("EntityByIndex", entity_index)
+    return spe.call("EntityByIndex", int(entity_index))
 
 #================================================================================
 # Courtesy of Einlanzers and XE_Manup:
@@ -38,7 +35,7 @@ def getIndexOfEntity( entity_instance ):
 #================================================================================
 def ownsWeapon( userid, weapon_name ):
     # Get player instance
-    pPlayer = spe.getPlayer(userid)
+    pPlayer = spe.getPlayer(int(userid))
 
     if not pPlayer:
         return None
@@ -51,7 +48,7 @@ def ownsWeapon( userid, weapon_name ):
 #================================================================================
 def getWeaponFromSlot( userid, weapon_slot ):
     # Get player instance
-    pPlayer = spe.getPlayer(userid)
+    pPlayer = spe.getPlayer(int(userid))
 
     if not pPlayer:
         return None
@@ -128,7 +125,7 @@ def getWeaponIndex(userid, weapon_name):
 #================================================================================ 
 def getWeaponNameList( userid ):
     # Make sure the player is valid
-    if not spe.getPlayer(userid):
+    if not spe.getPlayer(int(userid)):
         # Return None due to the invalid player instance
         return None
 
@@ -155,7 +152,7 @@ def getWeaponNameList( userid ):
 #==============================================================================
 def getWeaponInstanceList( userid ):
     # Make sure the player is valid
-    if not spe.getPlayer(userid):
+    if not spe.getPlayer(int(userid)):
         # Return None due to the invalid player instance
         return None
 
@@ -182,7 +179,7 @@ def getWeaponInstanceList( userid ):
 #==============================================================================
 def getWeaponIndexList( userid ):
     # Make sure the player is valid
-    if not spe.getPlayer(userid):
+    if not spe.getPlayer(int(userid)):
         # Return None due to the invalid player instance
         return None
 
@@ -199,7 +196,7 @@ def getWeaponIndexList( userid ):
 #==============================================================================
 def getWeaponDict( userid ):
     # Make sure the player is valid
-    if not spe.getPlayer(userid):
+    if not spe.getPlayer(int(userid)):
         # Return None due to the invalid player instance
         return None
 

@@ -61,7 +61,7 @@ def getWeaponFromSlot( userid, weapon_slot ):
 #================================================================================   
 def removeEntityByIndex( entity_index ):
     # Get entity instance
-    pEntity = entityByIndex( int(entity_index) )
+    pEntity = spe.getEntityOfIndex( int(entity_index) )
 
     # Make sure it's valid
     if not pEntity:
@@ -92,7 +92,7 @@ def removeEntityByInstance( entity_instance ):
 #================================================================================  
 def setStringKeyvalue( entity_index, keyvalue_name, new_value ):
     # Get entity instance
-    pEntity = entityByIndex( int(entity_index) )
+    pEntity = spe.getEntityOfIndex( int(entity_index) )
 
     # Make sure the entity is valid
     if not pEntity:

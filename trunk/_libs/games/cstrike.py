@@ -105,4 +105,4 @@ def dropWeapon( userid, weapon_name, throwWeapon=True ):
         return False
 
     # Make them drop it
-    return spe.call('DropWeapon', pPlayer, weapon_instance, 0, throw)
+    return spe.call('DropWeapon', pPlayer, weapon_instance, 0, throwWeapon)

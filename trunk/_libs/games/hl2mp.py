@@ -1,3 +1,8 @@
+"""
+$Rev$
+$LastChangedDate$
+"""
+
 #================================================================================
 # Source-Python Extensions Library:
 #   Half-Life 2 Deathmatch Library

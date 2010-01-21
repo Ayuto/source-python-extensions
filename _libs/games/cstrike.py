@@ -82,7 +82,7 @@ def giveNamedItem( userid, item_name ):
 #================================================================================
 # If the player owns the weapon_instance entity, it forces them to drop it.
 #================================================================================
-def dropWeapon( userid, weapon_name ):
+def dropWeapon( userid, weapon_name, throwWeapon=True ):
     # Get the player instance
     pPlayer = spe.getPlayer(int(userid))
 
@@ -100,6 +100,4 @@ def dropWeapon( userid, weapon_name ):
         return False
 
     # Make them drop it
-    spe.call('DropWeapon', pPlayer, weapon_instance)
-
-    return True
+    return spe.call('DropWeapon', pPlayer, weapon_instance, 0, throw)

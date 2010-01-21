@@ -1,3 +1,8 @@
+"""
+$Rev$
+$LastChangedDate$
+"""
+
 #================================================================================
 # Source-Python Extensions Library:
 #   Left 4 Dead Library

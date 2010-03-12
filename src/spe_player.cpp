@@ -34,13 +34,13 @@
 //=================================================================================
 DECLARE_PYCMD( getPlayer, "Returns the address of the instance of the player." )
 {
-	if( !engine )
-	{
-		Error("[SPE]: The engine instance was not valid.\n");
-		return Py_BuildValue("");
-	}
+	/* From the SourceMod Team:
+	 *	UserID cache gets out of sync on older engines.
+	 */
+	int userid = -1;
+	edict_t *pPlayer = NULL;
 
-	int userid;
+	// Parse the arguments from python.
 	if( !PyArg_ParseTuple(args, "i", &userid) )
 	{
 		DevMsg("[SPE]: spe_getPlayer: The arguments could not be parsed.\n");
@@ -48,19 +48,19 @@ DECLARE_PYCMD( getPlayer, "Returns the address of the instance of the player." )
 	}
 
 	// Get the player by their userid.
-	edict_t *pPlayer = NULL;
-	for(int i = 0; i < playerinfomanager->GetGlobalVars()->maxClients; i++)
+	for(int i = 1; i <= gpGlobals->maxClients; i++)
 	{
-		edict_t* player = PEntityOfEntIndex(i);
+		// Get the player at this index.
+		pPlayer = PEntityOfEntIndex(i);
 
-		if(!player || player->IsFree())
+		if(!pPlayer || pPlayer->IsFree())
 			continue;
 
-		if(engine->GetPlayerUserId(player) == -1)
+		if(engine->GetPlayerUserId(pPlayer) == -1)
 			continue;
 
-		if(engine->GetPlayerUserId(player) == userid)
-			return Py_BuildValue("i", player->GetUnknown()->GetBaseEntity());
+		if(engine->GetPlayerUserId(pPlayer) == userid)
+			return Py_BuildValue("i", pPlayer->GetUnknown()->GetBaseEntity());
 	}
 
 	// If we are here, we didn't find a player with that userid.

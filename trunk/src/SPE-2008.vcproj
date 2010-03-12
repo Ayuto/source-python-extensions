@@ -29,8 +29,8 @@
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
-				CommandLine="copy &quot;$(TargetPath)&quot; .\bin\sp_extensions_ep1.dll&#x0D;&#x0A;"
-				Outputs="..\..\..\bin\serverplugin_empty.dll"
+				CommandLine=""
+				Outputs=""
 			/>
 			<Tool
 				Name="VCXMLDataGeneratorTool"
@@ -131,7 +131,7 @@
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
-				CommandLine="attrib -r .\bin\sp_extensions_ep1.dll&#x0D;&#x0A;copy &quot;$(TargetPath)&quot; .\bin\sp_extensions_ep1.dll&#x0D;&#x0A;"
+				CommandLine=""
 				Outputs=""
 			/>
 			<Tool
@@ -156,8 +156,8 @@
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="&quot;..\..\python-spe\include&quot;;..\..\hl2sdk\public;..\..\hl2sdk\public\tier0;..\..\hl2sdk\public\tier1;..\..\hl2sdk\dlls;..\..\hl2sdk\game_shared;..\..\hl2sdk\public\engine;.\sourcehook;.\dyncall\dyncall"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
+				AdditionalIncludeDirectories="..\..\hl2sdk\public;..\..\hl2sdk\public\tier0;..\..\hl2sdk\public\tier1;..\..\hl2sdk\dlls;..\..\hl2sdk\game_shared;..\..\hl2sdk\public\engine;.\dyncall\include;.\python\include;.\sourcehook"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;ENGINE_VERSION=1"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -185,17 +185,18 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/LTCG"
 				AdditionalDependencies="odbc32.lib odbccp32.lib python25.lib"
 				OutputFile="$(OutDir)\sp_extensions_ep1.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\hl2sdk\lib\public;..\..\hl2sdk\lib\common;&quot;..\..\python-spe\libs&quot;"
-				IgnoreDefaultLibraryNames="libcmtd.lib"
+				AdditionalLibraryDirectories="..\..\hl2sdk\lib\public;..\..\hl2sdk\lib\common;.\dyncall\lib;.\python\libs"
+				IgnoreDefaultLibraryNames="libcmtd.lib;msvcrt.lib"
 				DelayLoadDLLs="python25.dll"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Release/serverplugin_empty.pdb"
+				ProgramDatabaseFile=".\Binaries\DbgInfo/sp_extensions_ep1.pdb"
 				GenerateMapFile="true"
-				MapFileName=".\Release/serverplugin_empty.map"
+				MapFileName=".\Binaries\DbgInfo/sp_extensions_ep1.map"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -226,7 +227,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release(L4D)|Win32"
-			OutputDirectory="$(ConfigurationName)"
+			OutputDirectory=".\Binaries"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
@@ -239,7 +240,7 @@
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
-				CommandLine="attrib -r .\bin\sp_extensions_ep1.dll&#x0D;&#x0A;copy &quot;$(TargetPath)&quot; .\bin\sp_extensions_ep1.dll&#x0D;&#x0A;"
+				CommandLine=""
 				Outputs=""
 			/>
 			<Tool
@@ -264,8 +265,8 @@
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="&quot;..\..\python-spe\include&quot;;&quot;..\..\hl2sdk-l4d\public&quot;;&quot;..\..\hl2sdk-l4d\public\tier0&quot;;&quot;..\..\hl2sdk-l4d\public\tier1&quot;;&quot;..\..\hl2sdk-l4d\game\server&quot;;&quot;..\..\hl2sdk-l4d\game\shared&quot;;&quot;..\..\hl2sdk-l4d\public\engine&quot;;.\sourcehook;.\dyncall\dyncall"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
+				AdditionalIncludeDirectories="&quot;..\..\hl2sdk-l4d\public&quot;;&quot;..\..\hl2sdk-l4d\public\tier0&quot;;&quot;..\..\hl2sdk-l4d\public\tier1&quot;;&quot;..\..\hl2sdk-l4d\game\server&quot;;&quot;..\..\hl2sdk-l4d\game\shared&quot;;&quot;..\..\hl2sdk-l4d\public\engine&quot;;.\python\include;.\dyncall\include;.\sourcehook"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;ENGINE_VERSION=3"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -293,17 +294,18 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/LTCG"
 				AdditionalDependencies="odbc32.lib odbccp32.lib python25.lib"
 				OutputFile="$(OutDir)\sp_extensions_l4d.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;..\..\hl2sdk-l4d\lib\public&quot;;&quot;..\..\hl2sdk-l4d\lib\common&quot;;&quot;..\..\python-spe\libs&quot;"
-				IgnoreDefaultLibraryNames="libcmtd.lib"
+				AdditionalLibraryDirectories="&quot;..\..\hl2sdk-l4d\lib\public&quot;;&quot;..\..\hl2sdk-l4d\lib\common&quot;;.\python\libs;.\dyncall\lib"
+				IgnoreDefaultLibraryNames="libcmtd.lib;msvcrt.lib"
 				DelayLoadDLLs="python25.dll"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Release/serverplugin_empty.pdb"
+				ProgramDatabaseFile=".\Binaries\DbgInfo/sp_extensions_l4d.pdb"
 				GenerateMapFile="true"
-				MapFileName=".\Release/serverplugin_empty.map"
+				MapFileName=".\Binaries\DbgInfo/sp_extensions_l4d.map"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -334,7 +336,7 @@
 		</Configuration>
 		<Configuration
 			Name="RELEASE(L4D2)|Win32"
-			OutputDirectory="$(ConfigurationName)"
+			OutputDirectory=".\Binaries"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
@@ -347,7 +349,7 @@
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
-				CommandLine="attrib -r .\bin\sp_extensions_ep1.dll&#x0D;&#x0A;copy &quot;$(TargetPath)&quot; .\bin\sp_extensions_ep1.dll&#x0D;&#x0A;"
+				CommandLine=""
 				Outputs=""
 			/>
 			<Tool
@@ -372,7 +374,7 @@
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="&quot;..\..\python-spe\include&quot;;&quot;..\..\hl2sdk-l4d2\public&quot;;&quot;..\..\hl2sdk-l4d2\public\tier0&quot;;&quot;..\..\hl2sdk-l4d2\public\tier1&quot;;&quot;..\..\hl2sdk-l4d2\game\server&quot;;&quot;..\..\hl2sdk-l4d2\game\shared&quot;;&quot;..\..\hl2sdk-l4d2\public\engine&quot;;.\sourcehook;.\dyncall\dyncall"
+				AdditionalIncludeDirectories="&quot;..\..\hl2sdk-l4d2\public&quot;;&quot;..\..\hl2sdk-l4d2\public\tier0&quot;;&quot;..\..\hl2sdk-l4d2\public\tier1&quot;;&quot;..\..\hl2sdk-l4d2\game\server&quot;;&quot;..\..\hl2sdk-l4d2\game\shared&quot;;&quot;..\..\hl2sdk-l4d2\public\engine&quot;;.\dyncall\include;.\python\include;.\sourcehook"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -401,17 +403,18 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/LTCG"
 				AdditionalDependencies="odbc32.lib odbccp32.lib python25.lib"
 				OutputFile="$(OutDir)\sp_extensions_l4d2.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;..\..\hl2sdk-l4d\lib\public&quot;;&quot;..\..\hl2sdk-l4d\lib\common&quot;;&quot;..\..\python-spe\libs&quot;"
-				IgnoreDefaultLibraryNames="libcmtd.lib"
+				AdditionalLibraryDirectories="&quot;..\..\hl2sdk-l4d\lib\public&quot;;&quot;..\..\hl2sdk-l4d\lib\common&quot;;.\dyncall\lib;.\python\libs"
+				IgnoreDefaultLibraryNames="libcmtd.lib;msvcrt.lib"
 				DelayLoadDLLs="python25.dll"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Release/serverplugin_empty.pdb"
+				ProgramDatabaseFile=".\Binaries\DbgInfo/sp_extensions_l4d2.pdb"
 				GenerateMapFile="true"
-				MapFileName=".\Release/serverplugin_empty.map"
+				MapFileName=".\Binaries\DbgInfo/sp_extensions_l4d2.map"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -442,7 +445,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release(OB)|Win32"
-			OutputDirectory="$(ConfigurationName)"
+			OutputDirectory=".\Binaries"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
@@ -455,7 +458,7 @@
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
-				CommandLine="attrib -r .\bin\sp_extensions_ep1.dll&#x0D;&#x0A;copy &quot;$(TargetPath)&quot; .\bin\sp_extensions_ep1.dll&#x0D;&#x0A;"
+				CommandLine=""
 				Outputs=""
 			/>
 			<Tool
@@ -480,7 +483,7 @@
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="&quot;..\..\python-spe\include&quot;;&quot;..\..\hl2sdk-ob\public&quot;;&quot;..\..\hl2sdk-ob\public\tier0&quot;;&quot;..\..\hl2sdk-ob\public\tier1&quot;;&quot;..\..\hl2sdk-ob\game\server&quot;;&quot;..\..\hl2sdk-ob\game\shared&quot;;&quot;..\..\hl2sdk-ob\public\engine&quot;;.\sourcehook;.\dyncall\dyncall"
+				AdditionalIncludeDirectories="&quot;..\..\hl2sdk-ob\public&quot;;&quot;..\..\hl2sdk-ob\public\tier0&quot;;&quot;..\..\hl2sdk-ob\public\tier1&quot;;&quot;..\..\hl2sdk-ob\game\server&quot;;&quot;..\..\hl2sdk-ob\game\shared&quot;;&quot;..\..\hl2sdk-ob\public\engine&quot;;.\dyncall\include;.\python\include;.\sourcehook"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;ENGINE_VERSION=2"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -509,17 +512,18 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/LTCG"
 				AdditionalDependencies="odbc32.lib odbccp32.lib python25.lib"
 				OutputFile="$(OutDir)\sp_extensions_ep2.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;..\..\hl2sdk-ob\lib\public&quot;;&quot;..\..\hl2sdk-ob\lib\common&quot;;&quot;..\..\python-spe\libs&quot;"
-				IgnoreDefaultLibraryNames="libcmtd.lib"
+				AdditionalLibraryDirectories="&quot;..\..\hl2sdk-ob\lib\public&quot;;&quot;..\..\hl2sdk-ob\lib\common&quot;;.\dyncall\lib;.\python\libs"
+				IgnoreDefaultLibraryNames="libcmtd.lib;msvcrt.lib"
 				DelayLoadDLLs="python25.dll"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Release/serverplugin_empty.pdb"
+				ProgramDatabaseFile=".\Binaries\DbgInfo/sp_extensions_ep2.pdb"
 				GenerateMapFile="true"
-				MapFileName=".\Release/serverplugin_empty.map"
+				MapFileName=".\Binaries\DbgInfo/sp_extensions_ep2.map"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -569,7 +573,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\sourcehook.cpp"
+				RelativePath=".\sourcehook\sourcehook.cpp"
 				>
 			</File>
 			<File
@@ -762,7 +766,7 @@
 			Name="Link Libraries"
 			>
 			<File
-				RelativePath=".\dyncall\dyncall\dyncall.lib"
+				RelativePath=".\dyncall\lib\dyncall.lib"
 				>
 			</File>
 			<Filter

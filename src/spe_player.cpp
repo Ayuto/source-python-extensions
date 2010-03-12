@@ -30,25 +30,6 @@
 #include "spe_python.h"
 
 //=================================================================================
-// Need these for L4D.
-//=================================================================================
-#if( ENGINE_VERSION >= 3 )
-	inline int IndexOfEdict(const edict_t *pEdict)
-	{
-		return (int)(pEdict - gpGlobals->baseEdict);
-	}
-
-	inline edict_t *PEntityOfEntIndex(int iEntIndex)
-	{
-		if (iEntIndex >= 0 && iEntIndex < gpGlobals->maxEntities)
-		{
-			return (edict_t *)(gpGlobals->baseEdict + iEntIndex);
-		}
-		return NULL;
-	}
-#endif 
-
-//=================================================================================
 // Returns a player instance as an int.
 //=================================================================================
 DECLARE_PYCMD( getPlayer, "Returns the address of the instance of the player." )
@@ -70,11 +51,7 @@ DECLARE_PYCMD( getPlayer, "Returns the address of the instance of the player." )
 	edict_t *pPlayer = NULL;
 	for(int i = 0; i < playerinfomanager->GetGlobalVars()->maxClients; i++)
 	{
-#if( ENGINE_VERSION >= 3 )
 		edict_t* player = PEntityOfEntIndex(i);
-#else
-		edict_t* player = engine->PEntityOfEntIndex(i);
-#endif
 
 		if(!player || player->IsFree())
 			continue;
@@ -83,7 +60,7 @@ DECLARE_PYCMD( getPlayer, "Returns the address of the instance of the player." )
 			continue;
 
 		if(engine->GetPlayerUserId(player) == userid)
-			return Py_BuildValue("i", (int)player->GetUnknown()->GetBaseEntity());
+			return Py_BuildValue("i", player->GetUnknown()->GetBaseEntity());
 	}
 
 	// If we are here, we didn't find a player with that userid.

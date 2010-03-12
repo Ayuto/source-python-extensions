@@ -80,7 +80,7 @@ DECLARE_PYCMD( getEntityIndex, "Returns the index of an entity." )
 		return Py_BuildValue("");
 	}
 
-	return Py_BuildValue("i", engine->IndexOfEdict(pEdict));
+	return Py_BuildValue("i", IndexOfEdict(pEdict));
 }
 
 //=================================================================================

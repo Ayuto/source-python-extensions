@@ -77,4 +77,29 @@ extern SourceHook::ISourceHook				*g_SHPtr;
 extern SourceHook::Impl::CSourceHookImpl	 g_SourceHook;
 extern int									 g_PLID;
 
+//=================================================================================
+// Need these for L4D.
+//=================================================================================
+inline int IndexOfEdict(const edict_t *pEdict)
+{
+#if( ENGINE_VERSION >= 3 )
+	return (int)(pEdict - gpGlobals->baseEdict);
+#else
+	return (int)engine->IndexOfEdict(pEdict);
+#endif
+}
+
+inline edict_t *PEntityOfEntIndex(int iEntIndex)
+{
+	if (iEntIndex >= 0 && iEntIndex < gpGlobals->maxEntities)
+	{
+#if( ENGINE_VERSION >= 3 )
+		return (edict_t *)(gpGlobals->baseEdict + iEntIndex);
+#else
+		return (edict_t *)(engine->PEntityOfEntIndex(iEntIndex));
+#endif
+	}
+	return NULL;
+}
+
 #endif // SPE_GLOBALS_H

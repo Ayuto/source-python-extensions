@@ -38,7 +38,7 @@ CModEventParser::CModEventParser()
 	//Parse out game specific events.
 	ParseEvents("resource/ModEvents.res");
 
-#if defined ENGINE_LEFT4DEAD
+#if( ENGINE_VERSION >= 3 )
 	ParseEvents("resource/serverevents.res");
 	ParseEvents("resource/gameevents.res");
 #endif

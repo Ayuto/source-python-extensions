@@ -483,7 +483,7 @@
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="&quot;..\..\hl2sdk-ob\public&quot;;&quot;..\..\hl2sdk-ob\public\tier0&quot;;&quot;..\..\hl2sdk-ob\public\tier1&quot;;&quot;..\..\hl2sdk-ob\game\server&quot;;&quot;..\..\hl2sdk-ob\game\shared&quot;;&quot;..\..\hl2sdk-ob\public\engine&quot;;.\python\windows\Include;.\dyncall\include;.\sourcehook"
+				AdditionalIncludeDirectories="&quot;..\..\hl2sdk-ob-valve\public&quot;;&quot;..\..\hl2sdk-ob-valve\public\tier0&quot;;&quot;..\..\hl2sdk-ob-valve\public\tier1&quot;;&quot;..\..\hl2sdk-ob-valve\game\server&quot;;&quot;..\..\hl2sdk-ob-valve\game\shared&quot;;&quot;..\..\hl2sdk-ob-valve\public\engine&quot;;.\python\windows\Include;.\dyncall\include;.\sourcehook"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;ENGINE_VERSION=2"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -1205,7 +1205,7 @@
 				Name="OB"
 				>
 				<File
-					RelativePath="..\..\hl2sdk-ob\lib\public\mathlib.lib"
+					RelativePath="..\..\hl2sdk-ob-valve\lib\public\mathlib.lib"
 					>
 					<FileConfiguration
 						Name="Release|Win32"
@@ -1233,7 +1233,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\hl2sdk-ob\lib\public\tier0.lib"
+					RelativePath="..\..\hl2sdk-ob-valve\lib\public\tier0.lib"
 					>
 					<FileConfiguration
 						Name="Release|Win32"
@@ -1261,7 +1261,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\hl2sdk-ob\lib\public\tier1.lib"
+					RelativePath="..\..\hl2sdk-ob-valve\lib\public\tier1.lib"
 					>
 					<FileConfiguration
 						Name="Release|Win32"
@@ -1289,7 +1289,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\hl2sdk-ob\lib\public\tier2.lib"
+					RelativePath="..\..\hl2sdk-ob-valve\lib\public\tier2.lib"
 					>
 					<FileConfiguration
 						Name="Release|Win32"
@@ -1317,7 +1317,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\hl2sdk-ob\lib\public\vstdlib.lib"
+					RelativePath="..\..\hl2sdk-ob-valve\lib\public\vstdlib.lib"
 					>
 					<FileConfiguration
 						Name="Release|Win32"

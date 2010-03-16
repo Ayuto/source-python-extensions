@@ -4,15 +4,15 @@
 ###########################
 ### ADD OTHER SDKs HERE ###
 ###########################
-HL2SDK_EP1 = ../../sourcesdk-ep1
-HL2SDK_EP2 = ../../sourcesdk-ep2
-HL2SDK_L4D = ../../sourcesdk-l4d
+HL2SDK_EP1 = ../../hl2sdk
+HL2SDK_EP2 = ../../hl2sdk-ep2
+HL2SDK_L4D = ../../hl2sdk-l4d
 
 #######################
 ### OTHER LIBRARIES ###
 #######################
-PYTHON  = ../../Python2.5.1
-DYNCALL = ../../dyncall
+PYTHON  = ./python
+DYNCALL = ./dyncall
 SOURCEHOOK = ./sourcehook
 
 ###################################
@@ -53,7 +53,7 @@ ifeq "$(ENGINE)" "l4d"
  HL2SDK = $(HL2SDK_L4D)
  HL2PUB = $(HL2SDK_L4D)/public
  HL2LIB = $(HL2SDK_L4D)/linux_sdk
- CFLAGS = -DENGINE_VER=3
+ CFLAGS = -DENGINE_VERSION=3
  INCLUDE += -I$(HL2SDK_L4D)/public/game/server
  SRCDS = $(SRCDS_BASE)/l4d
  BINARY = sp_extensions_l4d_i486.so
@@ -65,7 +65,7 @@ ifeq "$(ENGINE)" "ob"
  HL2SDK = $(HL2SDK_OB)
  HL2PUB = $(HL2SDK_OB)/public
  HL2LIB = $(HL2SDK_OB)/linux_sdk
- CFLAGS += -DENGINE_VER=2
+ CFLAGS += -DENGINE_VERSION=2
  INCLUDE += -I$(HL2SDK_OB)/public/game/server
  SRCDS = $(SRCDS_BASE)/orangebox
  BINARY = sp_extensions_ep2_i486.so
@@ -77,7 +77,7 @@ ifeq "$(ENGINE)" "ep1"
  HL2SDK = $(HL2SDK_EP1)
  HL2PUB = $(HL2SDK_EP1)/public
  HL2LIB = $(HL2SDK_EP1)/linux_sdk
- CFLAGS = -DENGINE_VER=1
+ CFLAGS = -DENGINE_VERSION=1
  SRCDS = $(SRCDS_BASE)/episode1
  BINARY = sp_extensions_ep1_i486.so
  override ENGSET = true
@@ -88,12 +88,12 @@ endif
 #######################
 LINK = $(HL2LIB)/tier1_i486.a \
 	$(HL2LIB)/mathlib_i486.a \
-    libdyncall_s.a \
-    libdynload_s.a \
-	vstdlib_i486.so \
-	tier0_i486.so \
+	$(DYNCALL)/lib/libdyncall_s.a \
+	$(DYNCALL)/lib/libdynload_s.a \
 	/usr/lib/gcc/i386-redhat-linux/3.4.6/libstdc++.a \
 	/usr/lib/gcc/i386-redhat-linux/3.4.6/libgcc_eh.a \
+	vstdlib_i486.so \
+	tier0_i486.so \
 	libpython2.5.so.1.0 -static-libgcc
 
 LINK += -Wl,--rpath,\$$ORIGIN/eventscripts/_engines/python/Lib/plat-linux2
@@ -110,16 +110,16 @@ INCLUDE = -I. \
 	-I$(HL2PUB)/vstdlib \
 	-I$(HL2SDK)/tier1 \
 	-I$(HL2SDK)/dlls \
-	-I$(PYTHON)/Include \
-    -I$(SOURCEHOOK) \
-    -I$(DYNCALL)/dyncall
+	-I$(PYTHON)/linux/Include \
+    	-I$(SOURCEHOOK) \
+    	-I$(DYNCALL)/include
 
 ifeq "$(DEBUG)" "true"
 	BIN_DIR = Debug
-	CFLAGS = $(DEBUG_FLAGS)
+	CFLAGS += $(DEBUG_FLAGS)
 else
 	BIN_DIR = Release
-	CFLAGS = $(OPT_FLAGS)
+	CFLAGS += $(OPT_FLAGS)
 endif
 
 GCC_VERSION := $(shell $(CPP) -dumpversion >&1 | cut -b1)
@@ -140,10 +140,14 @@ $(BIN_DIR)/%.o: %.cpp
 
 all: check
 	mkdir -p $(BIN_DIR)
-	ln -sf $(SRCDS)/bin/vstdlib_i486.so vstdlib_i486.so
-	ln -sf $(SRCDS)/bin/tier0_i486.so tier0_i486.so
-	$(MAKE) sourcemm
-	rm -rf $(BINARY)
+	# Create links to the shared objects
+	cp $(HL2LIB)/tier0_i486.so tier0_i486.so
+	cp $(HL2LIB)/vstdlib_i486.so vstdlib_i486.so
+	cp $(PYTHON)/libs/libpython2.5.so.1.0 libpython2.5.so.1.0
+	# Build SPE
+	$(MAKE) spe
+	# Copy to the final directory
+	mv $(BIN_DIR)/$(BINARY) ./Binaries/$(BINARY)
 
 check:
 	if [ "$(ENGSET)" = "false" ]; then \
@@ -151,7 +155,7 @@ check:
 		exit 1; \
 	fi
 
-sourcemm: check $(OBJ_LINUX)
+spe: check $(OBJ_LINUX)
 	$(CPP) $(INCLUDE) -m32 $(CFLAGS) $(OBJ_LINUX) $(LINK) -shared -ldl -lm -o$(BIN_DIR)/$(BINARY)
 
 debug:	

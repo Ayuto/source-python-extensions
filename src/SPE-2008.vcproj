@@ -156,7 +156,7 @@
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="..\..\hl2sdk\public;..\..\hl2sdk\public\tier0;..\..\hl2sdk\public\tier1;..\..\hl2sdk\dlls;..\..\hl2sdk\game_shared;..\..\hl2sdk\public\engine;.\dyncall\include;.\python\include;.\sourcehook"
+				AdditionalIncludeDirectories="..\..\hl2sdk\public;..\..\hl2sdk\public\tier0;..\..\hl2sdk\public\tier1;..\..\hl2sdk\dlls;..\..\hl2sdk\game_shared;..\..\hl2sdk\public\engine;.\python\windows\Include;.\dyncall\include;.\sourcehook"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;ENGINE_VERSION=1"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -265,7 +265,7 @@
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="&quot;..\..\hl2sdk-l4d\public&quot;;&quot;..\..\hl2sdk-l4d\public\tier0&quot;;&quot;..\..\hl2sdk-l4d\public\tier1&quot;;&quot;..\..\hl2sdk-l4d\game\server&quot;;&quot;..\..\hl2sdk-l4d\game\shared&quot;;&quot;..\..\hl2sdk-l4d\public\engine&quot;;.\python\include;.\dyncall\include;.\sourcehook"
+				AdditionalIncludeDirectories="&quot;..\..\hl2sdk-l4d\public&quot;;&quot;..\..\hl2sdk-l4d\public\tier0&quot;;&quot;..\..\hl2sdk-l4d\public\tier1&quot;;&quot;..\..\hl2sdk-l4d\game\server&quot;;&quot;..\..\hl2sdk-l4d\game\shared&quot;;&quot;..\..\hl2sdk-l4d\public\engine&quot;;.\python\windows\Include;.\dyncall\include;.\sourcehook"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;ENGINE_VERSION=3"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -374,7 +374,7 @@
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="&quot;..\..\hl2sdk-l4d2\public&quot;;&quot;..\..\hl2sdk-l4d2\public\tier0&quot;;&quot;..\..\hl2sdk-l4d2\public\tier1&quot;;&quot;..\..\hl2sdk-l4d2\game\server&quot;;&quot;..\..\hl2sdk-l4d2\game\shared&quot;;&quot;..\..\hl2sdk-l4d2\public\engine&quot;;.\dyncall\include;.\python\include;.\sourcehook"
+				AdditionalIncludeDirectories="&quot;..\..\hl2sdk-l4d2\public&quot;;&quot;..\..\hl2sdk-l4d2\public\tier0&quot;;&quot;..\..\hl2sdk-l4d2\public\tier1&quot;;&quot;..\..\hl2sdk-l4d2\game\server&quot;;&quot;..\..\hl2sdk-l4d2\game\shared&quot;;&quot;..\..\hl2sdk-l4d2\public\engine&quot;;.\python\windows\Include;.\dyncall\include;.\sourcehook"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -483,7 +483,7 @@
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="&quot;..\..\hl2sdk-ob\public&quot;;&quot;..\..\hl2sdk-ob\public\tier0&quot;;&quot;..\..\hl2sdk-ob\public\tier1&quot;;&quot;..\..\hl2sdk-ob\game\server&quot;;&quot;..\..\hl2sdk-ob\game\shared&quot;;&quot;..\..\hl2sdk-ob\public\engine&quot;;.\dyncall\include;.\python\include;.\sourcehook"
+				AdditionalIncludeDirectories="&quot;..\..\hl2sdk-ob\public&quot;;&quot;..\..\hl2sdk-ob\public\tier0&quot;;&quot;..\..\hl2sdk-ob\public\tier1&quot;;&quot;..\..\hl2sdk-ob\game\server&quot;;&quot;..\..\hl2sdk-ob\game\shared&quot;;&quot;..\..\hl2sdk-ob\public\engine&quot;;.\python\windows\Include;.\dyncall\include;.\sourcehook"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;ENGINE_VERSION=2"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -573,7 +573,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\sourcehook\sourcehook.cpp"
+				RelativePath=".\sourcehook.cpp"
 				>
 			</File>
 			<File

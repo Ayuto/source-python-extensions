@@ -110,6 +110,9 @@ bool CSPE_Plugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn ga
 #if( ENGINE_VERSION >= 2 )
 	ConnectTier1Libraries( &interfaceFactory, 1 );
 	ConnectTier2Libraries( &interfaceFactory, 1 );
+	ConVar_Register( 0 );
+#else
+	InitCVars( interfaceFactory ); // register any cvars we have defined
 #endif
 
 	playerinfomanager = (IPlayerInfoManager *)gameServerFactory(INTERFACEVERSION_PLAYERINFOMANAGER,NULL);
@@ -132,9 +135,6 @@ bool CSPE_Plugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn ga
 	{
 		gpGlobals = playerinfomanager->GetGlobalVars();
 	}
-
-	InitCVars( interfaceFactory ); // register any cvars we have defined
-	// MathLib_Init( 2.2f, 2.2f, 0.0f, 2.0f );
 
 	// Get a pointer that is inside the server.dll memory image.
 	laddr = (void *)gameServerFactory;
@@ -172,13 +172,8 @@ bool CSPE_Plugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn ga
 	// Setup the hook manager.
 	gpHookMan = new CSPEHookManager( gameeventmanager );
 
-
 	// Make the version variable public
 	spe_version_var.AddFlags(FCVAR_REPLICATED | FCVAR_NOTIFY);
-	
-#if( ENGINE_VERSION >= 2 )
-	ConVar_Register( 0 );
-#endif
 
     // Initialize python
 	return EnablePython();
@@ -189,7 +184,8 @@ bool CSPE_Plugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn ga
 //=================================================================================
 void CSPE_Plugin::Unload( void )
 {
-	gameeventmanager->RemoveListener( this ); // make sure we are unloaded from the event system
+	// NOTE: Do we even listen to events?
+	// gameeventmanager->RemoveListener( this );
 
 	delete g_pParser;
 	delete gpHookMan;
@@ -228,7 +224,7 @@ void CSPE_Plugin::UnPause( void )
 //=================================================================================
 const char *CSPE_Plugin::GetPluginDescription( void )
 {
-	return "Source Python Extensions, 2009, your-name-here";
+	return "Source Python Extensions, 2009 - 2010, your-name-here";
 }
 
 //=================================================================================

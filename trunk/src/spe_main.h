@@ -38,7 +38,7 @@
 #define PLUGIN_AUTHOR "your-name-here"
 
 /* YOUR PLUGIN VERSION HERE */
-#define PLUGIN_VERSION "1.5.0e"
+#define PLUGIN_VERSION "1.5.0f"
 
 //=================================================================================
 // Includes

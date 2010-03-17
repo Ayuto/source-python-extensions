@@ -97,26 +97,6 @@ namespace SourceHook
 
 			m_Size++;
 		}
-
-		void push_front(const T &obj)
-		{
-			insert(begin(), obj);
-		}
-
-		void push_sorted(const T &obj)
-		{
-			iterator iter;
-			for (iter = begin(); iter != end(); ++iter)
-			{
-				if (obj < *iter)
-				{
-					insert(iter, obj);
-					return;
-				}
-			}
-			push_back(obj);
-		}
-
 		size_t size() const
 		{
 			return m_Size;
@@ -141,10 +121,6 @@ namespace SourceHook
 		bool empty() const
 		{
 			return (m_Size == 0);
-		}
-		T & front()
-		{
-			return m_Head->next->obj;
 		}
 		T & back()
 		{
@@ -231,11 +207,6 @@ namespace SourceHook
 			{
 				return (m_This == where.m_This);
 			}
-
-			operator bool()
-			{
-				return m_This != NULL;
-			}
 		private:
 			ListNode *m_This;
 		};
@@ -315,7 +286,6 @@ namespace SourceHook
 			return *this;
 		}
 	};
-
 };	//NAMESPACE
 
 #endif //_INCLUDE_CSDM_LIST_H

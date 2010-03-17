@@ -74,7 +74,7 @@ extern void							*server_handle;
 //=================================================================================
 using namespace SourceHook;
 extern SourceHook::ISourceHook				*g_SHPtr;
-extern SourceHook::Impl::CSourceHookImpl	 g_SourceHook;
+extern SourceHook::CSourceHookImpl	 g_SourceHook;
 extern int									 g_PLID;
 
 //=================================================================================

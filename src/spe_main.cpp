@@ -55,7 +55,7 @@ void						*server_handle		= NULL;
 // Sourcehook variables
 //////////////////////////////////////////////////////////////////////////
 SourceHook::ISourceHook				*g_SHPtr;
-SourceHook::Impl::CSourceHookImpl	 g_SourceHook;
+SourceHook::CSourceHookImpl	 g_SourceHook;
 int									 g_PLID;
 
 //=================================================================================

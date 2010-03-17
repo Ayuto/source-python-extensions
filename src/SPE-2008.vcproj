@@ -186,7 +186,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/LTCG"
-				AdditionalDependencies="python25.lib tier0.lib tier1.lib mathlib.lib vstdlib.lib"
+				AdditionalDependencies="python25.lib tier0.lib tier1.lib mathlib.lib vstdlib.lib dyncall.lib"
 				OutputFile="$(OutDir)\sp_extensions_ep1.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"

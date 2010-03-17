@@ -39,12 +39,11 @@
 // We need to align addr down to pagesize on linux
 // We assume PAGESIZE is a power of two
 #		define SH_LALIGN(x) (void*)((uintptr_t)(x) & ~(PAGESIZE-1))
-#		define SH_LALDIF(x) ((uintptr_t)(x) % PAGESIZE)
+#		define SH_LALDIF(x) ((uintptr_t)(x) & (PAGESIZE-1))
 # else
 #		error Unsupported OS/Compiler
 # endif
 
-#include "sh_list.h"
 
 namespace SourceHook
 {
@@ -52,7 +51,7 @@ namespace SourceHook
 	{
 # if SH_XP == SH_XP_POSIX
 		return mprotect(SH_LALIGN(addr), len + SH_LALDIF(addr), access)==0 ? true : false;
-# elif SH_XP == SH_XP_WINAPI
+# else
 		DWORD tmp;
 		DWORD prot;
 		switch (access)
@@ -205,8 +204,6 @@ namespace SourceHook
 				dummy = p[i];
 
 			g_BadReadCalled = false;
-
-			sigaction(SIGBUS, &osa, NULL);
 
 			return true;
 #elif SH_XP == SH_XP_WINAPI

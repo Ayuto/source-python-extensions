@@ -227,6 +227,8 @@ namespace SourceHook
 			}
 		}
 	public:
+		friend class iterator;
+		friend class const_iterator;
 		class iterator
 		{
 			friend class THash;
@@ -522,8 +524,6 @@ namespace SourceHook
 				return;
 			iter.erase();
 		}
-	friend class iterator;
-	friend class const_iterator;
 	private:
 		NodePtr	*m_Buckets;
 		size_t m_numBuckets;

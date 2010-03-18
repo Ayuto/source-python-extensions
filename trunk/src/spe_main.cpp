@@ -30,9 +30,9 @@
 #include "spe_main.h"
 #include "spe_globals.h"
 #include "spe_python.h"
-
 #include "spe_hook_manager.h"
 #include "spe_event_parser.h"
+#include "svn_build.h"
 
 #ifdef _LINUX
 #include <dlfcn.h>
@@ -72,7 +72,7 @@ EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CSPE_Plugin, IServerPluginCallbacks, INTERFACE
 //=================================================================================
 // Purpose: Source Python Extensions version variable.
 //=================================================================================
-static ConVar spe_version_var("spe_version_var", PLUGIN_VERSION, 0, "Version of Source Python Extensions.");
+static ConVar spe_version_var("spe_version_var", "", 0, "Version of Source Python Extensions.");
 
 //=================================================================================
 // Purpose: Source Python Extensions engine variable
@@ -171,6 +171,13 @@ bool CSPE_Plugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn ga
 
 	// Setup the hook manager.
 	gpHookMan = new CSPEHookManager( gameeventmanager );
+
+	// Print all this information to a string
+	char szVersionInfo[1024];
+	Q_snprintf( szVersionInfo, sizeof(szVersionInfo), "%s r%s", PLUGIN_VERSION, SVN_WC_REVISION );
+
+	// Set our version variable to reflect this
+	spe_version_var.SetValue( szVersionInfo );
 
 	// Make the version variable public
 	spe_version_var.AddFlags(FCVAR_REPLICATED | FCVAR_NOTIFY);
@@ -337,7 +344,9 @@ void CSPE_Plugin::FireGameEvent( IGameEvent * event )
 // Called when a cvar query value is finished
 //=================================================================================
 #if( ENGINE_VERSION >= 2 )
-void CSPE_Plugin::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *pPlayerEntity, EQueryCvarValueStatus eStatus, const char *pCvarName, const char *pCvarValue )
+void CSPE_Plugin::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *pPlayerEntity, 
+										   EQueryCvarValueStatus eStatus, const char *pCvarName, 
+										   const char *pCvarValue )
 {
 	// Do nothing
 }
@@ -349,6 +358,7 @@ void CSPE_Plugin::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *
 CON_COMMAND( spe_version, "prints the version of the empty plugin" )
 {
 	char szInfo[1024];
-	V_snprintf(szInfo, 1024, "%s, %s, %s\n", PLUGIN_NAME, PLUGIN_VERSION, PLUGIN_AUTHOR);
+	V_snprintf(szInfo, 1024, "%s, %s revision %s, %s\n", PLUGIN_NAME, PLUGIN_VERSION, 
+			SVN_WC_REVISION, PLUGIN_AUTHOR);
 	Msg(szInfo);
 }

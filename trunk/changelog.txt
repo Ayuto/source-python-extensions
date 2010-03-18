@@ -3,14 +3,21 @@
 ################################
 
 ============================
-VERSION: 1.5.0f
-DATE: 3/15/2010
-THANKS:
+VERSION: 1.5.0f r71
+DATE: 3/18/2010
+THANKS: 
+    - The GunGame Development Team
+        (Warren Alpert)
+    - .3lite for all of the coredumps.
+    - Carbon16 for windows 
+        troubleshooting.
+    - BAILOPAN (MOVAPS blogpost).
 ============================
 
 C++ SIDE:
-    * Added TF2 support.
-    * Bumped up version number.
+    * Added SVN revisioning to spe_version_var.
+    * Fixed linux crash due to misaligned stack.
+    * Fixed linux crash due to incorrect version of sourcehook.
 
 ============================
 VERSION: 1.5.0e

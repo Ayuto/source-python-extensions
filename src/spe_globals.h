@@ -65,17 +65,13 @@ extern CGlobalVars					*gpGlobals;
 extern DCCallVM						*vm;
 extern void							*laddr;
 
-#ifdef _LINUX
-extern void							*server_handle;
-#endif
-
 //=================================================================================
 // SourceHook related variables.
 //=================================================================================
-using namespace SourceHook;
-extern SourceHook::ISourceHook				*g_SHPtr;
-extern SourceHook::CSourceHookImpl	 g_SourceHook;
-extern int									 g_PLID;
+using namespace						SourceHook;
+extern SourceHook::ISourceHook	   *g_SHPtr;
+extern SourceHook::CSourceHookImpl  g_SourceHook;
+extern int						    g_PLID;
 
 //=================================================================================
 // Need these for L4D.

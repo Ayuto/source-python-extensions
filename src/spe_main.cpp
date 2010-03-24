@@ -36,6 +36,8 @@
 
 #ifdef _LINUX
 #include <dlfcn.h>
+#else
+#include <windows.h>
 #endif
 
 //=================================================================================
@@ -136,30 +138,41 @@ bool CSPE_Plugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn ga
 		gpGlobals = playerinfomanager->GetGlobalVars();
 	}
 
-	// Get a pointer that is inside the server.dll memory image.
-	laddr = (void *)gameServerFactory;
-
 	// Setup dyncall
 	vm = dcNewCallVM(4026);
 
-#ifdef _LINUX
-	// Setup the server_i486.so handle
-	char sGameDir[300];
+	// Get the game directory
+	char szServerBinary[300];
+	engine->GetGameDir( szServerBinary, 300 );
 
-    if( engine )
+	// Add the bin dir
+	strcat( szServerBinary, "/bin/server");
+
+	// OS specific stuff
+#ifdef _WIN32
+	
+	// Use DLL extension
+	strcat( szServerBinary, ".dll" );
+
+	// Load library the handle
+	laddr = (void *)LoadLibrary(szServerBinary);
+
+#else 
+
+	// Use _i486.so extension
+	strcat( szServerBinary, "_i486.so" );
+
+	// dlopen the library
+    laddr = dlopen( szServerBinary, RTLD_NOW );
+
+    if( laddr == NULL )
     {
-        engine->GetGameDir( sGameDir, 300 );
-        strcat( sGameDir, "/bin/server_i486.so" );
-        server_handle = dlopen( sGameDir, RTLD_NOW );
-
-        if( server_handle == NULL )
-        {
-            DevMsg("[SPE]: Failed to open server image.\n");
-            return false;
-        }
-    
-        Msg("[SPE]: Handle address is %d.\n", server_handle);
+        DevMsg("[SPE]: Failed to open server image.\n");
+        return false;
     }
+
+    Msg("[SPE]: Handle address is %d.\n", laddr);
+
 #endif
 
 	// Setup sourcehook
@@ -204,10 +217,10 @@ void CSPE_Plugin::Unload( void )
 	DisconnectTier1Libraries();
 #endif
 
-#ifdef _LINUX
-    if( server_handle )
-        dlclose(server_handle);
-#endif
+// #ifdef _LINUX
+//     if( laddr )
+//         dlclose(server_handle);
+// #endif
 }
 
 //=================================================================================

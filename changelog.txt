@@ -3,6 +3,20 @@
 ################################
 
 ============================
+VERSION: 1.5.0f r72
+DATE: 3/21/2010
+THANKS: 
+    - The GunGame Development Team
+        (Warren Alpert)
+============================
+
+C++ SIDE:
+    * Fixed an issue where SPE would not find signatures if Metamod: Source was loaded
+        from gameinfo.txt.
+
+
+
+============================
 VERSION: 1.5.0f r71
 DATE: 3/18/2010
 THANKS: 

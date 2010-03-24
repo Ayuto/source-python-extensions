@@ -216,7 +216,7 @@ DECLARE_PYCMD( findSymbol, "Returns the address of a symbol." )
     }
 
     // Find the address of the symbol
-    void *addr = dlsym( server_handle, symbol );
+    void *addr = dlsym( laddr, symbol );
 
     // Validate it
     if( !addr )

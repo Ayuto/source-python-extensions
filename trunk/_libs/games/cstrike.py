@@ -104,5 +104,10 @@ def dropWeapon( userid, weapon_name, throwWeapon=True ):
         # Return False since the weapon instance was not valid
         return False
 
-    # Make them drop it
-    return spe.call('DropWeapon', pPlayer, weapon_instance, 0, throwWeapon)
+    # Throw the weapon?
+    if throwWeapon:
+        return spe.call('DropWeapon', pPlayer, weapon_instance, 0, 1)
+    
+    # Otherwise, don't.
+    return spe.call('DropWeapon', pPlayer, weapon_instance, 0, 0)
+        

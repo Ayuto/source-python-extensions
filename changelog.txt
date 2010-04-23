@@ -3,6 +3,18 @@
 ################################
 
 ============================
+VERSION: 1.5.0f r76
+DATE: 4/23/2010
+THANKS: 
+    - The GunGame Development Team
+        (Warren Alpert, XE_ManUp)
+    - BLOOD|Demo (GunGame Tester)
+============================
+
+C++ SIDE:
+    * Fixed dlclose being called on a NULL pointer when SPE is unloaded.
+
+============================
 VERSION: 1.5.0f r73
 DATE: 3/21/2010
 THANKS: 

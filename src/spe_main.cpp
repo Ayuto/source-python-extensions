@@ -51,7 +51,6 @@ IEngineTrace				*enginetrace		= NULL;
 CGlobalVars					*gpGlobals			= NULL;
 DCCallVM					*vm					= NULL;
 void						*laddr				= NULL;
-void						*server_handle		= NULL;
 
 //////////////////////////////////////////////////////////////////////////
 // Sourcehook variables
@@ -217,10 +216,12 @@ void CSPE_Plugin::Unload( void )
 	DisconnectTier1Libraries();
 #endif
 
-// #ifdef _LINUX
-//     if( laddr )
-//         dlclose(server_handle);
-// #endif
+#ifdef _LINUX
+    if( laddr )
+	{
+        dlclose(laddr);
+	}
+#endif
 }
 
 //=================================================================================

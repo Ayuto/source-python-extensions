@@ -65,7 +65,7 @@ void CSPEHookManager::AddPreHook(char *szEventName, PyObject *pyFunc)
 	//Loop through our event list, see if there already is an event with a registered hook.
 	EventHook_t *p = NULL;
 
-	DevMsg("[SPE]: Adding a hook for %s.\n", szEventName);
+	DevMsg(1, "[SPE]: Adding a hook for %s.\n", szEventName);
 
 	//Do we have a PY_EVENT_HOOK struct for this event?
 	for(int i = 0; i < m_EventHooks.Count(); i++)
@@ -76,7 +76,7 @@ void CSPEHookManager::AddPreHook(char *szEventName, PyObject *pyFunc)
 		{
 			if( strcmp(szEventName, temp->szEventName) == 0 )
 			{
-				DevMsg("Event is %s.\n", temp->szEventName);
+				DevMsg(2, "Event is %s.\n", temp->szEventName);
 				p = temp;
 				break;
 			}
@@ -86,7 +86,7 @@ void CSPEHookManager::AddPreHook(char *szEventName, PyObject *pyFunc)
 	//If p is still NULL, we need to make the hook and add it.
 	if(!p)
 	{
-		DevMsg("Adding a py_event_hook.\n");
+		DevMsg(1, "Adding a py_event_hook.\n");
 		
 		//Create a hook struct
 		p = new EventHook_t();
@@ -111,7 +111,7 @@ void CSPEHookManager::AddPreHook(char *szEventName, PyObject *pyFunc)
 		//Manually add a listener for it.
 		if( !m_Manager->AddListener(this, szEventName, true) )
 		{
-			DevMsg("[SPE]: Could not add a listener for event %s!\n", szEventName);
+			DevMsg(1, "[SPE]: Could not add a listener for event %s!\n", szEventName);
 		}
 	}
 }
@@ -130,7 +130,7 @@ void CSPEHookManager::RemovePreHook(char *szEventName, PyObject *pyFunc)
 		{
 			//Remove it pyFunc is in the list.
 			p->funcList.FindAndRemove( pyFunc );
-			DevMsg("Size of funcList is now %i\n", p->funcList.Count());
+			DevMsg(1, "Size of funcList is now %i\n", p->funcList.Count());
 		}
 	}
 }
@@ -145,11 +145,11 @@ bool CSPEHookManager::EventFire_Pre(IGameEvent *pEvent, bool bDontBroadcast)
 
 	//Check to see if we have any hooks registered for this event.
 	const char* name = pEvent->GetName();
-	DevMsg("[SPE]: Event name %s\n", name);
+	DevMsg(2, "[SPE]: Event name %s\n", name);
 
 	EventHook_t* p = NULL;
 
-	DevMsg("[SPE]: There are %d hooks in m_EventHooks.Count()\n", m_EventHooks.Count());
+	DevMsg(2, "[SPE]: There are %d hooks in m_EventHooks.Count()\n", m_EventHooks.Count());
 
 	//Get the PY_EVENT_HOOK structure
 	for(int i = 0; i < m_EventHooks.Count(); i++)
@@ -160,7 +160,7 @@ bool CSPEHookManager::EventFire_Pre(IGameEvent *pEvent, bool bDontBroadcast)
 		{
 			if(strcmp(name, temp->szEventName) == 0)
 			{
-				DevMsg("Found a struct!\n");
+				DevMsg(2, "Found a struct!\n");
 				p = temp;
 				break;
 			}
@@ -169,7 +169,7 @@ bool CSPEHookManager::EventFire_Pre(IGameEvent *pEvent, bool bDontBroadcast)
 
 	if( !p )
 	{
-		DevMsg("[SPE]: Could not find a python function hook.\n");
+		DevMsg(2, "[SPE]: Could not find a python function hook.\n");
 		RETURN_META_VALUE(MRES_HANDLED, false);
 	}
 
@@ -180,16 +180,16 @@ bool CSPEHookManager::EventFire_Pre(IGameEvent *pEvent, bool bDontBroadcast)
 	{
 		PyObject* pyFunc = p->funcList.Element(i);
 
-		DevMsg("[SPE]: Looping!\n");
+		DevMsg(2, "[SPE]: Looping!\n");
 		if(pyFunc)
 		{
-			DevMsg("[SPE]: Calling the function!\n");
+			DevMsg(2, "[SPE]: Calling the function!\n");
 
 			PyEval_CallFunction( pyFunc, "(O)", pDict );
 		}
 	}
 
-	DevMsg("[SPE]: Executed blocks for event %s!\n", name);
+	DevMsg(2, "[SPE]: Executed blocks for event %s!\n", name);
 
 	RETURN_META_VALUE(MRES_HANDLED, true);
 }

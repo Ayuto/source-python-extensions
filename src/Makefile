@@ -68,23 +68,11 @@ ifeq "$(ENGINE)" "ob"
  CFLAGS += -DENGINE_VERSION=2
  INCLUDE = -I$(HL2SDK_OB)/game/server
  SRCDS = $(SRCDS_BASE)/orangebox
- BINARY = sp_extensions_ep2_i486.so
+ BINARY = sp_extensions_ep2.so
  LINK += $(HL2LIB)/tier2_i486.a \
 	$(HL2LIB)/tier3_i486.a \
 	libtier0.so \
 	libvstdlib.so
- override ENGSET = true
-endif
-
-# Using the Episode 1 engine?
-ifeq "$(ENGINE)" "ep1"
- HL2SDK = $(HL2SDK_EP1)
- HL2PUB = $(HL2SDK_EP1)/public
- HL2LIB = $(HL2SDK_EP1)/linux_sdk
- CFLAGS = -DENGINE_VERSION=1
- SRCDS = $(SRCDS_BASE)/episode1
- BINARY = sp_extensions_ep1_i486.so
- LINK += vstdlib_i486.so tier0_i486.so
  override ENGSET = true
 endif
 
@@ -144,11 +132,11 @@ $(BIN_DIR)/%.o: %.cpp
 all: check
 	mkdir -p $(BIN_DIR)
 
-ifeq "$(ENGINE)" "ob"
 	# Create links to the shared objects
 	cp $(HL2LIB)/vstdlib_i486.so libvstdlib.so
 	cp $(HL2LIB)/tier0_i486.so libtier0.so
-endif
+
+	# Copy python
 	cp $(PYTHON)/libs/libpython2.5.so.1.0 libpython2.5.so.1.0
 
 	# Build SPE
@@ -159,7 +147,7 @@ endif
 
 check:
 	if [ "$(ENGSET)" = "false" ]; then \
-		echo "You must supply ENGINE=orangebox or ENGINE=ep1 or ENGINE=l4d."; \
+		echo "You must supply ENGINE=orangebox or ENGINE=l4d."; \
 		exit 1; \
 	fi
 

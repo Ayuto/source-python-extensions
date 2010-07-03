@@ -158,8 +158,14 @@ bool CSPE_Plugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn ga
 
 #else 
 
+	// For OB and higher
+#if( ENGINE_VERSION >= 2 )
+	// No extension.
+	strcat( szServerBinary, ".so" );
+#else
 	// Use _i486.so extension
 	strcat( szServerBinary, "_i486.so" );
+#endif
 
 	// dlopen the library
     laddr = dlopen( szServerBinary, RTLD_NOW );
@@ -369,10 +375,10 @@ void CSPE_Plugin::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *
 //=================================================================================
 // Purpose: an example of how to implement a new command
 //=================================================================================
-CON_COMMAND( spe_version, "prints the version of the empty plugin" )
-{
-	char szInfo[1024];
-	V_snprintf(szInfo, 1024, "%s, %s revision %s, %s\n", PLUGIN_NAME, PLUGIN_VERSION, 
-			SVN_WC_REVISION, PLUGIN_AUTHOR);
-	Msg(szInfo);
-}
+// CON_COMMAND( spe_version, "prints the version of the empty plugin" )
+// {
+// 	char szInfo[1024];
+// 	V_snprintf(szInfo, 1024, "%s, %s revision %s, %s\n", PLUGIN_NAME, PLUGIN_VERSION, 
+// 			SVN_WC_REVISION, PLUGIN_AUTHOR);
+// 	Msg(szInfo);
+// }

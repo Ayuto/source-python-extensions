@@ -5,7 +5,7 @@
 ### ADD OTHER SDKs HERE ###
 ###########################
 HL2SDK_EP1 = ../../hl2sdk
-HL2SDK_EP2 = ../../hl2sdk-ep2
+HL2SDK_OB  = ../../hl2sdk-ob-valve
 HL2SDK_L4D = ../../hl2sdk-l4d
 
 #######################
@@ -64,11 +64,15 @@ endif
 ifeq "$(ENGINE)" "ob"
  HL2SDK = $(HL2SDK_OB)
  HL2PUB = $(HL2SDK_OB)/public
- HL2LIB = $(HL2SDK_OB)/linux_sdk
+ HL2LIB = $(HL2SDK_OB)/lib/linux
  CFLAGS += -DENGINE_VERSION=2
- INCLUDE += -I$(HL2SDK_OB)/public/game/server
+ INCLUDE = -I$(HL2SDK_OB)/game/server
  SRCDS = $(SRCDS_BASE)/orangebox
  BINARY = sp_extensions_ep2_i486.so
+ LINK += $(HL2LIB)/tier2_i486.a \
+	$(HL2LIB)/tier3_i486.a \
+	libtier0.so \
+	libvstdlib.so
  override ENGSET = true
 endif
 
@@ -80,20 +84,19 @@ ifeq "$(ENGINE)" "ep1"
  CFLAGS = -DENGINE_VERSION=1
  SRCDS = $(SRCDS_BASE)/episode1
  BINARY = sp_extensions_ep1_i486.so
+ LINK += vstdlib_i486.so tier0_i486.so
  override ENGSET = true
 endif
 
 #######################
 ### LINKING OPTIONS ###
 #######################
-LINK = $(HL2LIB)/tier1_i486.a \
+LINK += $(HL2LIB)/tier1_i486.a \
 	$(HL2LIB)/mathlib_i486.a \
 	$(DYNCALL)/lib/libdyncall_s.a \
 	$(DYNCALL)/lib/libdynload_s.a \
 	/usr/lib/gcc/i386-redhat-linux/3.4.6/libstdc++.a \
 	/usr/lib/gcc/i386-redhat-linux/3.4.6/libgcc_eh.a \
-	vstdlib_i486.so \
-	tier0_i486.so \
 	libpython2.5.so.1.0 -static-libgcc
 
 LINK += -Wl,--rpath,\$$ORIGIN/eventscripts/_engines/python/Lib/plat-linux2
@@ -101,7 +104,7 @@ LINK += -Wl,--rpath,\$$ORIGIN/eventscripts/_engines/python/Lib/plat-linux2
 ###########################
 ### INCLUDE DIRECTORIES ###
 ###########################
-INCLUDE = -I. \
+INCLUDE += -I. \
 	-I$(HL2PUB) \
 	-I$(HL2PUB)/dlls \
 	-I$(HL2PUB)/engine \
@@ -140,12 +143,17 @@ $(BIN_DIR)/%.o: %.cpp
 
 all: check
 	mkdir -p $(BIN_DIR)
+
+ifeq "$(ENGINE)" "ob"
 	# Create links to the shared objects
-	cp $(HL2LIB)/tier0_i486.so tier0_i486.so
-	cp $(HL2LIB)/vstdlib_i486.so vstdlib_i486.so
+	cp $(HL2LIB)/vstdlib_i486.so libvstdlib.so
+	cp $(HL2LIB)/tier0_i486.so libtier0.so
+endif
 	cp $(PYTHON)/libs/libpython2.5.so.1.0 libpython2.5.so.1.0
+
 	# Build SPE
 	$(MAKE) spe
+
 	# Copy to the final directory
 	mv $(BIN_DIR)/$(BINARY) ./Binaries/$(BINARY)
 

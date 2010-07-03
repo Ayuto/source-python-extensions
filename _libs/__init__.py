@@ -29,7 +29,7 @@ from spe_C import *
 #================================================================================
 __revision__="$Rev$"
 __version__ = '1.5.0f r'
-es.set("spe_version", __version__ + __revision__.strip("$Rev: ")).makepublic()
+es.ServerVar("spe_version", __version__ + __revision__.strip("$Rev: ")).makepublic()
 
 #================================================================================
 # Exceptions

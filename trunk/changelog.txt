@@ -1,9 +1,9 @@
-################################
-### Source Python Extensions changelog! ###
-################################
+###############################
+### Source Python Extensions changelog!  ###
+###############################
 
 ============================
-VERSION: 1.5.0f r76
+VERSION: 1.5.0f r75
 DATE: 4/23/2010
 THANKS: 
     - The GunGame Development Team

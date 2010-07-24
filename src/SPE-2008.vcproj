@@ -267,7 +267,7 @@
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="&quot;..\..\hl2sdk-l4d\public&quot;;&quot;..\..\hl2sdk-l4d\public\tier0&quot;;&quot;..\..\hl2sdk-l4d\public\tier1&quot;;&quot;..\..\hl2sdk-l4d\game\server&quot;;&quot;..\..\hl2sdk-l4d\game\shared&quot;;&quot;..\..\hl2sdk-l4d\public\engine&quot;;.\python\windows\Include;.\dyncall\include;.\sourcehook"
+				AdditionalIncludeDirectories="&quot;..\..\sdk\sourcesdk-l4d\public&quot;;&quot;..\..\sdk\sourcesdk-l4d\public\tier0&quot;;&quot;..\..\sdk\sourcesdk-l4d\public\tier1&quot;;&quot;..\..\sdk\sourcesdk-l4d\game\server&quot;;&quot;..\..\sdk\sourcesdk-l4d\game\shared&quot;;&quot;..\..\sdk\sourcesdk-l4d\public\engine&quot;;.\python\windows\Include;.\dyncall\include;.\sourcehook"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;ENGINE_VERSION=3"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -777,172 +777,24 @@
 				Name="L4D"
 				>
 				<File
-					RelativePath="..\..\hl2sdk-l4d\lib\public\mathlib.lib"
+					RelativePath="..\..\sdk\sourcesdk-l4d\lib\public\mathlib.lib"
 					>
-					<FileConfiguration
-						Name="Release|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="RELEASE(L4D2)|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release(OB)|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\hl2sdk-l4d\lib\public\tier0.lib"
+					RelativePath="..\..\sdk\sourcesdk-l4d\lib\public\tier0.lib"
 					>
-					<FileConfiguration
-						Name="Release|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="RELEASE(L4D2)|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release(OB)|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\hl2sdk-l4d\lib\public\tier1.lib"
+					RelativePath="..\..\sdk\sourcesdk-l4d\lib\public\tier1.lib"
 					>
-					<FileConfiguration
-						Name="Release|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="RELEASE(L4D2)|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release(OB)|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\hl2sdk-l4d\lib\public\tier2.lib"
+					RelativePath="..\..\sdk\sourcesdk-l4d\lib\public\tier2.lib"
 					>
-					<FileConfiguration
-						Name="Release|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="RELEASE(L4D2)|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release(OB)|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\hl2sdk-l4d\lib\public\tier3.lib"
+					RelativePath="..\..\sdk\sourcesdk-l4d\lib\public\vstdlib.lib"
 					>
-					<FileConfiguration
-						Name="Release|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="RELEASE(L4D2)|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release(OB)|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\hl2sdk-l4d\lib\public\vstdlib.lib"
-					>
-					<FileConfiguration
-						Name="Release|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="RELEASE(L4D2)|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release(OB)|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
 				</File>
 			</Filter>
 			<Filter
@@ -1095,22 +947,62 @@
 				<File
 					RelativePath="..\..\sdk\hl2sdk-ob-valve\lib\public\mathlib.lib"
 					>
+					<FileConfiguration
+						Name="Release(L4D)|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\sdk\hl2sdk-ob-valve\lib\public\tier0.lib"
 					>
+					<FileConfiguration
+						Name="Release(L4D)|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\sdk\hl2sdk-ob-valve\lib\public\tier1.lib"
 					>
+					<FileConfiguration
+						Name="Release(L4D)|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\sdk\hl2sdk-ob-valve\lib\public\tier2.lib"
 					>
+					<FileConfiguration
+						Name="Release(L4D)|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\sdk\hl2sdk-ob-valve\lib\public\vstdlib.lib"
 					>
+					<FileConfiguration
+						Name="Release(L4D)|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
 				</File>
 			</Filter>
 		</Filter>

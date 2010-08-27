@@ -3,10 +3,21 @@
 ###############################
 
 ============================
+VERSION: 1.5.0f r82
+DATE: 8/27/2010
+THANKS:
+    - psychonic from AlliedModders
+    - tnbporsche911
+============================
+
+Python SIDE:
+    * Fixed cstrike signatures.
+
+============================
 VERSION: 1.5.0f r78
 DATE: 7/3/2010
 THANKS:
-    - DamagedSoul from AllidModders
+    - DamagedSoul from AlliedModders
     - CFSworks
     - The GunGame Development Team
 ============================

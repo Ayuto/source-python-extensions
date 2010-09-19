@@ -4,9 +4,9 @@
 ###########################
 ### ADD OTHER SDKs HERE ###
 ###########################
-HL2SDK_EP1 = ../../hl2sdk
-HL2SDK_OB  = ../../hl2sdk-ob-valve
-HL2SDK_L4D = ../../hl2sdk-l4d
+HL2SDK_EP1 = ../../sdk/hl2sdk
+HL2SDK_OB  = ../../sdk/sourcesdk-ob
+HL2SDK_L4D = ../../sdk/sourcesdk-l4d
 
 #######################
 ### OTHER LIBRARIES ###
@@ -102,8 +102,8 @@ INCLUDE += -I. \
 	-I$(HL2SDK)/tier1 \
 	-I$(HL2SDK)/dlls \
 	-I$(PYTHON)/linux/Include \
-    	-I$(SOURCEHOOK) \
-    	-I$(DYNCALL)/include
+    -I$(SOURCEHOOK) \
+    -I$(DYNCALL)/include
 
 ifeq "$(DEBUG)" "true"
 	BIN_DIR = Debug
@@ -133,8 +133,8 @@ all: check
 	mkdir -p $(BIN_DIR)
 
 	# Create links to the shared objects
-	cp $(HL2LIB)/vstdlib_i486.so libvstdlib.so
-	cp $(HL2LIB)/tier0_i486.so libtier0.so
+	cp $(HL2LIB)/libvstdlib.so libvstdlib.so
+	cp $(HL2LIB)/libvstdlib.so libtier0.so
 
 	# Copy python
 	cp $(PYTHON)/libs/libpython2.5.so.1.0 libpython2.5.so.1.0

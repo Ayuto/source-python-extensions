@@ -90,7 +90,6 @@ DECLARE_PYCMD( setCallingConvention, "Sets the calling convention of the virtual
 //=================================================================================
 DECLARE_PYCMD( callFunction, "Calls the sigscanned function." )
 {
-	PyObject* func_ptr = NULL;
 	PyObject* func_args = NULL;
 	const char* signature = NULL;
 	const char* ptr;

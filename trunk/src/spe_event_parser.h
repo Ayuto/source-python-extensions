@@ -24,50 +24,103 @@
 * this exception to all derivative works.  
 */
 
-#ifndef SPE_EVENT_PARSER_H
-#define SPE_EVENT_PARSER_H
+#ifndef _SPE_EVENT_PARSER_H
+#define _SPE_EVENT_PARSER_H
 
+//=================================================================================
+// Purpose: Parses Source Engine event .res files into data structures for
+//  use with SPE.
+//=================================================================================
+
+//=================================================================================
+// Includes
+//=================================================================================
 #include <Python.h>
 #include <utlvector.h>
-#include <igameevents.h>
+#include <utllinkedlist.h>
+#include "spe_globals.h"
 
-// Buffer size
-#define EVENT_BUFFER_SIZE 255
-
-//==================================================================================
-// >> Mod event variable
-//==================================================================================
-struct EventVar_t
+//=================================================================================
+// Represents a single event variable.
+//=================================================================================
+struct EventVariable_t
 {
-	char szVarName[EVENT_BUFFER_SIZE];
-	char szVarType[EVENT_BUFFER_SIZE];
+	char szName[MAX_STRING_LEN];
+	char szType[MAX_STRING_LEN];
 };
 
-//==================================================================================
-// >> Facilitates information storage in python objects.
-//==================================================================================
-struct ModEvent_t
+//=================================================================================
+// Represents a single event.
+//=================================================================================
+struct EventData_t
 {
-	char szEventName[EVENT_BUFFER_SIZE];
-	CUtlVector<EventVar_t*> m_Vars;
+	char szEventName[MAX_STRING_LEN];
+	CUtlLinkedList<EventVariable_t*>* eventVars;
 };
 
-//==================================================================================
-// >> ModEvent parsing class
-//==================================================================================
-class CModEventParser
+//=================================================================================
+// The event parser class.
+//=================================================================================
+class CEventParser
 {
-private:
-	CUtlVector<ModEvent_t*> m_Events; //Stores all mod events.
+	private:
+		// ------------------------------------
+		// The path to the current mod's game
+		// directory.
+		// ------------------------------------
+		char m_szGameDir[MAX_STRING_LEN];
 
-public:
-	CModEventParser();
+		// ------------------------------------
+		// List of event information.
+		// ------------------------------------
+		CUtlVector<EventData_t *> m_EventData;
 
-	void		  ParseEvents( const char* szResFilePath );
-	ModEvent_t*	  FindEvent( const char* szEventName );
-	PyObject*	  GetEventVariables( IGameEvent* pGameEvent );
+	public:
+
+		// ------------------------------------
+		// @brief Constructor
+		// ------------------------------------
+		CEventParser( void );
+
+		// ------------------------------------
+		// @brief Destructor.
+		// ------------------------------------
+		~CEventParser( void );
+
+		// ------------------------------------
+		// @brief Parses event information
+		//	from the given file.
+		// @param szPath - Path to the res file
+		//	relative to the mod game directory
+		//	(i.e. cstrike).
+		// ------------------------------------
+		bool ParseEventsFromFile( const char* szPath );
+
+		// ------------------------------------
+		// @brief Returns an event struct
+		//	based on the given event name.
+		// @param szEventName - The event
+		//	whose representation to retrieve.
+		// @return The EventData_t struct
+		//	associated with this event. NULL
+		//	if it was not found.
+		// ------------------------------------
+		EventData_t* FindEventData( const char* szEventName );
+
+		// ------------------------------------
+		// @brief Retrieves the event data
+		//	in a python useable form.
+		// @param pGameEvent - The game event
+		//	from which to parse data.
+		// @return Python dict to said data.
+		// ------------------------------------
+		PyObject* GetEventVariables( IGameEvent *pGameEvent );
 };
 
-extern CModEventParser* g_pParser;
+//=================================================================================
+// Global variable for the parser.
+//=================================================================================
+extern CEventParser* g_pParser;
 
 #endif
+

@@ -23,47 +23,67 @@
 * all respects for all other code used.  Additionally, I (Deniz Sezen) grants
 * this exception to all derivative works.  
 */
+#ifndef _SPE_HOOK_MANAGER
+#define _SPE_HOOK_MANAGER
 
-#ifndef SPE_HOOK_MANAGER_H
-#define SPE_HOOK_MANAGER_H
-
-/* Includes */
+//=================================================================================
+// Includes
+//=================================================================================
+#include <Python.h>
 #include <utlvector.h>
 #include <igameevents.h>
-#include "spe_globals.h"
 
-//==================================================================================
-// >> Pools the event_name and python function pointer into a single spot.
-//	  This can also be used for usermessage hooking as well.
-//==================================================================================
+//=================================================================================
+// A single event element.
+//=================================================================================
 struct EventHook_t
 {
-	char* szEventName;
-	CUtlVector<PyObject*> funcList; // All of these will be called before the event is fired.
+	const char* szEventName;
+	CUtlVector<PyObject*>* pCallbacks;
 };
 
-//==================================================================================
-// >> Manages python/c++ hooks
-//==================================================================================
-class CSPEHookManager : public IGameEventListener2
+//=================================================================================
+// The hook manager class.
+//=================================================================================
+class CHookManager : public IGameEventListener2
 {
-public:
-	CSPEHookManager( IGameEventManager2* pManager );
-	~CSPEHookManager();
+	private:
+		// -----------------------------------
+		// The game event manager instance.
+		// -----------------------------------
+		IGameEventManager2* m_pManager;
 
-	//Used for event prehooking
-	void AddPreHook( char* szEventName, PyObject* pyFunc );
-	void RemovePreHook( char* szEventName, PyObject* pyFunc );
+		// -----------------------------------
+		// Pair up the python callbacks with 
+		// the event name.
+		// -----------------------------------
+		CUtlVector<EventHook_t *> m_Hooks;
 
-	//Handlers and overrides
-	bool EventFire_Pre( IGameEvent *pEvent, bool bDontBroadcast );
-	void FireGameEvent( IGameEvent *pEvent );
+	public:
+		
+		// -----------------------------------
+		// Constructor / Destructor
+		// -----------------------------------
+		CHookManager( IGameEventManager2* pEvMan );
+		~CHookManager( void );
 
-private:
-	IGameEventManager2* m_Manager;
-	CUtlVector<EventHook_t*> m_EventHooks;
+		// -----------------------------------
+		// Callback adding / removal.
+		// -----------------------------------
+		void AddHook( const char* szEventName, PyObject* pyFunc );
+		void RemoveHook( const char* szEventName, PyObject* pyFunc );
+
+		// -----------------------------------
+		// Handlers and overrides.
+		// -----------------------------------
+		bool EventFire_Pre( IGameEvent *pEvent, bool bDontBroadcast );
+		void FireGameEvent( IGameEvent *pEvent );
 };
 
-extern CSPEHookManager* gpHookMan;
+//=================================================================================
+// The hook manager.
+//=================================================================================
+extern CHookManager* g_pHookManager; 
 
-#endif
+#endif // _SPE_HOOK_MANAGER
+

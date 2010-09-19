@@ -87,7 +87,7 @@ DECLARE_PYCMD( dealloc, "Deallocates memory" )
 //=================================================================================
 DECLARE_PYCMD( setLocVal, "Sets the contents of a particular memory location" )
 {
-	char      type = NULL;
+	char      type;
 	void*     addr = NULL;
 	PyObject* val  = NULL;
 
@@ -143,7 +143,7 @@ DECLARE_PYCMD( setLocVal, "Sets the contents of a particular memory location" )
 //=================================================================================
 DECLARE_PYCMD( getLocVal, "Sets the contents of a particular memory location" )
 {
-	char      type = NULL;
+	char      type;
 	void*     addr = NULL;
 
 	if( !PyArg_ParseTuple(args, "ci", &type, &addr) )

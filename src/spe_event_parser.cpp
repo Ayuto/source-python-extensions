@@ -1,6 +1,6 @@
 /**
 * =============================================================================
-* Eventscripts Extensions
+* Source Python Extensions
 * Copyright (C) 2009 Deniz "your-name-here" Sezen.  All rights reserved.
 * =============================================================================
 *
@@ -24,177 +24,332 @@
 * this exception to all derivative works.  
 */
 
+//=================================================================================
+// Includes
+//=================================================================================
 #include "spe_event_parser.h"
 #include "spe_globals.h"
 #include <KeyValues.h>
 
-CModEventParser* g_pParser;
+//=================================================================================
+// Parser global.
+//=================================================================================
+CEventParser* g_pParser;
 
-//==================================================================================
-// >> Constructor
-//==================================================================================
-CModEventParser::CModEventParser()
+//=================================================================================
+// Constructor.
+//=================================================================================
+CEventParser::CEventParser( void )
 {
-	//Parse out game specific events.
-	ParseEvents("resource/ModEvents.res");
+	// ------------------------------------
+	// Get the current mod game dir path.
+	// ------------------------------------
+	engine->GetGameDir(m_szGameDir, MAX_STRING_LEN);
 
-#if( ENGINE_VERSION >= 3 )
-	ParseEvents("resource/serverevents.res");
-	ParseEvents("resource/gameevents.res");
-#endif
-
-	ParseEvents("../hl2/resource/gameevents.res");
-	ParseEvents("../hl2/resource/hltvevents.res");
-	ParseEvents("../hl2/resource/serverevents.res");
+	// ------------------------------------
+	// Parse events from these standard
+	// files.
+	// ------------------------------------
+	ParseEventsFromFile("resource/modevents.res");
+	ParseEventsFromFile("../hl2/resource/gameevents.res");
+	ParseEventsFromFile("../hl2/resource/hltvevents.res");
+	ParseEventsFromFile("../hl2/resource/serverevents.res");
 }
 
-//==================================================================================
-// >> Parses out the events for each mod
-//==================================================================================
-void CModEventParser::ParseEvents(const char* szResFilePath)
+//=================================================================================
+// Destructor.
+//=================================================================================
+CEventParser::~CEventParser( void )
 {
-	KeyValues* pModEventFile = new KeyValues("events");
-
-	//Load the mod event file
-	if( !pModEventFile->LoadFromFile(filesystem, szResFilePath) )
+	// ------------------------------------
+	// Free up all the memory occupied by
+	// the data structs.
+	// ------------------------------------
+	FOR_EACH_VEC( m_EventData, i )
 	{
-		DevMsg("[SPE]: Could not load the mod events file. Event vars are disabled.\n");
-		return;
+		EventData_t* pData = m_EventData[i];
+		
+		pData->eventVars->PurgeAndDeleteElements();
+		delete pData->eventVars;
+		delete pData;
 	}
-
-	//Parse through all events
-	KeyValues* cur_event = NULL;
-	KeyValues* cur_field = NULL;
-
-	//Get the first event and subkey
-	cur_event = pModEventFile->GetFirstSubKey();
-
-	//This loops through all event_name keys
-	while( cur_event )
-	{
-		//Create a mod events structure
-		ModEvent_t* pModEvent = new ModEvent_t();
-
-		//Add the event name it it
-		V_strncpy( pModEvent->szEventName, cur_event->GetName(), EVENT_BUFFER_SIZE );
-
-		DevMsg("[SPE]: Mod event name is %s.\n", pModEvent->szEventName);
-
-		//Get the value to point to the first variable to this event.
-		cur_field = cur_event->GetFirstSubKey();
-
-		//This loops through an event's subkeys
-		while( cur_field )
-		{
-
-			//Get the field name and type.
-			char field_name[EVENT_BUFFER_SIZE];
-			char field_type[EVENT_BUFFER_SIZE];
-
-			V_strncpy( field_name, cur_field->GetName(), EVENT_BUFFER_SIZE );
-			V_strncpy( field_type, cur_field->GetString(), EVENT_BUFFER_SIZE );
-
-			DevMsg("[SPE]: Field name is %s.\n[SPE]: Field type is %s.\n", field_name, field_type);
-
-			//Create a mod_variable structure
-			EventVar_t* pModVar = new EventVar_t();
-
-			//Store the information
-			V_strncpy( pModVar->szVarName, field_name, EVENT_BUFFER_SIZE );
-			V_strncpy( pModVar->szVarType, field_type, EVENT_BUFFER_SIZE );
-
-			//Add it to our list.
-			pModEvent->m_Vars.AddToTail( pModVar );
-
-			cur_field = cur_field->GetNextKey();
-
-		}
-
-		//Add the mod event to our list
-		m_Events.AddToTail( pModEvent );
-
-		//Get next key
-		cur_event = cur_event->GetNextKey();
-	}
-
-	DevMsg("[SPE]: Total number of parsed events is %d!\n", m_Events.Count());
-
-	//Get rid of our keyvalue
-	pModEventFile->deleteThis();
 }
 
-//==================================================================================
-// >> Returns a mod_event structure to an event name
-//==================================================================================
-ModEvent_t* CModEventParser::FindEvent( const char* szEventName )
+//=================================================================================
+// Parses events from a .res file.
+//=================================================================================
+bool CEventParser::ParseEventsFromFile( const char* szPath )
 {
-	//Loop through our list
-	for( int i = 0; i < m_Events.Count(); i++ )
-	{
-		//Compare names
-		ModEvent_t* temp = m_Events.Element( i );
-
-		if( strcmp( szEventName, temp->szEventName ) == 0 )
-		{
-			DevMsg("------------------------------------------------------------\n");
-			DevMsg("[SPE]: Found event %s!\n", szEventName);
-			DevMsg("------------------------------------------------------------\n");
-
-			return temp;
-		}
+	// ------------------------------------
+	// Make sure the path is valid.
+	// ------------------------------------
+	if( !szPath ) {
+		return false;
 	}
 
-	DevMsg("[SPE]: Could not find a mod_event structure with the name of %s.\n", szEventName);
+	// ------------------------------------
+	// Print both the game dir and the
+	// given path to a string.
+	// ------------------------------------
+	char szFullPath[MAX_STRING_LEN * 2];
+	V_snprintf(szFullPath, MAX_STRING_LEN * 2, "%s/%s", m_szGameDir, szPath);
+
+	// ------------------------------------
+	// Print out the path.
+	// ------------------------------------
+	DevMsg(1, "[SPE]: Full path to res file is %s\n", szFullPath);
+
+	// ------------------------------------
+	// Load the file up as a keyvalues
+	// instance.
+	// ------------------------------------
+	KeyValues* pResFile = new KeyValues("resfile");
+	bool bResult = pResFile->LoadFromFile(filesystem, szFullPath);
+
+	// ------------------------------------
+	// Make sure the operation was successful.
+	// ------------------------------------
+	if( bResult == false ) {
+		return false;
+	}
+
+	// ------------------------------------
+	// Loop through each key and it's sub
+	// keys.
+	// ------------------------------------
+	KeyValues* pCurKey = pResFile->GetFirstSubKey();
+	KeyValues* pCurSubKey = NULL;
+
+	while( pCurKey )
+	{
+		// ------------------------------------
+		// Print out debug info.
+		// ------------------------------------
+		DevMsg(1, "[SPE]: Found event %s. Creating struct!\n", pCurKey->GetName());
+
+		// ------------------------------------
+		// Create an Event data struct.
+		// ------------------------------------
+		EventData_t* pData = new EventData_t;
+		pData->eventVars = new CUtlLinkedList<EventVariable_t*>();
+
+		// ------------------------------------
+		// Copy over the name of the event.
+		// ------------------------------------
+		V_strncpy(pData->szEventName, pCurKey->GetName(), MAX_STRING_LEN);
+
+		// ------------------------------------
+		// Now loop through each subkey of this 
+		// event.
+		// ------------------------------------
+		pCurSubKey = pCurKey->GetFirstSubKey();
+
+		// ------------------------------------
+		// Loop through each subkey until we hit
+		// null.
+		// ------------------------------------
+		while( pCurSubKey )
+		{
+			// ------------------------------------
+			// Print debug info.
+			// ------------------------------------
+			DevMsg(1, "[SPE]: Found event_var %s of type %s!\n", pCurSubKey->GetName(),
+				pCurSubKey->GetString());
+
+			// ------------------------------------
+			// Create an event var struct.
+			// ------------------------------------
+			EventVariable_t* pVar = new EventVariable_t;
+
+			// ------------------------------------
+			// Copy over the name and value.
+			// ------------------------------------
+			V_strncpy(pVar->szName, pCurSubKey->GetName(), MAX_STRING_LEN);
+			V_strncpy(pVar->szType, pCurSubKey->GetString(), MAX_STRING_LEN);
+
+			// ------------------------------------
+			// Debug message.
+			// ------------------------------------
+			DevMsg(1, "Adding event information to event data!\n");
+
+			// ------------------------------------
+			// Add it to the eventdata struct.
+			// ------------------------------------
+			pData->eventVars->AddToTail(pVar);
+
+			// ------------------------------------
+			// Debug message.
+			// ------------------------------------
+			DevMsg(1, "Moving onto the next variable sub-key.\n");
+
+			// ------------------------------------
+			// Move onto the next event variable.
+			// ------------------------------------
+			pCurSubKey = pCurSubKey->GetNextKey();
+		}
+
+		// ------------------------------------
+		// Debug message.
+		// ------------------------------------
+		DevMsg(1, "Inserting completed EventData struct into event hooks!\n");
+
+		// ------------------------------------
+		// Now add the event data to our
+		// hashed list.
+		// ------------------------------------
+		m_EventData.AddToTail( pData );
+
+		// ------------------------------------
+		// Debug message.
+		// ------------------------------------
+		DevMsg(1, "Moving onto the next event..\n");
+
+		// ------------------------------------
+		// Move onto the next key.
+		// ------------------------------------
+		pCurKey = pCurKey->GetNextKey();
+	}
+
+	// ------------------------------------
+	// Free up keyvalues memory.
+	// ------------------------------------
+	pResFile->deleteThis();
+
+	// ------------------------------------
+	// We're done!
+	// ------------------------------------
+	return true;
+}
+
+//=================================================================================
+// Returns an event's layout.
+//=================================================================================
+EventData_t* CEventParser::FindEventData( const char* szEventName )
+{
+	// ------------------------------------
+	// Make sure the event name is valid.
+	// ------------------------------------
+	if( !szEventName ) {
+		DevMsg(1, "[SPE]: szEventName was null.\n");
+		return NULL;
+	}
+
+	// ------------------------------------
+	// Search for it in our list.
+	// ------------------------------------
+	FOR_EACH_VEC( m_EventData, i )
+	{
+		// ------------------------------------
+		// Get the eventdata_t struct.
+		// ------------------------------------
+		EventData_t* pData = m_EventData[i];
+
+		// ------------------------------------
+		// Compare names
+		// ------------------------------------
+		if( pData && (FStrEq(pData->szEventName, szEventName) == true))
+		{
+			DevMsg(1, "[SPE]: Found %s at index %d!\n", pData->szEventName, i);
+			return pData;
+		}
+	}
+	
+	// ------------------------------------
+	// Didn't find it if we are here.
+	// ------------------------------------
+	DevMsg(1, "[SPE]: Could not find %s in the event list!\n", szEventName);
 	return NULL;
 }
 
 //==================================================================================
-// >> Returns a python dictionary of variables based on a query.
+// Returns a python dictionary of variables based on a query.
 //==================================================================================
-PyObject* CModEventParser::GetEventVariables(IGameEvent *pGameEvent)
+PyObject* CEventParser::GetEventVariables( IGameEvent *pGameEvent )
 {
-
-	//Make sure the game event is valid
+	// ------------------------------------
+	// Make sure the game event is valid.
+	// ------------------------------------
 	if( !pGameEvent )
 	{
-		DevMsg("[SPE]: [getEventVariables] -> pGameEvent is invalid!\n");
+		DevMsg(2, "[SPE]: [getEventVariables] -> pGameEvent is invalid!\n");
 		return NULL;
 	}
 
-	//Get the event name
+	// ------------------------------------
+	// Get the event name.
+	// ------------------------------------
 	const char* szEventName = pGameEvent->GetName();
+	DevMsg(2, "[SPE]: [getEventVariables] -> Event name %s\n", szEventName);
 
-	DevMsg("[SPE]: [getEventVariables] -> Event name %s\n", szEventName);
-
-	//Create dict to store event info
+	// ------------------------------------
+	// Create dict to store event info
+	// ------------------------------------
 	PyObject* pDict = PyDict_New();
 
-	//Find it in our dictionary
-	ModEvent_t* pEvent = FindEvent( szEventName );
+	// ------------------------------------
+	// Find it in our dictionary.
+	// ------------------------------------
+	EventData_t* pEvent = FindEventData( szEventName );
 
-	//If it's valid, start parsing!
+	// ------------------------------------
+	// If it's valid, start parsing!
+	// ------------------------------------
 	if( pEvent )
 	{
-		// Set event name
-		PyDict_SetItemString(pDict, "spe_eventname", Py_BuildValue("s", pEvent->szEventName));
+		// ------------------------------------
+		// Get the event name into a python 
+		// object.
+		// ------------------------------------
+		PyObject* pEventName = Py_BuildValue("s", pEvent->szEventName);
 
-		//Loop through each of the event vars
-		for( int i = 0; i < pEvent->m_Vars.Count(); i++ )
+		// ------------------------------------
+		// Create a key for the event in the
+		// dict.
+		// ------------------------------------
+		PyObject* pEventKey = Py_BuildValue("s", "spe_eventname");
+
+		// ------------------------------------
+		// Set the event name.
+		// ------------------------------------
+		PyDict_SetItem(pDict, pEventKey, pEventName);
+
+		// ------------------------------------
+		// Decrement references.
+		// ------------------------------------
+		Py_DECREF( pEventName );
+		Py_DECREF( pEventKey );
+
+		// ------------------------------------
+		// Loop through each of the event vars.
+		// ------------------------------------
+		for( int i = 0; i < pEvent->eventVars->Count(); i++ )
 		{
-			EventVar_t* v = pEvent->m_Vars.Element( i );
+			// ------------------------------------
+			// Grab the event data from the list.
+			// ------------------------------------
+			EventVariable_t* v = pEvent->eventVars->Element( i );
 
-			char szVarName[EVENT_BUFFER_SIZE];
-			char szVarType[EVENT_BUFFER_SIZE];
+			char szVarName[MAX_STRING_LEN];
+			char szVarType[MAX_STRING_LEN];
 
-			//Copy the variable names
-			V_strncpy(szVarName, v->szVarName, EVENT_BUFFER_SIZE);
-			V_strncpy(szVarType, v->szVarType, EVENT_BUFFER_SIZE);
+			// ------------------------------------
+			// Copy the variable name and type.
+			// ------------------------------------
+			V_strncpy(szVarName, v->szName, MAX_STRING_LEN);
+			V_strncpy(szVarType, v->szType, MAX_STRING_LEN);
 
-			PyObject* val;
+			// ------------------------------------
+			// This will convert the value from
+			// the game event instance to a python
+			// type.
+			// ------------------------------------
+			PyObject* val = NULL;
+			DevMsg(2, "[SPE]: [getEventVariables] -> VarName is %s!\n[SPE]: [getEventVariables] -> VarType is %s!\n", szVarName, szVarType);
 
-			DevMsg("[SPE]: [getEventVariables] -> VarName is %s!\n[SPE]: [getEventVariables] -> VarType is %s!\n", szVarName, szVarType);
-
-			//Comparision statements!
+			// ------------------------------------
+			// Figure out what to parse the
+			// event variable to.
+			// ------------------------------------
 			if( strcmp(szVarType, "short") == 0 )
 			{
 				int v = pGameEvent->GetInt(szVarName);
@@ -215,7 +370,6 @@ PyObject* CModEventParser::GetEventVariables(IGameEvent *pGameEvent)
 				val = Py_BuildValue("f", f);
 				DevMsg("[SPE]: [getEventVariables] -> Building a float.\n");
 			}
-
 			else if( strcmp(szVarType, "bool") == 0 )
 			{
 				int i = 0;
@@ -223,7 +377,6 @@ PyObject* CModEventParser::GetEventVariables(IGameEvent *pGameEvent)
 				val = Py_BuildValue("i", i);
 				DevMsg("[SPE]: [getEventVariables] -> Building a boolean.\n");
 			}
-
 			else if( strcmp(szVarType, "byte") == 0 )
 			{
 				int i = 0;
@@ -231,24 +384,36 @@ PyObject* CModEventParser::GetEventVariables(IGameEvent *pGameEvent)
 				val = Py_BuildValue("i", i);
 				DevMsg("[SPE]: [getEventVariables] -> Building a byte.\n");
 			}
-
 			else if( strcmp(szVarType, "long") == 0 )
 			{
-				//TODO: Change this to long
+				// ------------------------------------
+				// TODO: Change this to long
+				// ------------------------------------
 				int i = 0;
 				i = pGameEvent->GetInt(szVarName);
 				val = Py_BuildValue("i", i);
 				DevMsg("[SPE]: [getEventVariables] -> Building a long.\n");
 			}
 
-			//Now set the dict value!
+			// ------------------------------------
+			// Now set the dict value!
+			// ------------------------------------
 			DevMsg("[SPE]: [getEventVariables] -> Setting the item in the dict.\n");
 			PyDict_SetItemString( pDict, szVarName, val );
+
+			// ------------------------------------
+			// Decrement the reference to the value.
+			// ------------------------------------
+			Py_DECREF(val);
 		}
 
+		// ------------------------------------
+		// Done.
+		// ------------------------------------
 		return pDict;
 	}
 
-	DevMsg("[SPE]: [getEventVariables] -> pEvent was null.\n");
+	DevMsg(2, "[SPE]: [getEventVariables] -> pEvent was null.\n");
 	return NULL;
 }
+

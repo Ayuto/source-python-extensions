@@ -47,7 +47,7 @@
 //=================================================================================
 // Some useful definitions
 //=================================================================================
-#define MAX_STRING_LEN 1024
+#define MAX_STRING_LEN 2048
 
 //=================================================================================
 // External interfaces that this plugin will use.
@@ -72,6 +72,14 @@ using namespace						SourceHook;
 extern SourceHook::ISourceHook	   *g_SHPtr;
 extern SourceHook::CSourceHookImpl  g_SourceHook;
 extern int						    g_PLID;
+
+//=================================================================================
+// Useful helper func.
+//=================================================================================
+inline bool FStrEq(const char *sz1, const char *sz2)
+{
+	return(Q_stricmp(sz1, sz2) == 0);
+}
 
 //=================================================================================
 // Need these for L4D.

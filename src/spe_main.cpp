@@ -30,9 +30,9 @@
 #include "spe_main.h"
 #include "spe_globals.h"
 #include "spe_python.h"
-#include "spe_hook_manager.h"
-#include "spe_event_parser.h"
 #include "svn_build.h"
+#include "spe_event_parser.h"
+#include "spe_hook_manager.h"
 
 #ifdef _LINUX
 #include <dlfcn.h>
@@ -55,9 +55,9 @@ void						*laddr				= NULL;
 //////////////////////////////////////////////////////////////////////////
 // Sourcehook variables
 //////////////////////////////////////////////////////////////////////////
-SourceHook::ISourceHook				*g_SHPtr;
+SourceHook::ISourceHook		*g_SHPtr;
 SourceHook::CSourceHookImpl	 g_SourceHook;
-int									 g_PLID;
+int							 g_PLID;
 
 //=================================================================================
 // Function to initialize any cvars/command in this plugin
@@ -177,12 +177,12 @@ bool CSPE_Plugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn ga
 	// Setup sourcehook
 	g_SHPtr = &g_SourceHook;
 	g_PLID = 0;
-
-	// Setup the event parser
-	g_pParser = new CModEventParser();
+	
+	// Setup the event parser.
+	g_pParser = new CEventParser();
 
 	// Setup the hook manager.
-	gpHookMan = new CSPEHookManager( gameeventmanager );
+	g_pHookManager = new CHookManager( gameeventmanager );
 
     // Initialize python
 	return EnablePython();
@@ -196,8 +196,9 @@ void CSPE_Plugin::Unload( void )
 	// NOTE: Do we even listen to events?
 	// gameeventmanager->RemoveListener( this );
 
-	delete g_pParser;
-	delete gpHookMan;
+ 	delete g_pParser;
+ 	delete g_pHookManager;
+
 	dcFree(vm);
 
 #if( ENGINE_VERSION >= 2 )

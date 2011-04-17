@@ -110,7 +110,7 @@ class CSPEManager(object):
 
     def __init__(self):
         # Setup the game name
-        self.game_name = str(os.path.split(str(es.ServerVar('eventscripts_gamedir')))[1])
+        self.game_name = str(os.path.split(str(es.ServerVar('eventscripts_gamedir')))[1]).lower()
         
         # Setup signature dictionary
         self.Signatures = {}

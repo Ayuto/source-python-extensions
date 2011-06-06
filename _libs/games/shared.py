@@ -3,42 +3,47 @@ $Rev$
 $LastChangedDate$
 """
 
-#================================================================================
+#==============================================================================
 # Source-Python Extensions Library:
 #   Global Library
-#================================================================================
+#==============================================================================
 
-#================================================================================
+#==============================================================================
 # Imports
-#================================================================================
+#==============================================================================
 import spe
 
-#================================================================================
+
+#==============================================================================
 # Creates an entity by name, and returns an instance to it.
-#================================================================================
-def createEntity( entity_name ):
+#==============================================================================
+def createEntity(entity_name):
     # Call the function
-    return spe.call("CreateEntity", entity_name, -1) # Last parameter must be -1.
-    
-#================================================================================
+    # Last parameter must be -1.
+    return spe.call("CreateEntity", entity_name, -1)
+
+
+#==============================================================================
 # Returns an entity instance by its index.
-#================================================================================
-def getEntityOfIndex( entity_index ):
+#==============================================================================
+def getEntityOfIndex(entity_index):
     # Call and return
     return spe.call("EntityByIndex", int(entity_index))
 
-#================================================================================
+
+#==============================================================================
 # Courtesy of Einlanzers and XE_Manup:
 #   Returns the index of an entity. None means no entity exists at this index.
-#================================================================================
-def getIndexOfEntity( entity_instance ):
-    return spe.getEntityIndex( entity_instance )
+#==============================================================================
+def getIndexOfEntity(entity_instance):
+    return spe.getEntityIndex(entity_instance)
 
-#================================================================================
+
+#==============================================================================
 # Returns the instance of a player's weapon of type weapon_name.
 #   Returns None if player doesn't own that particular weapon.
-#================================================================================
-def ownsWeapon( userid, weapon_name ):
+#==============================================================================
+def ownsWeapon(userid, weapon_name):
     # Get player instance
     pPlayer = spe.getPlayer(int(userid))
 
@@ -48,10 +53,11 @@ def ownsWeapon( userid, weapon_name ):
     # Call function and return weapon instance
     return spe.call("OwnsWeapon", pPlayer, weapon_name, 0)
 
-#================================================================================
+
+#==============================================================================
 # Returns a weapon instance from a player's slot.
-#================================================================================
-def getWeaponFromSlot( userid, weapon_slot ):
+#==============================================================================
+def getWeaponFromSlot(userid, weapon_slot):
     # Get player instance
     pPlayer = spe.getPlayer(int(userid))
 
@@ -61,12 +67,13 @@ def getWeaponFromSlot( userid, weapon_slot ):
     # Call function and return player weapon instance
     return spe.call("GetWeapon", pPlayer, int(weapon_slot))
 
-#================================================================================
+
+#==============================================================================
 # Removes an entity by it's index.
-#================================================================================   
-def removeEntityByIndex( entity_index ):
+#==============================================================================
+def removeEntityByIndex(entity_index):
     # Get entity instance
-    pEntity = spe.getEntityOfIndex( int(entity_index) )
+    pEntity = spe.getEntityOfIndex(int(entity_index))
 
     # Make sure it's valid
     if not pEntity:
@@ -78,26 +85,28 @@ def removeEntityByIndex( entity_index ):
 
     return True
 
-#================================================================================
+
+#==============================================================================
 # Removes an entity by its instance
-#================================================================================   
-def removeEntityByInstance( entity_instance ):
+#==============================================================================
+def removeEntityByInstance(entity_instance):
     # Make sure it's valid
     if not entity_instance:
         # Return false if the entity was None.
         return False
-        
+
     # Remove it!
     spe.call("Remove", entity_instance)
 
     return True
 
-#================================================================================
+
+#==============================================================================
 # Sets an entity's string keyvalue.
-#================================================================================  
-def setStringKeyvalue( entity_index, keyvalue_name, new_value ):
+#==============================================================================
+def setStringKeyvalue(entity_index, keyvalue_name, new_value):
     # Get entity instance
-    pEntity = spe.getEntityOfIndex( int(entity_index) )
+    pEntity = spe.getEntityOfIndex(int(entity_index))
 
     # Make sure the entity is valid
     if not pEntity:
@@ -109,9 +118,10 @@ def setStringKeyvalue( entity_index, keyvalue_name, new_value ):
 
     return True
 
-#================================================================================
+
+#==============================================================================
 # Retrieve the index of a player's weapon
-#================================================================================ 
+#==============================================================================
 def getWeaponIndex(userid, weapon_name):
     # Retrieve the weapon pointer
     weapon = spe.ownsWeapon(userid, weapon_name)
@@ -125,10 +135,10 @@ def getWeaponIndex(userid, weapon_name):
     return spe.getEntityIndex(weapon)
 
 
-#================================================================================
+#==============================================================================
 # Retrieve a list of weapon names that the player has in their inventory
-#================================================================================ 
-def getWeaponNameList( userid ):
+#==============================================================================
+def getWeaponNameList(userid):
     # Make sure the player is valid
     if not spe.getPlayer(int(userid)):
         # Return None due to the invalid player instance
@@ -152,10 +162,11 @@ def getWeaponNameList( userid ):
     # Return the populated list
     return weapon_names
 
+
 #==============================================================================
 # Retrieve a list of weapon instances that the player has in their inventory
 #==============================================================================
-def getWeaponInstanceList( userid ):
+def getWeaponInstanceList(userid):
     # Make sure the player is valid
     if not spe.getPlayer(int(userid)):
         # Return None due to the invalid player instance
@@ -179,10 +190,11 @@ def getWeaponInstanceList( userid ):
     # Return the populated list
     return weapon_pointers
 
+
 #==============================================================================
 # Retrieve a list of weapon indexes that the player has in their inventory
 #==============================================================================
-def getWeaponIndexList( userid ):
+def getWeaponIndexList(userid):
     # Make sure the player is valid
     if not spe.getPlayer(int(userid)):
         # Return None due to the invalid player instance
@@ -190,6 +202,7 @@ def getWeaponIndexList( userid ):
 
     # Return a list of weapon indexes
     return [spe.getEntityIndex(i) for i in spe.getWeaponInstanceList(userid)]
+
 
 #==============================================================================
 # Retrieve a dictionary of weapons in the player's inventory where the key is
@@ -199,7 +212,7 @@ def getWeaponIndexList( userid ):
 #   index to the lists: getWeaponNameList(), getWeaponInstanceList(), or
 #   getWeaponIndexList().
 #==============================================================================
-def getWeaponDict( userid ):
+def getWeaponDict(userid):
     # Make sure the player is valid
     if not spe.getPlayer(int(userid)):
         # Return None due to the invalid player instance
@@ -219,9 +232,9 @@ def getWeaponDict( userid ):
 
             # Create the valid key:value pair
             weapons[spe.getEntityClassName(wPointer)] = {
-                "instance":wPointer,
-                "slot":i,
-                "index":spe.getEntityIndex(wPointer)}
+                "instance": wPointer,
+                "slot": i,
+                "index": spe.getEntityIndex(wPointer)}
 
     # Return the populated dictionary
     return weapons

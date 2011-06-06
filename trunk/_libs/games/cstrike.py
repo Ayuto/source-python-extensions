@@ -3,26 +3,27 @@ $Rev$
 $LastChangedDate$
 """
 
-#================================================================================
+#==============================================================================
 # Source-Python Extensions Library:
 #   Counter-Strike Source Library
-#================================================================================
+#==============================================================================
 
-#================================================================================
+#==============================================================================
 # Imports
-#================================================================================
+#==============================================================================
 
 # SPE imports
 import spe
 
-#================================================================================
+#==============================================================================
 # Exported Functions
-#================================================================================
+#==============================================================================
 
-#================================================================================
+
+#==============================================================================
 # Respawns a player
-#================================================================================
-def respawn( userid ):
+#==============================================================================
+def respawn(userid):
     # Get the player instance
     pPlayer = spe.getPlayer(int(userid))
 
@@ -36,10 +37,11 @@ def respawn( userid ):
 
     return True
 
-#================================================================================
+
+#==============================================================================
 # Switches a player's team without killing them.
-#================================================================================    
-def switchTeam( userid, team_index ):
+#==============================================================================
+def switchTeam(userid, team_index):
     # Get the player instance
     pPlayer = spe.getPlayer(int(userid))
 
@@ -53,11 +55,12 @@ def switchTeam( userid, team_index ):
 
     return True
 
-#================================================================================
-# Returns an instance to a player's active weapon (the weapon they are currently
-#   holding).
-#================================================================================   
-def getActiveWeapon( userid ):
+
+#==============================================================================
+# Returns an instance to a player's active weapon (the weapon they are
+#   currently holding).
+#==============================================================================
+def getActiveWeapon(userid):
     # Get the player instance
     pPlayer = spe.getPlayer(int(userid))
 
@@ -69,10 +72,11 @@ def getActiveWeapon( userid ):
     # Call and return player's active weapon
     return spe.call("GetActiveWeapon", pPlayer)
 
-#================================================================================
+
+#==============================================================================
 # Gives a player a named item.
-#================================================================================
-def giveNamedItem( userid, item_name ):
+#==============================================================================
+def giveNamedItem(userid, item_name):
     # Get the player instance
     pPlayer = spe.getPlayer(int(userid))
 
@@ -84,10 +88,11 @@ def giveNamedItem( userid, item_name ):
     # Give the player the item
     return spe.call('GiveNamedItem', pPlayer, str(item_name), 0)
 
-#================================================================================
+
+#==============================================================================
 # If the player owns the weapon_instance entity, it forces them to drop it.
-#================================================================================
-def dropWeapon( userid, weapon_name, throwWeapon=True ):
+#==============================================================================
+def dropWeapon(userid, weapon_name, throwWeapon=True):
     # Get the player instance
     pPlayer = spe.getPlayer(int(userid))
 
@@ -97,7 +102,7 @@ def dropWeapon( userid, weapon_name, throwWeapon=True ):
         return False
 
     # Get the weapon instance
-    weapon_instance = spe.ownsWeapon( userid, weapon_name )
+    weapon_instance = spe.ownsWeapon(userid, weapon_name)
 
     # Is the weapon instance valid?
     if not weapon_instance:
@@ -107,7 +112,6 @@ def dropWeapon( userid, weapon_name, throwWeapon=True ):
     # Throw the weapon?
     if throwWeapon:
         return spe.call('DropWeapon', pPlayer, weapon_instance, 0, 1)
-    
+
     # Otherwise, don't.
     return spe.call('DropWeapon', pPlayer, weapon_instance, 0, 0)
-        

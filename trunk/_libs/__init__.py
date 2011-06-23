@@ -94,7 +94,7 @@ class Signature(object):
 
         # CONVENTION TYPE
         if convention not in ['thiscall', 'cdecl', 'fastcall']:
-            raise (ConventionError, '"%s" is not a valid convention: ' +
+            raise ConventionError('"%s" is not a valid convention: ' +
                 '"thiscall", "cdecl", or "fastcall" only.' % convention)
 
         self.convention = str(convention)
@@ -224,7 +224,7 @@ class CSPEManager(object):
         # If the function name is not found
         if not name in self.Signatures:
             # Raise an exception
-            raise (InvalidFunctionNameException,
+            raise InvalidFunctionNameException(
                 "Could not find %s in the dictionary!" % name)
 
         # Otherwise, call the function using the Signature() instance

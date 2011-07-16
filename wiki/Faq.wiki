@@ -13,8 +13,3 @@ SPE (in theory) supports virtually all VALVe games, engines, and mods built on t
 
 = What is an instance/pointer in SPE? =
 In C++, a [http://www.linuxconfig.org/c-understanding-pointers pointer is a variable that stores a memory address]. Basically, when you retrieve an "instance" in SPE, this instance refers to the entity's memory address in C++. Therefore, this allows the scripter direct access to the C++ "object" for the entity. There are certain boundaries as to what you can do with the instances/pointers set forth by SPE as well as what can be accessed with the Source Engine's SDK, so having access to the pointer is not all-inclusive.
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages

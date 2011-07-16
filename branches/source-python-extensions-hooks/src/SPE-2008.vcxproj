@@ -369,7 +369,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>..\..\sdk\sourcesdk-ob\public;..\..\sdk\sourcesdk-ob\public\tier0;..\..\sdk\sourcesdk-ob\public\tier1;..\..\sdk\sourcesdk-ob\game\server;..\..\sdk\sourcesdk-ob\game\shared;..\..\sdk\sourcesdk-ob\public\engine;.\python\windows\Include;.\dyncall\include;.\dyndetours;.\sourcehook;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\sdk\sourcesdk-ob\public;..\..\..\..\sdk\sourcesdk-ob\public\tier0;..\..\..\..\sdk\sourcesdk-ob\public\tier1;..\..\..\..\sdk\sourcesdk-ob\game\server;..\..\..\..\sdk\sourcesdk-ob\game\shared;..\..\..\..\sdk\sourcesdk-ob\public\engine;.\python\windows\Include;.\dyncall\include;.\dyndetours\AsmJit;.\dyndetours;.\sourcehook;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;ENGINE_VERSION=2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -397,7 +397,7 @@
       <AdditionalDependencies>python25.lib;tier0.lib;tier1.lib;tier2.lib;mathlib.lib;vstdlib.lib;dyncall.lib;dyndetours.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)sp_extensions_ep2.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\sdk\sourcesdk-ob\lib\public;..\..\sdk\sourcesdk-ob\lib\common;.\dyncall\lib;.\python\libs;.\dyndetours;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\sdk\sourcesdk-ob\lib\public;..\..\..\..\sdk\sourcesdk-ob\lib\common;.\dyncall\lib;.\python\libs;.\dyndetours;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>msvcrt.lib</IgnoreSpecificDefaultLibraries>
       <DelayLoadDLLs>python25.dll;</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -484,23 +484,27 @@
     <ClInclude Include="spe_sigcache.h" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\..\sdk\sourcesdk-l4d\lib\public\mathlib.lib" />
-    <Library Include="..\..\sdk\sourcesdk-l4d\lib\public\tier0.lib" />
-    <Library Include="..\..\sdk\sourcesdk-l4d\lib\public\tier1.lib" />
-    <Library Include="..\..\sdk\sourcesdk-l4d\lib\public\tier2.lib" />
-    <Library Include="..\..\sdk\sourcesdk-l4d\lib\public\tier3.lib" />
-    <Library Include="..\..\sdk\sourcesdk-l4d\lib\public\vstdlib.lib" />
-    <Library Include="..\..\sdk\sourcesdk-ob\lib\public\mathlib.lib">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release(L4D)|Win32'">true</ExcludedFromBuild>
+    <Library Include="..\..\..\..\sdk\sourcesdk-ob\lib\public\mathlib.lib" />
+    <Library Include="..\..\..\..\sdk\sourcesdk-ob\lib\public\tier0.lib" />
+    <Library Include="..\..\..\..\sdk\sourcesdk-ob\lib\public\tier1.lib" />
+    <Library Include="..\..\..\..\sdk\sourcesdk-ob\lib\public\vstdlib.lib" />
+    <Library Include="..\..\sdk\sourcesdk-l4d\lib\public\mathlib.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release(OB)|Win32'">true</ExcludedFromBuild>
     </Library>
-    <Library Include="..\..\sdk\sourcesdk-ob\lib\public\tier0.lib">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release(L4D)|Win32'">true</ExcludedFromBuild>
+    <Library Include="..\..\sdk\sourcesdk-l4d\lib\public\tier0.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release(OB)|Win32'">true</ExcludedFromBuild>
     </Library>
-    <Library Include="..\..\sdk\sourcesdk-ob\lib\public\tier1.lib">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release(L4D)|Win32'">true</ExcludedFromBuild>
+    <Library Include="..\..\sdk\sourcesdk-l4d\lib\public\tier1.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release(OB)|Win32'">true</ExcludedFromBuild>
     </Library>
-    <Library Include="..\..\sdk\sourcesdk-ob\lib\public\vstdlib.lib">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release(L4D)|Win32'">true</ExcludedFromBuild>
+    <Library Include="..\..\sdk\sourcesdk-l4d\lib\public\tier2.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release(OB)|Win32'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\sdk\sourcesdk-l4d\lib\public\tier3.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release(OB)|Win32'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\sdk\sourcesdk-l4d\lib\public\vstdlib.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release(OB)|Win32'">true</ExcludedFromBuild>
     </Library>
     <Library Include="dyncall\lib\dyncall.lib" />
     <CustomBuildStep Include="..\..\hl2sdk-l4d\lib\public\mathlib.lib">

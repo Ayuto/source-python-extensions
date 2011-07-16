@@ -1,0 +1,30 @@
+#summary Introduction
+
+= Introduction =
+
+SPE is a server plugin for VALVe source games that is geared towards python scripters. It allows for unprecedented access to the internals of the Source Engine, giving scripters never before seen power.
+
+= About SPE =
+  * [http://forums.eventscripts.com/viewtopic.php?f=81&t=29657 Download SPE] from the Eventscipts forums.
+  * [Features SPE Features] - Read about how you can benefit from using SPE on your server.
+  * [Faq SPE FAQ] - View frequently asked questions regarding SPE.
+  * [KnownIssues Known Issues] - Read about any known issues with SPE.
+
+= Requirements =
+  * A working installation of [http://www.srcds.com/ SRCDS].
+  * A working installation of [http://www.eventscripts.com/pages/EventScripts Eventscripts].
+
+= Documentation =
+  * [FunctionRef Function Reference] - Information about SPE functions.
+
+= Authors and Contributors =
+
+Add your content here.  Format your content with:
+  * your-name-here -> Author
+  * XE_Manup -> Coding and design of the Python interface <3!
+  * Mattie -> Major help with python integration and linux support.
+  * Einlanzers -> Ridiculous amounts of testing and coding. Can't thank you enough!
+  * predcrab -> Answering technical questions.
+  * LDuke -> Teaching the author signature scanning which got him into all of this.
+  * dvander -> For his awesome sigscanner class, as well as answering a few questions.
+  * dyncall -> Incredible foreign function interface library which SPE provides python bindings to.

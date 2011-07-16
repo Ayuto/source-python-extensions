@@ -129,29 +129,15 @@ bool CSPE_Plugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn ga
 
 	// Get the game directory
 	char szServerBinary[300];
-	char szDetoursBinary[300];
-	
 	engine->GetGameDir( szServerBinary, 300 );
-	engine->GetGameDir( szDetoursBinary, 300 );
 
 	// Add the bin dir
 	strcat( szServerBinary, "/bin/server");
-	strcat( szDetoursBinary, "/addons/dyndetours/dyndetours" );
-
-	CreateInterfaceFn fn;
 
 	// OS specific stuff
 #ifdef _WIN32
 	strcat( szServerBinary, ".dll" );
-	strcat( szDetoursBinary, ".dll" );
-
 	laddr = (void *)LoadLibrary(szServerBinary);
-	
-	HMODULE pDetoursDLL = LoadLibrary(szDetoursBinary);
-	Msg("[SPE]: DetoursDLL - %d\n", pDetoursDLL);
-	fn = (CreateInterfaceFn)GetProcAddress(pDetoursDLL, "CreateInterface");
-	Msg("[SPE]: CreateInterface - %d\n", fn);
-
 #else 
 
 	// No extension.
@@ -166,8 +152,7 @@ bool CSPE_Plugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn ga
         return false;
     }
 
-    Msg("[SPE]: Handle address is %d.\n", laddr);
-
+    DevMsg("[SPE]: Handle address is %d.\n", laddr);
 #endif
     
 	// Initialize python
@@ -179,15 +164,7 @@ bool CSPE_Plugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn ga
 //=================================================================================
 void CSPE_Plugin::Unload( void )
 {
-	// NOTE: Do we even listen to events?
-	// gameeventmanager->RemoveListener( this );
-
-	/* Removed as we are now going to use dyndetours for this. */
-#if 0
- 	delete g_pParser;
- 	delete g_pHookManager;
-#endif
-
+	// Free up memory from dyncall.
 	dcFree(vm);
 
 #if( ENGINE_VERSION >= 2 )
@@ -224,8 +201,12 @@ void CSPE_Plugin::UnPause( void )
 // Purpose: the name of this plugin, returned in "plugin_print" command
 //=================================================================================
 const char *CSPE_Plugin::GetPluginDescription( void )
-{
-	return "Source Python Extensions, 2009 - 2010, your-name-here";
+{	
+	return (PLUGIN_NAME ", " 
+			PLUGIN_DATE ", " 
+			PLUGIN_AUTHOR ", " 
+			PLUGIN_VERSION ", r" 
+			SVN_WC_REVISION);
 }
 
 //=================================================================================
@@ -351,8 +332,15 @@ void CSPE_Plugin::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *
 //=================================================================================
 CON_COMMAND( spe_version, "prints the version of the empty plugin" )
 {
- 	char szInfo[1024];
- 	V_snprintf(szInfo, 1024, "%s, %s revision %s, %s\n", PLUGIN_NAME, PLUGIN_VERSION, 
- 			SVN_WC_REVISION, PLUGIN_AUTHOR);
- 	Msg(szInfo);
+	char szPluginInfo[1024];
+	
+	sprintf(szPluginInfo,
+		"%s, %s, %s, %s, r%s\n", 
+		PLUGIN_NAME, 
+		PLUGIN_DATE, 
+		PLUGIN_AUTHOR, 
+		PLUGIN_VERSION, 
+		SVN_WC_REVISION);
+
+	Msg(szPluginInfo);
 }

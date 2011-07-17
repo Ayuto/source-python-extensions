@@ -29,7 +29,7 @@ from spe_C import *
 # Versioning
 #================================================================================
 __revision__= "$Rev: 79 $"
-__version__ = '1.5.0f r'
+__version__ = '1.6.0a r'
 es.ServerVar("spe_version", __version__ + __revision__.strip("$Rev: ")).makepublic()
 
 #================================================================================

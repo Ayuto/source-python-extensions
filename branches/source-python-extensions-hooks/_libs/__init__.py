@@ -476,6 +476,13 @@ def parseINI( path ):
     gSPE.parseINI( path )
     
 def parseTypesINI( path ):
+    '''
+    This function parses custom type definitions from an ini
+    of your choosing. You can then pass the shortname of a
+    custom type in the ini to spe.makeObject and it will
+    return a class instance comprised of the symbolic names
+    of all variables in the declared type.
+    '''
     gSPE.parseTypesINI( path )
     
 def call( name, *args ):

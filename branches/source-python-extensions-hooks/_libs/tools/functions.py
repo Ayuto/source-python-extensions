@@ -204,7 +204,7 @@ def get_entity_functions(entity):
             continue
 
         # Add the values to SPE
-        parseINI(filepath.split('eventscripts')[1][1:])
+        parseINI(filepath.split('eventscripts')[~0][1:])
 
         # Get the functions for the current file
         ini = ConfigObj(filepath)

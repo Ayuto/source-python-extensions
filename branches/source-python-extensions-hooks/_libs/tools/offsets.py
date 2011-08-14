@@ -91,17 +91,31 @@ def get_entity_offsets(entity):
         # Get the offset's shortname
         name = ini[key]['shortname']
 
-        # Get the offset's offset
-        offset = ini[key]['offset']
+        # Is the server running on Windows
+        # and does the key have a "windows" value?
+        if platform == 'nt' and 'nt' in ini[key]:
 
-        # Make sure the offset is an integer
-        offset = int(offset)
+            # Get the Windows offset
+            offset = ini[key]['nt']
 
-        # Is the server running on Windows?
-        if platform == 'nt':
+            # Make sure the offset is an integer
+            offset = int(offset)
 
-            # Subtract 20 from the offset (seems like it is always 20 higher)
-            offset -= 20
+        # Is the server not running Windows or
+        # does the key not have a "windows" value?
+        else:
+
+            # Get the offset
+            offset = ini[key]['offset']
+
+            # Make sure the offset is an integer
+            offset = int(offset)
+
+            # Is the server running on Windows?
+            if platform == 'nt':
+
+                # Subtract 20 from the offset
+                offset -= 20
 
         # Get the offset's value type
         value_type = ini[key]['type']

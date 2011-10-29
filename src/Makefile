@@ -4,16 +4,14 @@
 ###########################
 ### ADD OTHER SDKs HERE ###
 ###########################
-HL2SDK_EP1 = ../../sdk/hl2sdk
-HL2SDK_OB  = ../../sdk/sourcesdk-ob
-HL2SDK_L4D = ../../sdk/sourcesdk-l4d
+HL2SDK_OB  = ../../../sdk/sourcesdk-ob
+HL2SDK_L4D = ../../../sdk/sourcesdk-l4d
 
 #######################
 ### OTHER LIBRARIES ###
 #######################
 PYTHON  = ./python
 DYNCALL = ./dyncall
-SOURCEHOOK = ./sourcehook
 
 ###################################
 ### SOURCE DEDICATED SERVER DIR ###
@@ -26,14 +24,12 @@ SRCDS_BASE = ~/srcds
 OBJECTS = spe_binutils.cpp \
     spe_convar.cpp \
     spe_dyncall.cpp \
-    spe_event_parser.cpp \
-    spe_hook_manager.cpp \
     spe_main.cpp \
     spe_misc.cpp \
     spe_player.cpp \
     spe_python.cpp \
     spe_scanner.cpp \
-    sourcehook.cpp
+	spe_sigcache.cpp
     
 ######################
 ### COMPILER FLAGS ###
@@ -83,8 +79,8 @@ LINK += $(HL2LIB)/tier1_i486.a \
 	$(HL2LIB)/mathlib_i486.a \
 	$(DYNCALL)/lib/libdyncall_s.a \
 	$(DYNCALL)/lib/libdynload_s.a \
-	/usr/lib/gcc/i386-redhat-linux/3.4.6/libstdc++.a \
-	/usr/lib/gcc/i386-redhat-linux/3.4.6/libgcc_eh.a \
+	/usr/lib/gcc/i686-redhat-linux/3.4.6/libstdc++.a \
+	/usr/lib/gcc/i686-redhat-linux/3.4.6/libgcc_eh.a \
 	libpython2.5.so.1.0 -static-libgcc
 
 LINK += -Wl,--rpath,\$$ORIGIN/eventscripts/_engines/python/Lib/plat-linux2

@@ -27,12 +27,10 @@
 //=================================================================================
 // Includes
 //=================================================================================
+#include "svn_build.h"
 #include "spe_main.h"
 #include "spe_globals.h"
 #include "spe_python.h"
-#include "svn_build.h"
-#include "spe_event_parser.h"
-#include "spe_hook_manager.h"
 
 #ifdef _LINUX
 #include <dlfcn.h>
@@ -51,13 +49,6 @@ IEngineTrace				*enginetrace		= NULL;
 CGlobalVars					*gpGlobals			= NULL;
 DCCallVM					*vm					= NULL;
 void						*laddr				= NULL;
-
-//////////////////////////////////////////////////////////////////////////
-// Sourcehook variables
-//////////////////////////////////////////////////////////////////////////
-SourceHook::ISourceHook		*g_SHPtr;
-SourceHook::CSourceHookImpl	 g_SourceHook;
-int							 g_PLID;
 
 //=================================================================================
 // Function to initialize any cvars/command in this plugin
@@ -174,16 +165,6 @@ bool CSPE_Plugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn ga
 
 #endif
 
-	// Setup sourcehook
-	g_SHPtr = &g_SourceHook;
-	g_PLID = 0;
-	
-	// Setup the event parser.
-	g_pParser = new CEventParser();
-
-	// Setup the hook manager.
-	g_pHookManager = new CHookManager( gameeventmanager );
-
     // Initialize python
 	return EnablePython();
 }
@@ -193,12 +174,8 @@ bool CSPE_Plugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn ga
 //=================================================================================
 void CSPE_Plugin::Unload( void )
 {
-	// NOTE: Do we even listen to events?
-	// gameeventmanager->RemoveListener( this );
 
- 	delete g_pParser;
- 	delete g_pHookManager;
-
+	// Free dyncall virtual machine.
 	dcFree(vm);
 
 #if( ENGINE_VERSION >= 2 )
@@ -236,7 +213,7 @@ void CSPE_Plugin::UnPause( void )
 //=================================================================================
 const char *CSPE_Plugin::GetPluginDescription( void )
 {
-	return "Source Python Extensions, 2009 - 2010, your-name-here";
+	return "Source Python Extensions, 2009 - 2011, your-name-here";
 }
 
 //=================================================================================

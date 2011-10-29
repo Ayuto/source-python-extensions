@@ -40,8 +40,6 @@
 #include "playerinfomanager.h"
 #include "igameevents.h"
 #include "IEngineTrace.h"
-#include "sourcehook_impl.h"
-#include "sourcehook.h"
 #include "spe_dyncall.h"
 
 //=================================================================================
@@ -64,14 +62,6 @@ extern CGlobalVars					*gpGlobals;
 //=================================================================================
 extern DCCallVM						*vm;
 extern void							*laddr;
-
-//=================================================================================
-// SourceHook related variables.
-//=================================================================================
-using namespace						SourceHook;
-extern SourceHook::ISourceHook	   *g_SHPtr;
-extern SourceHook::CSourceHookImpl  g_SourceHook;
-extern int						    g_PLID;
 
 //=================================================================================
 // Useful helper func.

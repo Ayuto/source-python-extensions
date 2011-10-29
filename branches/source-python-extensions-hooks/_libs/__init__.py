@@ -350,7 +350,7 @@ class CSPEManager(object):
                         curOffset += self.Types[type]['size']
                     else:
                         # This means we have an undefined type.
-                        raise UndefinedTypeError('Type of name ' + str(type)
+                        raise UndefinedTypeError('Type of name ' + str(type) +
                             'not found in dictionary! Did you define it?')
 
                 # Now push the constructed dict into the list.
@@ -453,16 +453,16 @@ class CSPEManager(object):
         # contained within the self.Signatures via the function name
         return self.Signatures[name].call(args)
 
-    def detourFunction(self, functionName, type, callback):
+    def detourFunction(self, name, type, callback):
         # Is the function in the list?
-        if not functionName in self.Signatures:
+        if not name in self.Signatures:
 
             # Raise an exception
             raise InvalidFunctionNameException(
                 'Could not find ' + str(name) + ' in the dictionary!')
 
         # Get the signature object.
-        sigObj = self.Signatures[functionName]
+        sigObj = self.Signatures[name]
 
         # Determine the calling convention.
         convIdx = ['cdecl', 'thiscall', 'stdcall'].index(sigObj.convention)
@@ -471,16 +471,16 @@ class CSPEManager(object):
         hookFunction(
             sigObj.function, sigObj.param_format, convIdx, type, callback)
 
-    def undetourFunction(self, functionName, type, callback):
+    def undetourFunction(self, name, type, callback):
         # Is the function in the list?
-        if not functionName in self.Signatures:
+        if not name in self.Signatures:
 
             # Raise an exception
             raise InvalidFunctionNameException(
                 'Could not find ' + str(name) + ' in the dictionary!')
 
         # Get the signature object.
-        sigObj = self.Signatures[functionName]
+        sigObj = self.Signatures[name]
 
         # Determine the calling convention.
         convIdx = ['cdecl', 'thiscall', 'stdcall'].index(sigObj.convention)

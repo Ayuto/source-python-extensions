@@ -13,8 +13,3 @@ from spe.tools import SPEBaseEntity
 class SPETeam(SPEBaseEntity):
     '''Create a class for team entities.
         In CS:S, the entity is cs_player_manager.'''
-
-
-# =============================================================================
-# >> DOCUMENTATION
-# =============================================================================

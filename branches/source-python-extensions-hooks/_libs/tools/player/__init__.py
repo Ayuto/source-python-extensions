@@ -50,8 +50,3 @@ class SPEPlayer(SPEBaseEntity):
 
         # Get the player's index
         return getIndexOfEntity(self.pointer)
-
-
-# =============================================================================
-# >> DOCUMENTATION
-# =============================================================================

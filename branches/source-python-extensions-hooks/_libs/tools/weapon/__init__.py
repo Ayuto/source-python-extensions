@@ -13,8 +13,3 @@ from spe.tools import SPEBaseEntity
 class SPEWeapon(SPEBaseEntity):
     '''Create a class for all weapon entities.
         Most weapon entity classnames will start with weapon_.'''
-
-
-# =============================================================================
-# >> DOCUMENTATION
-# =============================================================================

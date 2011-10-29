@@ -5,7 +5,9 @@
 # =============================================================================
 # Python Imports
 from configobj import ConfigObj
-from os import name as platform
+from os import name as os_name
+if os_name != 'nt':
+    os_name = 'linux'
 from path import path
 
 # Eventscripts Imports
@@ -74,7 +76,7 @@ def get_entity_offsets(entity):
     game_offsets = {}
 
     # Get the path to the entity's offsets for the current game
-    inifile = basepath.joinpath(entity, 'ini/offsets', gamename + '.ini')
+    inifile = basepath.joinpath(entity, 'ini', 'offsets', gamename + '.ini')
 
     # Does the file exist?
     if not inifile.isfile():
@@ -92,11 +94,7 @@ def get_entity_offsets(entity):
         name = ini[key]['shortname']
 
         # Get the offset
-        offset = ini[key].get(platform, ini[key].get('offset', None))
-
-        # Does the offset exist?
-        if offset is None:
-            return
+        offset = ini[key][os_name]
 
         # Make sure the offset is an integer
         offset = int(offset)

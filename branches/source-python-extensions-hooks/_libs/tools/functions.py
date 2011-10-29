@@ -191,10 +191,10 @@ def get_entity_functions(entity):
     return_functions = {}
 
     # Get the path to the current game's functions
-    gamefile = basepath.joinpath(entity, 'ini/games', gamename + '.ini')
+    gamefile = basepath.joinpath(entity, 'ini', 'games', gamename + '.ini')
 
     # Get the path to the current engine's functions
-    enginefile = basepath.joinpath(entity, 'ini/engines', engine + '.ini')
+    enginefile = basepath.joinpath(entity, 'ini', 'engines', engine + '.ini')
 
     # Check both the game's functions and the engine's functions files
     for filepath in (gamefile, enginefile):

@@ -225,8 +225,3 @@ def get_functions(entity='entity'):
 
     # Return a dictionary with all the attributes for the entity's functions
     return dict(zip(values.keys(), [values[item].__dict__ for item in values]))
-
-
-# =============================================================================
-# >> DOCUMENTATION
-# =============================================================================

@@ -1,7 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "source-python-extensions", "SPE-2008.vcproj", "{B6572CBE-7C7F-4FFF-94DE-AFBBBAB11C64}"
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "source-python-extensions", "SPE-2008.vcxproj", "{B6572CBE-7C7F-4FFF-94DE-AFBBBAB11C64}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

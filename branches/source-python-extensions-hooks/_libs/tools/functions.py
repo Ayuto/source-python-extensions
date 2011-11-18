@@ -100,8 +100,8 @@ class FunctionHandler(object):
     def call_function(self, pointer=None, *values):
         '''Calls the function with the given parameters'''
 
-        # Is the value of values a single tuple argument?
-        if len(values) == 1 and isinstance(values[0], tuple):
+        # Is the value of values a single tuple/list argument?
+        if len(values) == 1 and type(values[0]).__name__ in ('list', 'tuple'):
 
             # Correct the value of values.
             # This is for when using:
@@ -163,7 +163,7 @@ class FunctionHandler(object):
 
                 # Raise a proper error
                 raise ValueError('Invalid parameter "' + str(values[value]) +
-                    '" for type "' + RETURN_TYPES[self.params[value]] + '"')
+                    '" for type "' + self.params[value] + '"')
 
             # If all went well, add the value to the list of arguments
             call_values.append(new_value)

@@ -7,6 +7,8 @@
 from spe import getEntityClassName
 from spe import getEntityOfIndex
 from spe import getLocVal
+from spe import gSPE
+from spe import makeObject
 from spe import setLocVal
 
 # SPE Tools Imports
@@ -59,6 +61,12 @@ class SPEBaseEntity(object):
         # Is the item an offset for the class entity?
         if item in self.offsets:
 
+            # Is the item a "type"?
+            if self.offsets[item].type in gSPE.Types:
+
+                return makeObject(self.offsets[item].type,
+                    self.pointer + self.offsets[item].offset)
+
             # Return the current value of the offset
             return getLocVal(self.offsets[item].type,
                 self.pointer + self.offsets[item].offset)
@@ -102,6 +110,44 @@ class SPEBaseEntity(object):
         # Is the item an offset for the class entity?
         if item in self.offsets:
 
+            # Is the item a "type"?
+            if self.offsets[item].type in gSPE.Types:
+
+                # Store the types dictionary
+                info = gSPE.Types[self.offsets[item].type]['typeinfo']
+
+                # Is the value of values a single tuple/list argument?
+                if len(values) == 1 and type(
+                  values[0]).__name__ in ('list', 'tuple'):
+
+                    # Correct the value of values
+                    values = tuple(values[0])
+
+                # Are there the proper number of arguments?
+                if len(values) != len(info):
+
+                    # Raise an error
+                    raise TypeError(
+                        'Wrong number of arguments passed for %s. ' % item +
+                        'Requires %s gave %s' % (len(info), len(values)))
+
+                # Get the SPEObject instance
+                offset_object = makeObject(self.offsets[item].type,
+                    self.pointer + self.offsets[item].offset)
+
+                # Loop through the number of values to change
+                for attribute in xrange(len(info)):
+
+                    # Make sure the given value is of the correct type
+                    value = RETURN_TYPES[
+                        info[attribute]['type']](values[attribute])
+
+                    # Set the offset
+                    offset_object.__setattr__(info[attribute]['name'], value)
+
+                # No need to go further, so return
+                return
+
             # Type-cast the set value to make sure it is the correct type
             value = RETURN_TYPES[self.offsets[item].type](values[0])
 
@@ -109,7 +155,7 @@ class SPEBaseEntity(object):
             setLocVal(self.offsets[item].type,
                 self.pointer + self.offsets[item].offset, value)
 
-            # Return, since the loop should not run anymore
+            # No need to go further, so return
             return
 
         # Is the item a function for the class entity?

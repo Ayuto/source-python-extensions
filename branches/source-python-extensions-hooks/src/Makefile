@@ -4,9 +4,9 @@
 ###########################
 ### ADD OTHER SDKs HERE ###
 ###########################
-HL2SDK_EP1 = ../../sdk/hl2sdk
-HL2SDK_OB  = ../../sdk/sourcesdk-ob
-HL2SDK_L4D = ../../sdk/sourcesdk-l4d
+HL2SDK_OB  = ../../../../sdk/sourcesdk-ob-valve
+HL2SDK_L4D = ../../../../sdk/sourcesdk-l4d
+HL2SDK_L4D2 = ../../../../sdk/sourcesdk-l4d2
 
 #######################
 ### OTHER LIBRARIES ###
@@ -57,7 +57,19 @@ ifeq "$(ENGINE)" "l4d"
  CFLAGS = -DENGINE_VERSION=3
  INCLUDE += -I$(HL2SDK_L4D)/public/game/server
  SRCDS = $(SRCDS_BASE)/l4d
- BINARY = sp_extensions_l4d_i486.so
+ BINARY = sp_extensions_l4d.so
+ override ENGSET = true
+endif
+
+# Using the Left4Dead2 Engine?
+ifeq "${ENGINE}" "l4d2"
+ HL2SDK = $(HL2SDK_L4D2)
+ HL2PUB = $(HL2SDK_L4D2)/public
+ HL2LIB = $(HL2SDK_L4D2)/linux_sdk
+ CFLAGS = -DENGINE_VERSION=3
+ INCLUDE += -I$(HL2SDK_L4D2)/public/game/server
+ SRCDS = $(SRCDS_BASE)/l4d2
+ BINARY = sp_extensions_l4d2.so
  override ENGSET = true
 endif
 

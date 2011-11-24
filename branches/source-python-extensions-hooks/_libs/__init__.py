@@ -41,6 +41,10 @@ class InvalidFunctionNameException(Exception):
     pass
 
 
+class FunctionAddressNotValid(Exception):
+    pass
+
+
 class ConventionError(Exception):
     pass
 
@@ -453,34 +457,47 @@ class CSPEManager(object):
         # contained within the self.Signatures via the function name
         return self.Signatures[name].call(args)
 
-    def detourFunction(self, name, hooktype, callback):
+    def detourFunction(self, functionName, hooktype, callback):
         # Is the function in the list?
-        if not name in self.Signatures:
+        if not functionName in self.Signatures:
 
             # Raise an exception
             raise InvalidFunctionNameException(
                 'Could not find ' + str(name) + ' in the dictionary!')
 
         # Get the signature object.
-        sigObj = self.Signatures[name]
+        sigObj = self.Signatures[functionName]
+
+        # Determine the calling convention.
+        convIdx = ['cdecl', 'thiscall', 'stdcall'].index(sigObj.convention)
+
+        # Make sure the function address is valid.
+        if sigObj.function == None:
+            raise FunctionAddressNotValid(functionName + "\'s address is not valid!")
 
         # Hook the function
-        hookFunction(
-            sigObj.function, sigObj.param_format, convIdx, hooktype, callback)
+        hookFunction(sigObj.function, sigObj.param_format, convIdx, int(hooktype), callback)
 
-    def undetourFunction(self, name, hooktype, callback):
+    def undetourFunction(self, functionName, hooktype, callback):
         # Is the function in the list?
-        if not name in self.Signatures:
+        if not functionName in self.Signatures:
 
             # Raise an exception
             raise InvalidFunctionNameException(
                 'Could not find ' + str(name) + ' in the dictionary!')
 
         # Get the signature object.
-        sigObj = self.Signatures[name]
+        sigObj = self.Signatures[functionName]
 
+        # Determine the calling convention.
+        convIdx = ['cdecl', 'thiscall', 'stdcall'].index(sigObj.convention)
+
+        # Make sure the function address is valid.
+        if sigObj.function == None:
+            raise FunctionAddressNotValid(functionName + "\'s address is not valid!")
+        
         # Unhook the function
-        unHookFunction(sigObj.function, hooktype, callback)
+        unHookFunction(sigObj.function, int(hooktype), callback)
 
     def makeObject(self, objectName, baseAddress):
         # Do we have the requested object in our list?
@@ -550,25 +567,24 @@ def getPointer(signature, offset):
     return (pFunc + offset)
 
 
-def detourFunction(functionName, hooktype, callback):
+def detourFunction(functionName, type, callback):
     '''
     This function will hook a function as defined by a signature,
     and redirect its execution to your own python callback.
     NOTE: You must have loaded the signature via spe.parseINI!
     '''
-    gSPE.detourFunction(functionName, hooktype, callback)
+    gSPE.detourFunction(functionName, type, callback)
 
 
-def undetourFunction(functionName, hooktype, callback):
+def undetourFunction(functionName, type, callback):
     '''
     This function will remove a python callback from a detour.
     '''
-    gSPE.undetourFunction(functionName, hooktype, callback)
+    gSPE.undetourFunction(functionName, type, callback)
 
 
 def makeObject(objectName, baseAddress):
     '''
-    This function will return a wrapper python class around an address,
-    so that you can use the object at that address just like with C++!
+    Returns a special python wrapper around a C++ object instance.
     '''
     return gSPE.makeObject(objectName, baseAddress)

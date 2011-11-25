@@ -284,7 +284,7 @@ class CSPEManager(object):
         self.parseINI('_libs/python/spe/ini/games/' + self.game_name + '.ini')
 
         # Setup types.
-        # self.parseTypesINI('_libs/python/spe/types/shared.ini')
+        self.parseTypesINI('_libs/python/spe/types/shared.ini')
 
         # Load the shared and game module
         self.loadModule('spe.games.shared')

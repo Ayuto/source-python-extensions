@@ -463,7 +463,7 @@ class CSPEManager(object):
 
             # Raise an exception
             raise InvalidFunctionNameException(
-                'Could not find ' + str(name) + ' in the dictionary!')
+                'Could not find ' + str(functionName) + ' in the dictionary!')
 
         # Get the signature object.
         sigObj = self.Signatures[functionName]
@@ -484,7 +484,7 @@ class CSPEManager(object):
 
             # Raise an exception
             raise InvalidFunctionNameException(
-                'Could not find ' + str(name) + ' in the dictionary!')
+                'Could not find ' + str(functionName) + ' in the dictionary!')
 
         # Get the signature object.
         sigObj = self.Signatures[functionName]

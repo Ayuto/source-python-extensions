@@ -3,9 +3,13 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# EventScripts Imports
+from es import getindexfromhandle
+
 # SPE Imports
 from spe import getEntityClassName
 from spe import getEntityOfIndex
+from spe import getIndexOfEntity
 from spe import getLocVal
 from spe import gSPE
 from spe import makeObject
@@ -240,6 +244,14 @@ class SPEBaseEntity(object):
 
         # Return the classname of the entity index
         return getEntityClassName(self.pointer)
+
+    @classmethod
+    def get_object_from_handle(cls, handle):
+        return cls(getindexfromhandle(handle))
+
+    @classmethod
+    def get_object_from_pointer(cls, pointer):
+        return cls(getIndexOfEntity(pointer))
 
 
 # =============================================================================

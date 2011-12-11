@@ -3,6 +3,10 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# EventScripts Imports
+from es import gethandlefromindex
+from es import getuserid
+
 # SPE Imports
 from spe import getIndexOfEntity
 from spe import getPlayer
@@ -50,3 +54,23 @@ class SPEPlayer(SPEBaseEntity):
 
         # Get the player's index
         return getIndexOfEntity(self.pointer)
+
+    @classmethod
+    def get_object_from_handle(cls, handle):
+        return cls(getuserid(handle))
+
+    @classmethod
+    def get_object_from_steamid(cls, steamid):
+        return cls(getuserid(steamid))
+
+    @classmethod
+    def get_object_from_username(cls, username):
+        return cls(getuserid(username))
+
+    @classmethod
+    def get_object_from_pointer(cls, pointer):
+        return cls.get_object_from_index(getIndexOfEntity(pointer))
+
+    @classmethod
+    def get_object_from_index(cls, index):
+        return cls.get_object_from_handle(gethandlefromindex(index))

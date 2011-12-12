@@ -56,21 +56,51 @@ class SPEPlayer(SPEBaseEntity):
         return getIndexOfEntity(self.pointer)
 
     @classmethod
-    def get_object_from_handle(cls, handle):
-        return cls(getuserid(handle))
+    def get_instance_from_handle(cls, handle):
+        '''Returns a class instance for the given handle'''
+
+        # Get the userid of the handle
+        userid = getuserid(handle)
+
+        # Return a class instance for the userid
+        return cls(userid)
 
     @classmethod
-    def get_object_from_steamid(cls, steamid):
-        return cls(getuserid(steamid))
+    def get_instance_from_steamid(cls, steamid):
+        '''Returns a class instance for the given steamid'''
+
+        # Get the userid of the steamid
+        userid = getuserid(steamid)
+
+        # Return a class instance for the userid
+        return cls(userid)
 
     @classmethod
-    def get_object_from_username(cls, username):
-        return cls(getuserid(username))
+    def get_instance_from_username(cls, username):
+        '''Returns a class instance for the given username'''
+
+        # Get the userid of the username
+        userid = getuserid(username)
+
+        # Return a class instance for the userid
+        return cls(userid)
 
     @classmethod
-    def get_object_from_pointer(cls, pointer):
-        return cls.get_object_from_index(getIndexOfEntity(pointer))
+    def get_instance_from_pointer(cls, pointer):
+        '''Returns a class instance for the given pointer'''
+
+        # Get the index of the pointer
+        index = getIndexOfEntity(pointer)
+
+        # Return by getting the instance of the index
+        return cls.get_instance_from_index(index)
 
     @classmethod
-    def get_object_from_index(cls, index):
-        return cls.get_object_from_handle(gethandlefromindex(index))
+    def get_instance_from_index(cls, index):
+        '''Returns a class instance for the given index'''
+
+        # Get the handle of the index
+        handle = gethandlefromindex(index)
+
+        # Return by getting the instance of the handle
+        return cls.get_instance_from_handle(handle)

@@ -246,11 +246,23 @@ class SPEBaseEntity(object):
         return getEntityClassName(self.pointer)
 
     @classmethod
-    def get_object_from_handle(cls, handle):
-        return cls(getindexfromhandle(handle))
+    def get_instance_from_handle(cls, handle):
+        '''Returns a class instance for the given handle'''
+
+        # Get the index of the handle
+        index = getindexfromhandle(handle)
+
+        # Return a class instance for the index
+        return cls(index)
 
     @classmethod
-    def get_object_from_pointer(cls, pointer):
+    def get_instance_from_pointer(cls, pointer):
+        '''Returns a class instance for the given pointer'''
+
+        # Get the index of the pointer
+        index = getIndexOfEntity(pointer)
+
+        # Return a class instance for the index
         return cls(getIndexOfEntity(pointer))
 
 

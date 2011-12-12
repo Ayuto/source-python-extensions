@@ -263,7 +263,7 @@ class SPEBaseEntity(object):
         index = getIndexOfEntity(pointer)
 
         # Return a class instance for the index
-        return cls(getIndexOfEntity(pointer))
+        return cls(index)
 
 
 # =============================================================================

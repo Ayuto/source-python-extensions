@@ -65,15 +65,53 @@ class SPEBaseEntity(object):
         # Is the item an offset for the class entity?
         if item in self.offsets:
 
+            # Store the base offset address
+            offset = self.pointer + self.offsets[item].offset
+
             # Is the item a "type"?
             if self.offsets[item].type in gSPE.Types:
 
-                return makeObject(self.offsets[item].type,
-                    self.pointer + self.offsets[item].offset)
+                # Return an spe.makeObject object from the given offset
+                return makeObject(self.offsets[item].type, offset)
+
+            # Is the offset of type String?
+            if self.offsets[item].type == 'S':
+
+                # Create an empty string to start with
+                return_value = ''
+
+                # Set a variable to store the current character position
+                current_offset = 0
+
+                # Start a while loop to get all values of the string
+                while True:
+
+                    # Get the current offset's value
+                    value = getLocVal('i', offset + current_offset)
+
+                    # Get the remainder of the current offset's value
+                    value %= 256
+
+                    # Is the value 0?
+                    if value == 0:
+
+                        # Stop the loop at the end of the character string
+                        break
+
+                    # Get the character value of the current offset's value
+                    value = chr(value)
+
+                    # Add the character to the return value
+                    return_value += value
+
+                    # Add 1 to the offset for the next loop
+                    current_offset += 1
+
+                # Return the value
+                return return_value
 
             # Return the current value of the offset
-            return getLocVal(self.offsets[item].type,
-                self.pointer + self.offsets[item].offset)
+            return getLocVal(self.offsets[item].type, offset)
 
         # Is the item a function for the class entity?
         if item in self.functions:
@@ -114,6 +152,9 @@ class SPEBaseEntity(object):
         # Is the item an offset for the class entity?
         if item in self.offsets:
 
+            # Store the base offset address
+            offset = self.pointer + self.offsets[item].offset
+
             # Is the item a "type"?
             if self.offsets[item].type in gSPE.Types:
 
@@ -136,8 +177,7 @@ class SPEBaseEntity(object):
                         'Requires %s gave %s' % (len(info), len(values)))
 
                 # Get the SPEObject instance
-                offset_object = makeObject(self.offsets[item].type,
-                    self.pointer + self.offsets[item].offset)
+                offset_object = makeObject(self.offsets[item].type, offset)
 
                 # Loop through the number of values to change
                 for attribute in xrange(len(info)):
@@ -152,12 +192,29 @@ class SPEBaseEntity(object):
                 # No need to go further, so return
                 return
 
+            # Is the offset of type String?
+            if self.offsets[item].type == 'S':
+
+                # Set values to the first argument given
+                values = values[0]
+
+                # Find out the length of the string
+                length = len(values)
+
+                # Loop through the length of the string being set
+                for value in xrange(length):
+
+                    # Set the value of the current character
+                    setLocVal('i', offset + value, ord(values[value]))
+
+                # Set the next character to \0 to end the string
+                setLocVal('i', offset + length, 0)
+
             # Type-cast the set value to make sure it is the correct type
             value = RETURN_TYPES[self.offsets[item].type](values[0])
 
             # Set the offset to the new value
-            setLocVal(self.offsets[item].type,
-                self.pointer + self.offsets[item].offset, value)
+            setLocVal(self.offsets[item].type, offset, value)
 
             # No need to go further, so return
             return

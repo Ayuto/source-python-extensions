@@ -354,8 +354,8 @@ class CSPEManager(object):
                         curOffset += self.Types[type]['size']
                     else:
                         # This means we have an undefined type.
-                        raise UndefinedTypeError('Type of name ' + str(type) +
-                            'not found in dictionary! Did you define it?')
+                        raise UndefinedTypeError('Type of name "' + str(type) +
+                            '" not found in dictionary! Did you define it?')
 
                 # Now push the constructed dict into the list.
                 self.Types[shortname]['typeinfo'].append(typedict)

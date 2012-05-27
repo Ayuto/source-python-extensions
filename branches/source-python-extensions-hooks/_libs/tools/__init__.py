@@ -210,6 +210,9 @@ class SPEBaseEntity(object):
                 # Set the next character to \0 to end the string
                 setLocVal('i', offset + length, 0)
 
+                # No need to go further, so return
+                return
+
             # Type-cast the set value to make sure it is the correct type
             value = RETURN_TYPES[self.offsets[item].type](values[0])
 

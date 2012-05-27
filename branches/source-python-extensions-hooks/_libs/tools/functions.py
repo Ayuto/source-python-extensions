@@ -4,7 +4,9 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
+from binascii import unhexlify
 from configobj import ConfigObj
+from os import name as os_name
 from path import path
 
 # Eventscripts Imports
@@ -15,7 +17,8 @@ from es import ServerVar
 from spe import call
 from spe import getEntityOfIndex
 from spe import getIndexOfEntity
-from spe import parseINI
+from spe import gSPE
+from spe import Signature
 
 
 # =============================================================================
@@ -67,11 +70,13 @@ class FunctionHandler(object):
     # The pointer should always be None unless it is being used for a function
     current_pointer = None
 
-    def __init__(self, name, params):
+    def __init__(self, name, spe_name, params):
         '''Store the necessary data for the current function'''
 
         # name is the "shortname" that is used to know the correct function
         self.name = name
+
+        self.spe_name = spe_name
 
         # Store the parameters for when listing functions
         self.parameters = params
@@ -175,10 +180,10 @@ class FunctionHandler(object):
         if self.return_value:
 
             # Return the value(s) from the function
-            return call(self.name, *call_values)
+            return call(self.spe_name, *call_values)
 
         # If no return values were needed, still call the function
-        call(self.name, *call_values)
+        call(self.spe_name, *call_values)
 
 
 # =============================================================================
@@ -203,9 +208,6 @@ def get_entity_functions(entity):
         if not filepath.isfile():
             continue
 
-        # Add the values to SPE
-        parseINI(filepath.split('eventscripts')[~0][1:])
-
         # Get the functions for the current file
         ini = ConfigObj(filepath)
 
@@ -215,16 +217,45 @@ def get_entity_functions(entity):
             # Get the functions "shortname"
             name = ini[key]['shortname']
 
+            # Set the SPE shortname
+            spe_name = entity + '_' + name
+
+            # Get the parameters
+            params = ini[key]['param']
+
+            # Get the calling convention
+            convention = ini[key]['convention']
+
+            # Is the OS Windows?
+            if os_name == 'nt':
+
+                # Get the signature for the function
+                sig = ini[key]['sig']
+
+                # Does the signature contain spaces?
+                if ' ' in sig:
+
+                    # Convert it to a proper readable format
+                    sig = unhexlify(sig.replace(' ', ''))
+
+                # Add the signature to SPE
+                gSPE.Signatures[spe_name] = Signature(sig, params, convention)
+
+            # Is the OS not Windows?
+            else:
+
+                # Add the symbol to SPE
+                gSPE.Signatures[spe_name] = Signature(
+                    ini[key]['symbol'], params, convention)
+
             # Does the "shortname" already exist for the entity?
             # This basically makes sure the engine's ini
             # file doesn't overwrite the game's ini file.
             if not name in return_functions:
 
-                # Get the parameters
-                params = ini[key]['param']
-
                 # Add the "shortname" to the dictionary with it's parameters
-                return_functions[name] = FunctionHandler(name, params)
+                return_functions[name] = FunctionHandler(
+                    name, spe_name, params)
 
     # Return the dictionary of functions
     return return_functions

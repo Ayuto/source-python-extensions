@@ -4,6 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # EventScripts Imports
+from es import gethandlefromindex
 from es import getindexfromhandle
 
 # SPE Imports
@@ -270,7 +271,7 @@ class SPEBaseEntity(object):
         '''Returns a dictionary of all offsets available to the entity'''
 
         # Get the base entity offsets
-        values = OFFSETS['entity']
+        values = dict(OFFSETS['entity'])
 
         # Update the dictionary with the entity's offsets
         values.update(OFFSETS[self.entity])
@@ -283,9 +284,12 @@ class SPEBaseEntity(object):
         '''Returns a dictionary of all functions available to the entity'''
 
         # Get the base entity functions
-        values = FUNCTIONS['entity']
+        values = dict(FUNCTIONS['entity'])
 
-        # Update the dictionary with the entity's functions
+        # Update the dictionary with the entity's functions.
+        # Using the dictionary method "update" ensures that if a
+        # function shortname exists for both the base entity functions
+        # and the classes entity functions, that the classes will be used
         values.update(FUNCTIONS[self.entity])
 
         # Return the dictionary
@@ -304,6 +308,13 @@ class SPEBaseEntity(object):
 
         # Return the classname of the entity index
         return getEntityClassName(self.pointer)
+
+    @property
+    def handle(self):
+        '''Returns the handle of the instance's index'''
+
+        # Return the handle of the entity index
+        return gethandlefromindex(self.index)
 
     @classmethod
     def get_instance_from_handle(cls, handle):

@@ -100,7 +100,18 @@ void CPythonStack::ReadArgs( CDetour* pDetour )
          * parameter because we want it at the end of the argument list that
          * is passed to the python function.
          */
-         i++;
+
+		 /* If we skip the first argument, we cannot read the last argument by
+		  * using our instance of CFuncStack.
+		  *
+		  * r_esp +  0: Return address
+		  * r_esp +  4: thisptr
+		  * r_esp +  8: Argument 1
+		  * r_esp + 12: Argument 2
+		  * ...
+		  */
+
+         //i++;
 
          /* Parse out the this pointer as the first object. */
          void* pArg = ReadArg<void*>((void *)(pRegisters->r_esp + 4));
@@ -124,6 +135,12 @@ void CPythonStack::ReadArgs( CDetour* pDetour )
 
 		/* The address of the argument. */
 		int offset = pArgNode->m_nOffset;
+
+		// Hack for thiscalls on Linux
+#ifdef __linux__
+        if (pFuncObj->GetConvention() == CONV_THISCALL)
+            offset += 4;
+#endif
 
 		DevMsg("Offset: %d\n", offset);
 
@@ -189,57 +206,57 @@ void CPythonStack::PutArgs( CDetour* pDetour )
     /* Get registers. */
     CRegisterObj* Registers = pDetour->GetAsmBridge()->GetConv()->GetRegisters();
 
-    /* Start iterating through the list of arguments. 
-     * The last python object in the list is the 'this'
-     * pointer. Skip the first argument if it's a thiscall.
-     */
-    int i = 0;
-    
-    /* Skip the first argument. */
-    if( Function->GetConvention() == CONV_THISCALL ) {
-	i++;
-    }
-    
-    for( i; i < Function->GetNumArgs() - 1; i++ )
+	// Define i outside of the loop. We use it later again
+	int i = 0;
+    for(i; i < Function->GetNumArgs(); i++ )
     {
-	/* Get information about the argument. */
-	ArgNode_t* pNode = Function->GetStack()->GetArgument(i);
-	int StkOffset = pNode->m_nOffset;
-	eArgType ArgType = pNode->m_pArg->GetType();
+		/* Get information about the argument. */
+		ArgNode_t* pNode = Function->GetStack()->GetArgument(i);
+		int StkOffset = pNode->m_nOffset;
 
-	/* Get the python object representing the arg value. */
-	DevMsg("Retrieving argument %d....\n", i);
-	PyObject* PyArgVal = PyList_GetItem(m_pArgList, i);
+		// Hack for thiscalls on Linux
+#ifdef __linux__
+        if (Function->GetConvention() == CONV_THISCALL)
+            StkOffset += 4;
+#endif
 
-	/* Make sure we're valid. */
-	if( !PyArgVal )
-		continue;
+		eArgType ArgType = pNode->m_pArg->GetType();
 
-	/* Read it back onto the stack. */
-	switch( ArgType )
-	{
-	  /* Integer args. */
-	  case TYPE_BOOL:	
-	  case TYPE_INT32:
-	  case TYPE_INT32_PTR:
-	    INT32 val;
-	    PyArg_Parse(PyArgVal, "i", &val);
-	    DevMsg("Argument %d is an integer arg with new value of %d\n", i, val);
-	    SetArg<INT32>((void *)(Registers->r_esp + StkOffset + 4), val);
-	    break;
+		/* Get the python object representing the arg value. */
+		DevMsg("Retrieving argument %d....\n", i);
+		PyObject* PyArgVal = PyList_GetItem(m_pArgList, i);
 
-	  /* String args. */
-	  case TYPE_CHAR_PTR:
-	    char* strval = NULL;
-	    PyArg_Parse(PyArgVal, "s", &strval);
-	    DevMsg("Argument %d is a string with new value of %s\n", i, strval);
-	    SetArg<char*>((void *)(Registers->r_esp + StkOffset + 4), strval);
-	    break;
-	}
+		/* Make sure we're valid. */
+		if( !PyArgVal )
+			continue;
+
+		/* Read it back onto the stack. */
+		switch( ArgType )
+		{
+		  /* Integer args. */
+		  case TYPE_BOOL:	
+		  case TYPE_INT32:
+		  case TYPE_INT32_PTR:
+			INT32 val;
+			PyArg_Parse(PyArgVal, "i", &val);
+			DevMsg("Argument %d is an integer arg with new value of %d\n", i, val);
+			SetArg<INT32>((void *)(Registers->r_esp + StkOffset + 4), val);
+			break;
+
+		  /* String args. */
+		  case TYPE_CHAR_PTR:
+			char* strval = NULL;
+			PyArg_Parse(PyArgVal, "s", &strval);
+			DevMsg("Argument %d is a string with new value of %s\n", i, strval);
+			SetArg<char*>((void *)(Registers->r_esp + StkOffset + 4), strval);
+			break;
+		}
     }
-    
-    /* Grab the this pointer if it exists. */
-    if( Function->GetConvention() == CONV_THISCALL ) {
+
+    // If it isn't a thiscall, we are finish here
+    if( Function->GetConvention() != CONV_THISCALL )
+		return;
+
 	PyObject* pyThis = PyList_GetItem(m_pArgList, i);
 	
 	INT32 pThis = 0;
@@ -248,20 +265,20 @@ void CPythonStack::PutArgs( CDetour* pDetour )
 	DevMsg("This pointer has value of %d\n", pThis);
 	
 	/* Set the this pointer if it's valid. */
-	if( pThis ) {
+	if( pThis )
+	{
 #ifdef _WIN32
-	    /* This gets restored by the calling convention class. */
-	    Registers->r_ecx = pThis;
+		/* This gets restored by the calling convention class. */
+		Registers->r_ecx = pThis;
 #else
-	    /* On linux, the this pointer is the last argument passed
-	     * onto the stack so we need to set it.
-	     */
-	    DevMsg("Setting the this pointer to %d\n", pThis);
-	    INT32* pStkAddr = (INT32 *)(Registers->r_esp + 8);
-	    *pStkAddr = pThis;
+		/* On linux, the this pointer is the first argument passed
+		* onto the stack so we need to set it.
+		*/
+		DevMsg("Setting the this pointer to %d\n", pThis);
+		INT32* pStkAddr = (INT32 *)(Registers->r_esp + 4);
+		*pStkAddr = pThis;
 #endif
 	}
-    }
 }
 
 // =======================================================================

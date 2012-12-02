@@ -2,8 +2,8 @@
 
  Package: dyncall
  Library: dyncallback
- File: dyncallback/dyncall_alloc_wx.h
- Description: Allocate write/executable memory - Interface
+ File: dyncallback/dyncall_callback_sparc32.h
+ Description: Callback - Header for sparc32
  License:
 
    Copyright (c) 2007-2011 Daniel Adler <dadler@uni-goettingen.de>,
@@ -23,24 +23,21 @@
 
 */
 
-#ifndef DYNCALL_ALLOC_WX_HPP
-#define DYNCALL_ALLOC_WX_HPP
+#ifndef DYNCALL_CALLBACK_SPARC32_H
+#define DYNCALL_CALLBACK_SPARC32_H
 
-#include "../dyncall/dyncall_types.h"
+#include "dyncall_callback.h"
 
-typedef int DCerror;
+#include "dyncall_thunk.h"
+#include "dyncall_args_sparc32.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+struct DCCallback
+{
+  DCThunk            thunk;         /* offset  0, size ?? */
+  DCCallbackHandler* handler;       /* offset ??, size  4 */
+  size_t             stack_cleanup; /* offset ??, size  4 */
+  void*              userdata;      /* offset ??, size  4 */
+};
 
-DCerror dcAllocWX(DCsize size, void** p);
-void    dcFreeWX (void* p, DCsize size);
-
-#ifdef __cplusplus
-}
-#endif
-
-
-#endif // DYNCALL_ALLOC_WX_HPP
+#endif /* DYNCALL_CALLBACK_SPARC32_H */
 

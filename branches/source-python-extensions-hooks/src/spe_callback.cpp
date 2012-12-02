@@ -87,42 +87,42 @@ void CPythonStack::ReadArgs( CDetour* pDetour )
 	/* Get the number of arguments. */
 	int iNumArgs = pStk->GetNumArgs();
 
-    /* This will keep track of the this pointer if necessary. */
-    PyObject* pThisPtr = NULL;
-    int i = 0;
+	/* This will keep track of the this pointer if necessary. */
+	PyObject* pThisPtr = NULL;
+	int i = 0;
 
-    /* Extra handling for thiscalls. */
-    if( pFuncObj->GetConvention() == CONV_THISCALL ) 
-    {  
+	/* Extra handling for thiscalls. */
+	if( pFuncObj->GetConvention() == CONV_THISCALL ) 
+	{  
 #ifdef __linux__
-        /* On linux, the thisptr is actually passed on the stack as a parameter
-         * if the function is a thiscall. If this is the case, skip the first
-         * parameter because we want it at the end of the argument list that
-         * is passed to the python function.
-         */
+		/* On linux, the thisptr is actually passed on the stack as a parameter
+		* if the function is a thiscall. If this is the case, skip the first
+		* parameter because we want it at the end of the argument list that
+		* is passed to the python function.
+		*/
 
-		 /* If we skip the first argument, we cannot read the last argument by
-		  * using our instance of CFuncStack.
-		  *
-		  * r_esp +  0: Return address
-		  * r_esp +  4: thisptr
-		  * r_esp +  8: Argument 1
-		  * r_esp + 12: Argument 2
-		  * ...
-		  */
+		/* If we skip the first argument, we cannot read the last argument by
+		* using our instance of CFuncStack.
+		*
+		* r_esp +  0: Return address
+		* r_esp +  4: thisptr
+		* r_esp +  8: Argument 1
+		* r_esp + 12: Argument 2
+		* ...
+		*/
 
-         //i++;
+		//i++;
 
-         /* Parse out the this pointer as the first object. */
-         void* pArg = ReadArg<void*>((void *)(pRegisters->r_esp + 4));
+		/* Parse out the this pointer as the first object. */
+		void* pArg = ReadArg<void*>((void *)(pRegisters->r_esp + 4));
 #else
-         /* This is stored in ecx on windows. */
-         void* pArg = (void *)(pRegisters->r_ecx);
+		/* This is stored in ecx on windows. */
+		void* pArg = (void *)(pRegisters->r_ecx);
 #endif
 
-         /* Build a value for the this pointer. */
-         pThisPtr = Py_BuildValue("i", pArg);
-    }
+		/* Build a value for the this pointer. */
+		pThisPtr = Py_BuildValue("i", pArg);
+	}
 
 	for( ; i < iNumArgs; i++ )
 	{
@@ -138,8 +138,8 @@ void CPythonStack::ReadArgs( CDetour* pDetour )
 
 		// Hack for thiscalls on Linux
 #ifdef __linux__
-        if (pFuncObj->GetConvention() == CONV_THISCALL)
-            offset += 4;
+		if (pFuncObj->GetConvention() == CONV_THISCALL)
+		offset += 4;
 #endif
 
 		DevMsg("Offset: %d\n", offset);
@@ -160,32 +160,30 @@ void CPythonStack::ReadArgs( CDetour* pDetour )
 				pVal = Py_BuildValue("f", ReadArg<float>(pArgAddr));
 				break;
 
-            /* String args. */
-            case TYPE_CHAR_PTR:
+			/* String args. */
+			case TYPE_CHAR_PTR:
 			{
-                char* strarg = ReadArg<char*>(pArgAddr);
-                DevMsg("Char arg: %s\n", strarg);
-                pVal = Py_BuildValue("s", strarg);
-                break;
+				char* strarg = ReadArg<char*>(pArgAddr);
+				DevMsg("Char arg: %s\n", strarg);
+				pVal = Py_BuildValue("s", strarg);
+				break;
 			}
     
-            default:
-                DevMsg("[SPE]: Argument #%d is not known! You're probably going to crash now!\n", i);
-                break;
+			default:
+				DevMsg("[SPE]: Argument #%d is not known! You're probably going to crash now!\n", i);
+				break;
 		}
 		
 		/* Add the argument to the list. */
-        if( pVal ) {
-            PyList_Append(m_pArgList, pVal);
-            Py_XDECREF( pVal );
-        } 
+		if( pVal ) {
+			PyList_Append(m_pArgList, pVal);
+			Py_XDECREF( pVal );
+		} 
 	}
 
 	/* Hack for thiscalls. */
-    if( pThisPtr )
-	{
+	if( pThisPtr )
 		PyList_Append(m_pArgList, pThisPtr);
-	}
 
 	/* If we are here, we should be good. */
 	m_bOK = true;
@@ -196,28 +194,28 @@ void CPythonStack::ReadArgs( CDetour* pDetour )
 // =======================================================================
 void CPythonStack::PutArgs( CDetour* pDetour )
 {
-    /* Make sure the input is valid. */
-    if( !pDetour )
-	    return;
+	/* Make sure the input is valid. */
+	if( !pDetour )
+		return;
 
-    /* Get the function object. */
-    CFuncObj* Function = pDetour->GetFuncObj();
+	/* Get the function object. */
+	CFuncObj* Function = pDetour->GetFuncObj();
 
-    /* Get registers. */
-    CRegisterObj* Registers = pDetour->GetAsmBridge()->GetConv()->GetRegisters();
+	/* Get registers. */
+	CRegisterObj* Registers = pDetour->GetAsmBridge()->GetConv()->GetRegisters();
 
 	// Define i outside of the loop. We use it later again
 	int i = 0;
-    for(i; i < Function->GetNumArgs(); i++ )
-    {
+	for(i; i < Function->GetNumArgs(); i++ )
+	{
 		/* Get information about the argument. */
 		ArgNode_t* pNode = Function->GetStack()->GetArgument(i);
 		int StkOffset = pNode->m_nOffset;
 
 		// Hack for thiscalls on Linux
 #ifdef __linux__
-        if (Function->GetConvention() == CONV_THISCALL)
-            StkOffset += 4;
+		if (Function->GetConvention() == CONV_THISCALL)
+			StkOffset += 4;
 #endif
 
 		eArgType ArgType = pNode->m_pArg->GetType();
@@ -228,33 +226,33 @@ void CPythonStack::PutArgs( CDetour* pDetour )
 
 		/* Make sure we're valid. */
 		if( !PyArgVal )
-			continue;
+		continue;
 
 		/* Read it back onto the stack. */
 		switch( ArgType )
 		{
-		  /* Integer args. */
-		  case TYPE_BOOL:	
-		  case TYPE_INT32:
-		  case TYPE_INT32_PTR:
-			INT32 val;
-			PyArg_Parse(PyArgVal, "i", &val);
-			DevMsg("Argument %d is an integer arg with new value of %d\n", i, val);
-			SetArg<INT32>((void *)(Registers->r_esp + StkOffset + 4), val);
-			break;
+			/* Integer args. */
+			case TYPE_BOOL:	
+			case TYPE_INT32:
+			case TYPE_INT32_PTR:
+				INT32 val;
+				PyArg_Parse(PyArgVal, "i", &val);
+				DevMsg("Argument %d is an integer arg with new value of %d\n", i, val);
+				SetArg<INT32>((void *)(Registers->r_esp + StkOffset + 4), val);
+				break;
 
-		  /* String args. */
-		  case TYPE_CHAR_PTR:
+			/* String args. */
+			case TYPE_CHAR_PTR:
 			char* strval = NULL;
-			PyArg_Parse(PyArgVal, "s", &strval);
-			DevMsg("Argument %d is a string with new value of %s\n", i, strval);
-			SetArg<char*>((void *)(Registers->r_esp + StkOffset + 4), strval);
-			break;
+				PyArg_Parse(PyArgVal, "s", &strval);
+				DevMsg("Argument %d is a string with new value of %s\n", i, strval);
+				SetArg<char*>((void *)(Registers->r_esp + StkOffset + 4), strval);
+				break;
 		}
-    }
+	}
 
-    // If it isn't a thiscall, we are finish here
-    if( Function->GetConvention() != CONV_THISCALL )
+	// If it isn't a thiscall, we are finish here
+	if( Function->GetConvention() != CONV_THISCALL )
 		return;
 
 	PyObject* pyThis = PyList_GetItem(m_pArgList, i);
@@ -271,7 +269,7 @@ void CPythonStack::PutArgs( CDetour* pDetour )
 		/* This gets restored by the calling convention class. */
 		Registers->r_ecx = pThis;
 #else
-		/* On linux, the this pointer is the first argument passed
+		/* On linux, the this pointer is the last argument passed
 		* onto the stack so we need to set it.
 		*/
 		DevMsg("Setting the this pointer to %d\n", pThis);
@@ -387,60 +385,60 @@ HookRetBuf_t* CPythonCallback::DoPreCalls( CDetour* pDet )
 
 	for( int i = 0; i < m_PreCalls.Count(); i++ )
 	{
-	    /* Get the python object. */
-	    PyObject* pFuncObj = m_PreCalls[i];
+		/* Get the python object. */
+		PyObject* pFuncObj = m_PreCalls[i];
 
-	    /* Call the function and get the return value. */
-	    DevMsg("Executing function %d\n", i);
-	    PyObject* pRetTup = PyObject_CallFunction(pFuncObj, "O", pyArgStack.GetArgs());
+		/* Call the function and get the return value. */
+		DevMsg("Executing function %d\n", i);
+		PyObject* pRetTup = PyObject_CallFunction(pFuncObj, "O", pyArgStack.GetArgs());
 
-	    if( PyErr_Occurred() || !pRetTup ) {
-	      PyErr_Print();
-	      continue;
-	    }
+		if( PyErr_Occurred() || !pRetTup ) {
+			PyErr_Print();
+			continue;
+		}
 
-	    /* Parse out the return tuple:
-	     *  1st element: The action to take.
-	     *  2nd element: The return value.
-	     */
-	    eHookRes hookAction = HOOKRES_ERROR;
-	    void*    retval = NULL;
-	    if( !PyArg_ParseTuple(pRetTup, "ii", &hookAction, &retval) )
-	    {
-		    /* TODO: Some kind of logging. */
-		    DevMsg("[SPE]: Could not callback return tuple!\n");
-		    continue;
-	    }
+		/* Parse out the return tuple:
+		*  1st element: The action to take.
+		*  2nd element: The return value.
+		*/
+		eHookRes hookAction = HOOKRES_ERROR;
+		void*    retval = NULL;
+		if( !PyArg_ParseTuple(pRetTup, "ii", &hookAction, &retval) )
+		{
+			/* TODO: Some kind of logging. */
+			DevMsg("[SPE]: Could not callback return tuple!\n");
+			continue;
+		}
 
-	    /* Decrement the reference. */
-	    DevMsg("Decref'ing the return tuple.\n");
-	    Py_XDECREF(pRetTup);
+		/* Decrement the reference. */
+		DevMsg("Decref'ing the return tuple.\n");
+		Py_XDECREF(pRetTup);
 
-	    /* Bubble up actions that have higher priority. */
-	    DevMsg("Performing hookaction logic\n");
+		/* Bubble up actions that have higher priority. */
+		DevMsg("Performing hookaction logic\n");
 
-	    if( hookAction >= pBuf->eRes )
-	    {
-		pBuf->eRes = hookAction;
-		pBuf->pRetBuf = retval;
-	    }
+		if( hookAction >= pBuf->eRes )
+		{
+			pBuf->eRes = hookAction;
+			pBuf->pRetBuf = retval;
+		}
       
-	    DevMsg("Done\n");
+		DevMsg("Done\n");
 	}
 
 	/***********************************
-	 * Stage 3: Read args back onto the*
-	 *  stack.						   *
-	 ***********************************/
+	* Stage 3: Read args back onto the*
+	*  stack.						   *
+	***********************************/
 	if( pBuf->eRes == HOOKRES_NEWPARAMS ) {
-	    DevMsg("Placing the arguments back onto the stack.\n");
-	    pyArgStack.PutArgs( pDet );
+		DevMsg("Placing the arguments back onto the stack.\n");
+		pyArgStack.PutArgs( pDet );
 	}
 
 	/***********************************
-	 * Stage 4: Pass return value back *
-	 *  to the library handler.		   *
-	 ***********************************/
+	* Stage 4: Pass return value back *
+	*  to the library handler.		   *
+	***********************************/
 	return pBuf;
 }
 
@@ -480,11 +478,11 @@ HookRetBuf_t* CPythonCallback::DoPostCalls( CDetour* pDet )
 		PyObject* pRetTup = PyObject_CallFunction(pFuncObj, "(O)", 
 			pyArgStack.GetArgs() );
 
-        /* Make sure we got a valid result back. */
-        if( !pRetTup ) {
-          Msg("NULL return value from callfunction!\n");
-          continue;
-        }
+		/* Make sure we got a valid result back. */
+		if( !pRetTup ) {
+			Msg("NULL return value from callfunction!\n");
+			continue;
+		}
 
 		/* Parse out the return tuple:
 		 *  1st element: The action to take.

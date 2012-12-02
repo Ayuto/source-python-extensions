@@ -2,8 +2,8 @@
 
  Package: dyncall
  Library: dyncallback
- File: dyncallback/dyncall_alloc_wx.h
- Description: Allocate write/executable memory - Interface
+ File: dyncallback/dyncall_args_x86.h
+ Description: Callback's Arguments VM - Header for x86
  License:
 
    Copyright (c) 2007-2011 Daniel Adler <dadler@uni-goettingen.de>,
@@ -23,24 +23,36 @@
 
 */
 
-#ifndef DYNCALL_ALLOC_WX_HPP
-#define DYNCALL_ALLOC_WX_HPP
 
-#include "../dyncall/dyncall_types.h"
+#ifndef DYNCALL_ARGS_X86_H_
+#define DYNCALL_ARGS_X86_H_
 
-typedef int DCerror;
+#include "dyncall_args.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+typedef struct
+{
+	DCint      (*i32)(DCArgs*);
+	DClonglong (*i64)(DCArgs*);
+	DCfloat    (*f32)(DCArgs*);
+	DCdouble   (*f64)(DCArgs*);
+} DCArgsVT;
 
-DCerror dcAllocWX(DCsize size, void** p);
-void    dcFreeWX (void* p, DCsize size);
+extern DCArgsVT dcArgsVT_default;
+extern DCArgsVT dcArgsVT_this_ms;
+extern DCArgsVT dcArgsVT_fast_ms;
+extern DCArgsVT dcArgsVT_fast_gnu;
 
-#ifdef __cplusplus
-}
-#endif
+struct DCArgs
+{
+	/* callmode */
+	DCArgsVT* vt;
 
+	/* state */
+	int* stack_ptr;
 
-#endif // DYNCALL_ALLOC_WX_HPP
+	/* fast data / 'this-ptr' info */
+	int  fast_data[2];
+	int  fast_count;
+};
 
+#endif /* DYNCALL_ARGS_X86_H_ */

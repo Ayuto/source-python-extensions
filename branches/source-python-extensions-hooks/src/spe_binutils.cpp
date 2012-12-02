@@ -143,14 +143,14 @@ DECLARE_PYCMD( setLocVal, "Sets the contents of a particular memory location" )
 //=================================================================================
 // Returns what is stored at a particular memory location
 //=================================================================================
-DECLARE_PYCMD( getLocVal, "Sets the contents of a particular memory location" )
+DECLARE_PYCMD( getLocVal, "Gets the contents of a particular memory location" )
 {
 	char      type;
 	void*     addr = NULL;
 
 	if( !PyArg_ParseTuple(args, "ci", &type, &addr) )
 	{
-		DevMsg("[SPE]: spe_setLocVal: Can't parse arguments.\n");
+		DevMsg("[SPE]: spe_getLocVal: Can't parse arguments.\n");
 		return Py_BuildValue("");
 	}
 
@@ -177,7 +177,7 @@ DECLARE_PYCMD( getLocVal, "Sets the contents of a particular memory location" )
 		
 		default:
 		{
-			DevMsg("[SPE]: setLocVal: A valid type indicator was not passed in!\n");
+			DevMsg("[SPE]: getLocVal: A valid type indicator was not passed in!\n");
 		} break;
 	}
 
@@ -211,7 +211,6 @@ DECLARE_PYCMD( findVirtualFunc, "Returns the address of a function in the given 
 
 	// This method borrowed from:
 	// http://wiki.alliedmods.net/Vfunc_offsets_(SourceMM)
-	void **this_ptr = *(void ***)&pThisPtr;
 	void **vtable = *(void ***)pThisPtr;
 	void *func = vtable[vFuncIdx];
 

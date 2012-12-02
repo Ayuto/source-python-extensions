@@ -14,7 +14,6 @@ HL2SDK_L4D2 = ../../../../sdk/sourcesdk-l4d2
 PYTHON  = ./python
 DYNCALL = ./dyncall
 DYNDETOURS = ./dyndetours
-SOURCEHOOK = ./sourcehook
 
 ###################################
 ### SOURCE DEDICATED SERVER DIR ###
@@ -117,7 +116,6 @@ INCLUDE += -I. \
 	-I$(HL2SDK)/tier1 \
 	-I$(HL2SDK)/dlls \
 	-I$(PYTHON)/linux/Include \
-    -I$(SOURCEHOOK) \
     -I$(DYNCALL)/include \
 	-I$(DYNDETOURS)/AsmJit \
 	-I$(DYNDETOURS)
@@ -177,10 +175,8 @@ debug:
 default: all
 
 clean:
-	rm -rf Release/sourcehook/*.o
 	rm -rf Release/*.o
 	rm -rf Release/$(BINARY)
-	rm -rf Debug/sourcehook/*.o
 	rm -rf Debug/*.o
 	rm -rf Debug/$(BINARY)
 

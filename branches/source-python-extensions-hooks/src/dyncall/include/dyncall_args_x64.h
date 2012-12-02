@@ -2,8 +2,8 @@
 
  Package: dyncall
  Library: dyncallback
- File: dyncallback/dyncall_alloc_wx.h
- Description: Allocate write/executable memory - Interface
+ File: dyncallback/dyncall_args_x64.h
+ Description: Callback's Arguments VM - Header for x64
  License:
 
    Copyright (c) 2007-2011 Daniel Adler <dadler@uni-goettingen.de>,
@@ -23,24 +23,22 @@
 
 */
 
-#ifndef DYNCALL_ALLOC_WX_HPP
-#define DYNCALL_ALLOC_WX_HPP
+#ifndef DYNCALLBACK_ARGS_X64_H
+#define DYNCALLBACK_ARGS_X64_H
 
-#include "../dyncall/dyncall_types.h"
-
-typedef int DCerror;
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-DCerror dcAllocWX(DCsize size, void** p);
-void    dcFreeWX (void* p, DCsize size);
-
-#ifdef __cplusplus
-}
-#endif
+#include "dyncall_args.h"
+#include "../dyncall/dyncall_callvm_x64.h"  /* reuse structures */
 
 
-#endif // DYNCALL_ALLOC_WX_HPP
+struct DCArgs
+{
+	/* state */
+	int64*          stack_ptr;
+	DCRegCount_x64  reg_count;	/* @@@ win64 version should maybe force alignment to 8 in order to be secure */
+
+	/* reg data */
+	DCRegData_x64_s reg_data;
+};
+
+#endif /* DYNCALLBACK_ARGS_X64_H */
 

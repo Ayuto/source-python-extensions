@@ -55,22 +55,22 @@ DECLARE_PYCMD( hookFunction, "Detours a function." )
 
 	if( !PyArg_ParseTuple(args, "isiiO", &pAddr, &szParms, &eConv, &eType, &pyCallback) )
 	{
-		DevMsg(1, "[SPE]: Could not parse arguments for _detourFunction!\n");
+		DevMsg(1, "[SPE]: Could not parse arguments for hookFunction!\n");
 		return NULL;
 	}
 
 	/* Make sure the given address and callback are valid. */
 	if( !pAddr || !pyCallback || !szParms ) {
-		DevMsg(1, "[SPE]: One or more arguments are invalid for _detourFunction!\n");
+		DevMsg(1, "[SPE]: One or more arguments are invalid for hookFunction!\n");
 		return NULL;
 	}
 
 	/* Create (or return) a/the detour at this location. */
-    Msg("Stage 1: %d %s %d\n", pAddr, szParms, eConv);
+    DevMsg("Stage 1: %d %s %d\n", pAddr, szParms, eConv);
 	CDetour* pDetour = g_DetourManager.Add_Detour( pAddr, szParms, eConv );
 
 	/* Does this detour instance contain a python callback handler? */
-    Msg("Adding callback.\n");
+    DevMsg("Adding callback.\n");
 	ICallbackManager* pCBM = pDetour->GetManager("py", eType);
 	
 	/* If not, we need to create one and add it to the detour. */
@@ -98,7 +98,7 @@ DECLARE_PYCMD( unHookFunction, "Removes a python function callback from a detour
 
 	if( !PyArg_ParseTuple(args, "iiO", &pAddr, &eType, &pyCallback) )
 	{
-		DevMsg(1, "[SPE]: Could not parse arguments for _undetourFunction.");
+		DevMsg(1, "[SPE]: Could not parse arguments for unHookFunction.");
 		return NULL;
 	}
 
@@ -125,4 +125,27 @@ DECLARE_PYCMD( unHookFunction, "Removes a python function callback from a detour
 
 	/* Done. */
 	return Py_BuildValue("");
+}
+
+//=================================================================================
+// Returns the address of the trampoline of a hooked function.
+//=================================================================================
+DECLARE_PYCMD( getTrampoline, "Returns the address of the trampoline of a hooked function." )
+{
+	void* pAddr = NULL;
+	if (!PyArg_ParseTuple(args, "i", &pAddr))
+	{
+		DevMsg("[SPE]: Could not parse arguments for getTrampoline.\n");
+		return NULL;
+	}
+
+	CDetour* pDetour = g_DetourManager.Find_Detour(pAddr);
+	if (!pDetour)
+	{
+		DevMsg("[SPE]: Could not find detour at %d!\n", pAddr);
+		return NULL;
+	}
+
+	void* pTrampoline = pDetour-> GetTrampoline();
+	return Py_BuildValue("i", pTrampoline);
 }

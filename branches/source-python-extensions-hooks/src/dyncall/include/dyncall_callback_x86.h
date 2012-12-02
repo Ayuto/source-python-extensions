@@ -2,8 +2,8 @@
 
  Package: dyncall
  Library: dyncallback
- File: dyncallback/dyncall_alloc_wx.h
- Description: Allocate write/executable memory - Interface
+ File: dyncallback/dyncall_callback_x86.h
+ Description: Callback - Header for x86
  License:
 
    Copyright (c) 2007-2011 Daniel Adler <dadler@uni-goettingen.de>,
@@ -23,24 +23,27 @@
 
 */
 
-#ifndef DYNCALL_ALLOC_WX_HPP
-#define DYNCALL_ALLOC_WX_HPP
 
-#include "../dyncall/dyncall_types.h"
+#ifndef DYNCALL_CALLBACK_X86_H_
+#define DYNCALL_CALLBACK_X86_H_
 
-typedef int DCerror;
+#include "dyncall_callback.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "dyncall_thunk.h"
+#include "dyncall_args_x86.h"
 
-DCerror dcAllocWX(DCsize size, void** p);
-void    dcFreeWX (void* p, DCsize size);
+struct DCCallback
+{
+  DCThunk            thunk;         /* offset 0,  size 16 */
+  DCCallbackHandler* handler;       /* offset 16 */
+  DCArgsVT*          args_vt;       /* offset 20 */
+  size_t             stack_cleanup; /* offset 24 */
+  void*              userdata;      /* offset 28 */
+};
 
-#ifdef __cplusplus
-}
-#endif
+int dcCleanupSize_x86_cdecl   (const char* args_signature);
+int dcCleanupSize_x86_std     (const char* args_signature);
+int dcCleanupSize_x86_fast_ms (const char* args_signature);
+int dcCleanupSize_x86_fast_gnu(const char* args_signature);
 
-
-#endif // DYNCALL_ALLOC_WX_HPP
-
+#endif /* DYNCALL_CALLBACK_X86_H_ */

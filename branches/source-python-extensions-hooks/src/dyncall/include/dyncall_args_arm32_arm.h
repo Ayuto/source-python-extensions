@@ -2,8 +2,8 @@
 
  Package: dyncall
  Library: dyncallback
- File: dyncallback/dyncall_alloc_wx.h
- Description: Allocate write/executable memory - Interface
+ File: dyncallback/dyncall_args_arm32_arm.h
+ Description: Callback's Arguments VM - Header for ARM32 (ARM mode)
  License:
 
    Copyright (c) 2007-2011 Daniel Adler <dadler@uni-goettingen.de>,
@@ -23,24 +23,18 @@
 
 */
 
-#ifndef DYNCALL_ALLOC_WX_HPP
-#define DYNCALL_ALLOC_WX_HPP
+#ifndef DYNCALLBACK_ARGS_ARM32_ARM_H
+#define DYNCALLBACK_ARGS_ARM32_ARM_H
 
-#include "../dyncall/dyncall_types.h"
+#include "dyncall_args.h"
 
-typedef int DCerror;
+struct DCArgs
+{
+	/* Don't change order! */
+	long  reg_data[4];
+	int   reg_count;
+	long* stack_ptr;
+};
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-DCerror dcAllocWX(DCsize size, void** p);
-void    dcFreeWX (void* p, DCsize size);
-
-#ifdef __cplusplus
-}
-#endif
-
-
-#endif // DYNCALL_ALLOC_WX_HPP
+#endif /* DYNCALLBACK_ARGS_ARM32_ARM_H */
 

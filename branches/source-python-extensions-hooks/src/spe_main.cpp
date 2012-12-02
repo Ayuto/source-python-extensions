@@ -330,7 +330,7 @@ void CSPE_Plugin::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *
 //=================================================================================
 // Purpose: an example of how to implement a new command
 //=================================================================================
-CON_COMMAND( spe_version, "prints the version of the empty plugin" )
+CON_COMMAND( spe_version, "Prints the version of Source-Python-Extensions" )
 {
 	char szPluginInfo[1024];
 	

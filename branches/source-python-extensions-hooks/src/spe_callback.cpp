@@ -122,6 +122,7 @@ void CPythonStack::ReadArgs( CDetour* pDetour )
 
 		/* Build a value for the this pointer. */
 		pThisPtr = Py_BuildValue("i", pArg);
+		Py_XDECREF(pThisPtr);
 	}
 
 	for( ; i < iNumArgs; i++ )

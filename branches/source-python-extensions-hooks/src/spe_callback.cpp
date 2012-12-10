@@ -122,7 +122,6 @@ void CPythonStack::ReadArgs( CDetour* pDetour )
 
 		/* Build a value for the this pointer. */
 		pThisPtr = Py_BuildValue("i", pArg);
-		Py_XDECREF(pThisPtr);
 	}
 
 	for( ; i < iNumArgs; i++ )
@@ -184,7 +183,10 @@ void CPythonStack::ReadArgs( CDetour* pDetour )
 
 	/* Hack for thiscalls. */
 	if( pThisPtr )
+	{
 		PyList_Append(m_pArgList, pThisPtr);
+		Py_XDECREF(pThisPtr);
+	}
 
 	/* If we are here, we should be good. */
 	m_bOK = true;

@@ -150,7 +150,7 @@ bool CSPE_Plugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn ga
 #else 
 
 	// No extension.
-	strcat( szServerBinary, ".so" );
+	strcat( szServerBinary, "_srv.so" );
 
 	// dlopen the library
     laddr = dlopen( szServerBinary, RTLD_NOW );

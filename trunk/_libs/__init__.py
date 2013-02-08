@@ -1,6 +1,6 @@
 """
 $Rev$
-$LastChangedDate$
+$LastChangedDate: 2011-06-23 03:38:15 +0200 (Do, 23. Jun 2011) $
 """
 
 #==============================================================================
@@ -100,12 +100,15 @@ class Signature(object):
         self.convention = str(convention)
 
     def call(self, args=()):
-
+        # Weird... Somehow this fixes crashes on Linux, although it doesn't
+        # change the variable "args"
+        tuple(args)
+        
         # Set the calling convention
         setCallingConvention(self.convention)
 
         # Call the function and return the results
-        return callFunction(self.function, self.param_format, *args)
+        return callFunction(self.function, self.param_format, args)
 
 
 #==============================================================================
@@ -254,7 +257,7 @@ def call(name, *args):
     in the INI file. args of course are the arguments to
     said function.
     '''
-    return gSPE.call(name, args)
+    return gSPE.call(name, *args)
 
 
 def getPointer(signature, offset):

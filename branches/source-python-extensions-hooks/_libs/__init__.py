@@ -1,5 +1,5 @@
 """
-$Rev: 79 $
+$Rev$
 $LastChangedDate: 2010-07-03 14:44:24 -0400 (Sat, 03 Jul 2010) $
 """
 
@@ -28,7 +28,7 @@ from spe_C import *
 # =============================================================================
 # Versioning
 # =============================================================================
-__revision__ = '$Rev: 79 $'
+__revision__ = '$Rev$'
 __version__ = '1.6.0a r'
 es.ServerVar(
     'spe_version', __version__ + __revision__.strip('$Rev: ')).makepublic()
@@ -242,7 +242,10 @@ class Signature(object):
         self.convention = str(convention)
 
     def call(self, args=()):
-
+        # Weird... Somehow this fixes crashes on Linux, although it doesn't
+        # change the variable "args"
+        tuple(args)
+        
         # Set the calling convention
         setCallingConvention(self.convention)
 
@@ -541,7 +544,7 @@ def call(name, *args):
     in the INI file. args of course are the arguments to
     said function.
     '''
-    return gSPE.call(name, args)
+    return gSPE.call(name, *args)
 
 
 def getPointer(signature, offset):

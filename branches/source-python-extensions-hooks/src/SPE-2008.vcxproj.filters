@@ -90,12 +90,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="dyncall\lib\dyncall.lib">
-      <Filter>Link Libraries</Filter>
-    </Library>
-    <Library Include="dyndetours\DynDetours.lib">
-      <Filter>Link Libraries</Filter>
-    </Library>
     <Library Include="..\..\sdk\sourcesdk-l4d\lib\public\mathlib.lib">
       <Filter>Link Libraries\L4D</Filter>
     </Library>
@@ -125,6 +119,12 @@
     </Library>
     <Library Include="..\..\..\..\sdk\sourcesdk-ob\lib\public\vstdlib.lib">
       <Filter>Link Libraries\OB</Filter>
+    </Library>
+    <Library Include="dyncall\lib\libdyncall_s.lib">
+      <Filter>Link Libraries</Filter>
+    </Library>
+    <Library Include="dyndetours\DynDetours.lib">
+      <Filter>Link Libraries</Filter>
     </Library>
   </ItemGroup>
   <ItemGroup>

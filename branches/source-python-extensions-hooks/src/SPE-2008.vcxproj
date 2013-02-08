@@ -369,7 +369,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>..\..\..\..\sdk\sourcesdk-ob\public;..\..\..\..\sdk\sourcesdk-ob\public\tier0;..\..\..\..\sdk\sourcesdk-ob\public\tier1;..\..\..\..\sdk\sourcesdk-ob\game\server;..\..\..\..\sdk\sourcesdk-ob\game\shared;..\..\..\..\sdk\sourcesdk-ob\public\engine;.\python\windows\Include;.\dyncall\include;.\dyndetours\AsmJit;.\dyndetours;.\sourcehook;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\sdk\sourcesdk-ob\public;..\..\..\..\sdk\sourcesdk-ob\public\tier0;..\..\..\..\sdk\sourcesdk-ob\public\tier1;..\..\..\..\sdk\sourcesdk-ob\game\server;..\..\..\..\sdk\sourcesdk-ob\game\shared;..\..\..\..\sdk\sourcesdk-ob\public\engine;.\python\windows\Include;.\dyncall\include;.\dyndetours\AsmJit;.\dyndetours;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;ENGINE_VERSION=2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -394,7 +394,7 @@
     </ResourceCompile>
     <Link>
       <AdditionalOptions>/LTCG %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>python25.lib;tier0.lib;tier1.lib;tier2.lib;mathlib.lib;vstdlib.lib;dyncall.lib;dyndetours.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>python25.lib;tier0.lib;tier1.lib;tier2.lib;mathlib.lib;vstdlib.lib;libdyncall_s.lib;dyndetours.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)sp_extensions_ep2.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\..\sdk\sourcesdk-ob\lib\public;..\..\..\..\sdk\sourcesdk-ob\lib\common;.\dyncall\lib;.\python\libs;.\dyndetours;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -506,7 +506,6 @@
     <Library Include="..\..\sdk\sourcesdk-l4d\lib\public\vstdlib.lib">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release(OB)|Win32'">true</ExcludedFromBuild>
     </Library>
-    <Library Include="dyncall\lib\dyncall.lib" />
     <CustomBuildStep Include="..\..\hl2sdk-l4d\lib\public\mathlib.lib">
       <FileType>Document</FileType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RELEASE(L4D2)|Win32'">true</ExcludedFromBuild>
@@ -573,6 +572,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release(OB)|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </CustomBuildStep>
+    <Library Include="dyncall\lib\libdyncall_s.lib" />
     <Library Include="dyndetours\DynDetours.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

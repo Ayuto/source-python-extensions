@@ -250,7 +250,7 @@ class Signature(object):
         setCallingConvention(self.convention)
 
         # Call the function and return the results
-        return callFunction(self.function, self.param_format, *args)
+        return callFunction(self.function, self.param_format, args)
 
 
 # =============================================================================

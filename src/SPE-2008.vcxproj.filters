@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{faa75161-134c-4d92-9752-d1dc73a26844}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{e53ca24c-7c13-489b-a832-5e1ad9b0045f}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Link Libraries">
+      <UniqueIdentifier>{e7debac0-025a-4d2d-9a91-12c32f4412ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Link Libraries\L4D">
+      <UniqueIdentifier>{feee5258-e892-491a-a12a-7155f329fc3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Link Libraries\L4D2">
+      <UniqueIdentifier>{5b47d91f-e557-4a87-9721-62da621a544f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Link Libraries\OB">
+      <UniqueIdentifier>{23e8f563-c9cb-4ce6-89a2-2fedf96b700a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="spe_binutils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="spe_dyncall.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="spe_hook_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="spe_main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="spe_misc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="spe_player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="spe_python.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="spe_scanner.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="spe_callback.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="spe_sigcache.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="spe_convar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="spe_dyncall.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="spe_globals.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="spe_main.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="spe_python.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="spe_scanner.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="spe_callback.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="spe_sigcache.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\..\sdks\hl2sdk-l4d\lib\public\mathlib.lib">
+      <Filter>Link Libraries\L4D</Filter>
+    </Library>
+    <Library Include="..\..\..\sdks\hl2sdk-l4d\lib\public\tier0.lib">
+      <Filter>Link Libraries\L4D</Filter>
+    </Library>
+    <Library Include="..\..\..\sdks\hl2sdk-l4d\lib\public\tier1.lib">
+      <Filter>Link Libraries\L4D</Filter>
+    </Library>
+    <Library Include="..\..\..\sdks\hl2sdk-l4d\lib\public\tier2.lib">
+      <Filter>Link Libraries\L4D</Filter>
+    </Library>
+    <Library Include="..\..\..\sdks\hl2sdk-l4d\lib\public\tier3.lib">
+      <Filter>Link Libraries\L4D</Filter>
+    </Library>
+    <Library Include="..\..\..\sdks\hl2sdk-l4d\lib\public\vstdlib.lib">
+      <Filter>Link Libraries\L4D</Filter>
+    </Library>
+    <Library Include="..\..\..\sdks\hl2sdk-ob-valve\lib\public\mathlib.lib">
+      <Filter>Link Libraries\OB</Filter>
+    </Library>
+    <Library Include="..\..\..\sdks\hl2sdk-ob-valve\lib\public\tier0.lib">
+      <Filter>Link Libraries\OB</Filter>
+    </Library>
+    <Library Include="..\..\..\sdks\hl2sdk-ob-valve\lib\public\tier1.lib">
+      <Filter>Link Libraries\OB</Filter>
+    </Library>
+    <Library Include="..\..\..\sdks\hl2sdk-ob-valve\lib\public\vstdlib.lib">
+      <Filter>Link Libraries\OB</Filter>
+    </Library>
+    <Library Include="dyncall\lib\libdyncall_s.lib">
+      <Filter>Link Libraries</Filter>
+    </Library>
+    <Library Include="dyndetours\DynDetours.lib">
+      <Filter>Link Libraries</Filter>
+    </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuildStep Include="..\..\..\hl2sdk-l4d2\lib\public\mathlib.lib">
+      <Filter>Link Libraries\L4D2</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\..\..\hl2sdk-l4d2\lib\public\tier0.lib">
+      <Filter>Link Libraries\L4D2</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\..\..\hl2sdk-l4d2\lib\public\tier1.lib">
+      <Filter>Link Libraries\L4D2</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\..\..\hl2sdk-l4d2\lib\public\tier2.lib">
+      <Filter>Link Libraries\L4D2</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\..\..\hl2sdk-l4d2\lib\public\vstdlib.lib">
+      <Filter>Link Libraries\L4D2</Filter>
+    </CustomBuildStep>
+  </ItemGroup>
+</Project>

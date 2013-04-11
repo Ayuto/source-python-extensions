@@ -158,7 +158,7 @@
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="..\..\hl2sdk\public;..\..\hl2sdk\public\tier0;..\..\hl2sdk\public\tier1;..\..\hl2sdk\dlls;..\..\hl2sdk\game_shared;..\..\hl2sdk\public\engine;.\python\windows\Include;.\dyncall\include;.\sourcehook"
+				AdditionalIncludeDirectories="..\..\..\hl2sdk\public;..\..\..\hl2sdk\public\tier0;..\..\..\hl2sdk\public\tier1;..\..\..\hl2sdk\dlls;..\..\..\hl2sdk\game_shared;..\..\..\hl2sdk\public\engine;.\python\windows\Include;.\dyncall\include;.\sourcehook"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;ENGINE_VERSION=1"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -192,7 +192,7 @@
 				OutputFile="$(OutDir)\sp_extensions_ep1.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\hl2sdk\lib\public;..\..\hl2sdk\lib\common;.\dyncall\lib;.\python\libs"
+				AdditionalLibraryDirectories="..\..\..\hl2sdk\lib\public;..\..\..\hl2sdk\lib\common;.\dyncall\lib;.\python\libs"
 				IgnoreDefaultLibraryNames=""
 				DelayLoadDLLs="python25.dll"
 				GenerateDebugInformation="true"
@@ -267,7 +267,7 @@
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="&quot;..\..\hl2sdk-l4d\public&quot;;&quot;..\..\hl2sdk-l4d\public\tier0&quot;;&quot;..\..\hl2sdk-l4d\public\tier1&quot;;&quot;..\..\hl2sdk-l4d\game\server&quot;;&quot;..\..\hl2sdk-l4d\game\shared&quot;;&quot;..\..\hl2sdk-l4d\public\engine&quot;;.\python\windows\Include;.\dyncall\include;.\sourcehook"
+				AdditionalIncludeDirectories="&quot;..\..\..\hl2sdk-l4d\public&quot;;&quot;..\..\..\hl2sdk-l4d\public\tier0&quot;;&quot;..\..\..\hl2sdk-l4d\public\tier1&quot;;&quot;..\..\..\hl2sdk-l4d\game\server&quot;;&quot;..\..\..\hl2sdk-l4d\game\shared&quot;;&quot;..\..\..\hl2sdk-l4d\public\engine&quot;;.\python\windows\Include;.\dyncall\include;.\sourcehook"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;ENGINE_VERSION=3"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -301,7 +301,7 @@
 				OutputFile="$(OutDir)\sp_extensions_l4d.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;..\..\hl2sdk-l4d\lib\public&quot;;&quot;..\..\hl2sdk-l4d\lib\common&quot;;.\python\libs;.\dyncall\lib"
+				AdditionalLibraryDirectories="&quot;..\..\..\hl2sdk-l4d\lib\public&quot;;&quot;..\..\..\hl2sdk-l4d\lib\common&quot;;.\python\libs;.\dyncall\lib"
 				IgnoreDefaultLibraryNames="libcmtd.lib;msvcrt.lib"
 				DelayLoadDLLs="python25.dll"
 				GenerateDebugInformation="true"
@@ -376,7 +376,7 @@
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="&quot;..\..\hl2sdk-l4d2\public&quot;;&quot;..\..\hl2sdk-l4d2\public\tier0&quot;;&quot;..\..\hl2sdk-l4d2\public\tier1&quot;;&quot;..\..\hl2sdk-l4d2\game\server&quot;;&quot;..\..\hl2sdk-l4d2\game\shared&quot;;&quot;..\..\hl2sdk-l4d2\public\engine&quot;;.\python\windows\Include;.\dyncall\include;.\sourcehook"
+				AdditionalIncludeDirectories="&quot;..\..\..\hl2sdk-l4d2\public&quot;;&quot;..\..\..\hl2sdk-l4d2\public\tier0&quot;;&quot;..\..\..\hl2sdk-l4d2\public\tier1&quot;;&quot;..\..\..\hl2sdk-l4d2\game\server&quot;;&quot;..\..\..\hl2sdk-l4d2\game\shared&quot;;&quot;..\..\..\hl2sdk-l4d2\public\engine&quot;;.\python\windows\Include;.\dyncall\include;.\sourcehook"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -410,7 +410,7 @@
 				OutputFile="$(OutDir)\sp_extensions_l4d2.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;..\..\hl2sdk-l4d\lib\public&quot;;&quot;..\..\hl2sdk-l4d\lib\common&quot;;.\dyncall\lib;.\python\libs"
+				AdditionalLibraryDirectories="&quot;..\..\..\hl2sdk-l4d\lib\public&quot;;&quot;..\..\..\hl2sdk-l4d\lib\common&quot;;.\dyncall\lib;.\python\libs"
 				IgnoreDefaultLibraryNames="libcmtd.lib;msvcrt.lib"
 				DelayLoadDLLs="python25.dll"
 				GenerateDebugInformation="true"
@@ -487,7 +487,7 @@
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="&quot;..\..\sdk\sourcesdk-ob\public&quot;;&quot;..\..\sdk\sourcesdk-ob\public\tier0&quot;;&quot;..\..\sdk\sourcesdk-ob\public\tier1&quot;;&quot;..\..\sdk\sourcesdk-ob\game\server&quot;;&quot;..\..\sdk\sourcesdk-ob\game\shared&quot;;&quot;..\..\sdk\sourcesdk-ob\public\engine&quot;;.\python\windows\Include;.\dyncall\include;.\sourcehook"
+				AdditionalIncludeDirectories="&quot;..\..\..\sdks\hl2sdk-ob-valve\public&quot;;&quot;..\..\..\sdks\hl2sdk-ob-valve\public\tier0&quot;;&quot;..\..\..\sdks\hl2sdk-ob-valve\public\tier1&quot;;&quot;..\..\..\sdks\hl2sdk-ob-valve\game\server&quot;;&quot;..\..\..\sdks\hl2sdk-ob-valve\game\shared&quot;;&quot;..\..\..\sdks\hl2sdk-ob-valve\public\engine&quot;;.\python\windows\Include;.\dyncall\include;.\sourcehook"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;ENGINE_VERSION=2"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -521,7 +521,7 @@
 				OutputFile="$(OutDir)\sp_extensions_ep2.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;..\..\sdk\sourcesdk-ob\lib\public&quot;;&quot;..\..\sdk\sourcesdk-ob\lib\common&quot;;.\dyncall\lib;.\python\libs"
+				AdditionalLibraryDirectories="&quot;..\..\..\sdks\hl2sdk-ob-valve\lib\public&quot;;&quot;..\..\..\sdks\hl2sdk-ob-valve\lib\common&quot;;.\dyncall\lib;.\python\libs"
 				IgnoreDefaultLibraryNames=""
 				DelayLoadDLLs="python25.dll"
 				GenerateDebugInformation="true"
@@ -777,7 +777,7 @@
 				Name="L4D"
 				>
 				<File
-					RelativePath="..\..\hl2sdk-l4d\lib\public\mathlib.lib"
+					RelativePath="..\..\..\hl2sdk-l4d\lib\public\mathlib.lib"
 					>
 					<FileConfiguration
 						Name="Release|Win32"
@@ -805,7 +805,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\hl2sdk-l4d\lib\public\tier0.lib"
+					RelativePath="..\..\..\hl2sdk-l4d\lib\public\tier0.lib"
 					>
 					<FileConfiguration
 						Name="Release|Win32"
@@ -833,7 +833,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\hl2sdk-l4d\lib\public\tier1.lib"
+					RelativePath="..\..\..\hl2sdk-l4d\lib\public\tier1.lib"
 					>
 					<FileConfiguration
 						Name="Release|Win32"
@@ -861,7 +861,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\hl2sdk-l4d\lib\public\tier2.lib"
+					RelativePath="..\..\..\hl2sdk-l4d\lib\public\tier2.lib"
 					>
 					<FileConfiguration
 						Name="Release|Win32"
@@ -889,7 +889,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\hl2sdk-l4d\lib\public\tier3.lib"
+					RelativePath="..\..\..\hl2sdk-l4d\lib\public\tier3.lib"
 					>
 					<FileConfiguration
 						Name="Release|Win32"
@@ -917,7 +917,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\hl2sdk-l4d\lib\public\vstdlib.lib"
+					RelativePath="..\..\..\hl2sdk-l4d\lib\public\vstdlib.lib"
 					>
 					<FileConfiguration
 						Name="Release|Win32"
@@ -949,7 +949,7 @@
 				Name="L4D2"
 				>
 				<File
-					RelativePath="..\..\hl2sdk-l4d2\lib\public\mathlib.lib"
+					RelativePath="..\..\..\hl2sdk-l4d2\lib\public\mathlib.lib"
 					>
 					<FileConfiguration
 						Name="Release|Win32"
@@ -977,7 +977,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\hl2sdk-l4d2\lib\public\tier0.lib"
+					RelativePath="..\..\..\hl2sdk-l4d2\lib\public\tier0.lib"
 					>
 					<FileConfiguration
 						Name="Release|Win32"
@@ -1005,7 +1005,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\hl2sdk-l4d2\lib\public\tier1.lib"
+					RelativePath="..\..\..\hl2sdk-l4d2\lib\public\tier1.lib"
 					>
 					<FileConfiguration
 						Name="Release|Win32"
@@ -1033,7 +1033,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\hl2sdk-l4d2\lib\public\tier2.lib"
+					RelativePath="..\..\..\hl2sdk-l4d2\lib\public\tier2.lib"
 					>
 					<FileConfiguration
 						Name="Release|Win32"
@@ -1061,7 +1061,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\hl2sdk-l4d2\lib\public\vstdlib.lib"
+					RelativePath="..\..\..\hl2sdk-l4d2\lib\public\vstdlib.lib"
 					>
 					<FileConfiguration
 						Name="Release|Win32"
@@ -1093,23 +1093,23 @@
 				Name="OB"
 				>
 				<File
-					RelativePath="..\..\sdk\hl2sdk-ob-valve\lib\public\mathlib.lib"
+					RelativePath="..\..\..\sdk\hl2sdk-ob-valve\lib\public\mathlib.lib"
 					>
 				</File>
 				<File
-					RelativePath="..\..\sdk\hl2sdk-ob-valve\lib\public\tier0.lib"
+					RelativePath="..\..\..\sdk\hl2sdk-ob-valve\lib\public\tier0.lib"
 					>
 				</File>
 				<File
-					RelativePath="..\..\sdk\hl2sdk-ob-valve\lib\public\tier1.lib"
+					RelativePath="..\..\..\sdk\hl2sdk-ob-valve\lib\public\tier1.lib"
 					>
 				</File>
 				<File
-					RelativePath="..\..\sdk\hl2sdk-ob-valve\lib\public\tier2.lib"
+					RelativePath="..\..\..\sdk\hl2sdk-ob-valve\lib\public\tier2.lib"
 					>
 				</File>
 				<File
-					RelativePath="..\..\sdk\hl2sdk-ob-valve\lib\public\vstdlib.lib"
+					RelativePath="..\..\..\sdk\hl2sdk-ob-valve\lib\public\vstdlib.lib"
 					>
 				</File>
 			</Filter>

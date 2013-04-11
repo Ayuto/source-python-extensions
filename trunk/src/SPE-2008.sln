@@ -1,27 +1,24 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C++ Express 2010
+# Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "source-python-extensions", "SPE-2008.vcxproj", "{B6572CBE-7C7F-4FFF-94DE-AFBBBAB11C64}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Win32 = Debug|Win32
-		Release(L4D)|Win32 = Release(L4D)|Win32
-		RELEASE(L4D2)|Win32 = RELEASE(L4D2)|Win32
-		Release(OB)|Win32 = Release(OB)|Win32
-		Release|Win32 = Release|Win32
+		Release(Episode 1)|Win32 = Release(Episode 1)|Win32
+		Release(Left4Dead)|Win32 = Release(Left4Dead)|Win32
+		Release(Left4Dead2)|Win32 = Release(Left4Dead2)|Win32
+		Release(Orange Box)|Win32 = Release(Orange Box)|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B6572CBE-7C7F-4FFF-94DE-AFBBBAB11C64}.Debug|Win32.ActiveCfg = Debug|Win32
-		{B6572CBE-7C7F-4FFF-94DE-AFBBBAB11C64}.Debug|Win32.Build.0 = Debug|Win32
-		{B6572CBE-7C7F-4FFF-94DE-AFBBBAB11C64}.Release(L4D)|Win32.ActiveCfg = Release(L4D)|Win32
-		{B6572CBE-7C7F-4FFF-94DE-AFBBBAB11C64}.Release(L4D)|Win32.Build.0 = Release(L4D)|Win32
-		{B6572CBE-7C7F-4FFF-94DE-AFBBBAB11C64}.RELEASE(L4D2)|Win32.ActiveCfg = RELEASE(L4D2)|Win32
-		{B6572CBE-7C7F-4FFF-94DE-AFBBBAB11C64}.RELEASE(L4D2)|Win32.Build.0 = RELEASE(L4D2)|Win32
-		{B6572CBE-7C7F-4FFF-94DE-AFBBBAB11C64}.Release(OB)|Win32.ActiveCfg = Release(OB)|Win32
-		{B6572CBE-7C7F-4FFF-94DE-AFBBBAB11C64}.Release(OB)|Win32.Build.0 = Release(OB)|Win32
-		{B6572CBE-7C7F-4FFF-94DE-AFBBBAB11C64}.Release|Win32.ActiveCfg = Release|Win32
-		{B6572CBE-7C7F-4FFF-94DE-AFBBBAB11C64}.Release|Win32.Build.0 = Release|Win32
+		{B6572CBE-7C7F-4FFF-94DE-AFBBBAB11C64}.Release(Episode 1)|Win32.ActiveCfg = Release|Win32
+		{B6572CBE-7C7F-4FFF-94DE-AFBBBAB11C64}.Release(Episode 1)|Win32.Build.0 = Release|Win32
+		{B6572CBE-7C7F-4FFF-94DE-AFBBBAB11C64}.Release(Left4Dead)|Win32.ActiveCfg = Release(L4D)|Win32
+		{B6572CBE-7C7F-4FFF-94DE-AFBBBAB11C64}.Release(Left4Dead)|Win32.Build.0 = Release(L4D)|Win32
+		{B6572CBE-7C7F-4FFF-94DE-AFBBBAB11C64}.Release(Left4Dead2)|Win32.ActiveCfg = RELEASE(L4D2)|Win32
+		{B6572CBE-7C7F-4FFF-94DE-AFBBBAB11C64}.Release(Left4Dead2)|Win32.Build.0 = RELEASE(L4D2)|Win32
+		{B6572CBE-7C7F-4FFF-94DE-AFBBBAB11C64}.Release(Orange Box)|Win32.ActiveCfg = Release(OB)|Win32
+		{B6572CBE-7C7F-4FFF-94DE-AFBBBAB11C64}.Release(Orange Box)|Win32.Build.0 = Release(OB)|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

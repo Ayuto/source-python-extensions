@@ -1,6 +1,6 @@
 //========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
 //
-// Purpose: 
+// Purpose:
 //
 // $NoKeywords: $
 //
@@ -17,21 +17,21 @@ static ICvar *s_pCVar;
 class CPluginConVarAccessor : public IConCommandBaseAccessor
 {
 public:
-	virtual bool	RegisterConCommandBase( ConCommandBase *pCommand )
-	{
+    virtual bool    RegisterConCommandBase( ConCommandBase *pCommand )
+    {
 #if( ENGINE_VERSION >= 2 )
-		pCommand->AddFlags( FCVAR_NONE );
+        pCommand->AddFlags( FCVAR_NONE );
 #else
-		pCommand->AddFlags( FCVAR_PLUGIN );
+        pCommand->AddFlags( FCVAR_PLUGIN );
 
-		// Unlink from plugin only list
-		pCommand->SetNext( 0 );
+        // Unlink from plugin only list
+        pCommand->SetNext( 0 );
 
-		// Link to engine's list instead
-		s_pCVar->RegisterConCommandBase( pCommand );
+        // Link to engine's list instead
+        s_pCVar->RegisterConCommandBase( pCommand );
 #endif
-		return true;
-	}
+        return true;
+    }
 
 };
 
@@ -40,17 +40,17 @@ CPluginConVarAccessor g_ConVarAccessor;
 void InitCVars( CreateInterfaceFn cvarFactory )
 {
 #if( ENGINE_VERSION >= 2 )
-	s_pCVar = (ICvar *)cvarFactory( CVAR_INTERFACE_VERSION, NULL );
+    s_pCVar = (ICvar *)cvarFactory( CVAR_INTERFACE_VERSION, NULL );
 #else
-	s_pCVar = (ICvar*)cvarFactory( VENGINE_CVAR_INTERFACE_VERSION, NULL );
+    s_pCVar = (ICvar*)cvarFactory( VENGINE_CVAR_INTERFACE_VERSION, NULL );
 #endif
-	if ( s_pCVar )
-	{
+    if ( s_pCVar )
+    {
 #if( ENGINE_VERSION >= 2 )
-		ConVar_Register(0, &g_ConVarAccessor);
+        ConVar_Register(0, &g_ConVarAccessor);
 #else
-		ConCommandBaseMgr::OneTimeInit( &g_ConVarAccessor );
+        ConCommandBaseMgr::OneTimeInit( &g_ConVarAccessor );
 #endif
-	}
+    }
 }
 

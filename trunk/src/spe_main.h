@@ -1,13 +1,13 @@
 /**
 * =============================================================================
 * Source Python Extensions
-* Copyright (C) 2009 Deniz "your-name-here" Sezen.  All rights reserved.
+* Copyright (C) 2011 Deniz "your-name-here" Sezen.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License, version 3.0, as published by the
 * Free Software Foundation.
-* 
+*
 * This program is distributed in the hope that it will be useful, but WITHOUT
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
@@ -21,7 +21,7 @@
 * "Source Engine," and any Game MODs that run on software
 * by the Valve Corporation.  You must obey the GNU General Public License in
 * all respects for all other code used.  Additionally, I (Deniz Sezen) grants
-* this exception to all derivative works.  
+* this exception to all derivative works.
 */
 
 #ifndef SPE_MAIN_H
@@ -38,7 +38,10 @@
 #define PLUGIN_AUTHOR "your-name-here"
 
 /* YOUR PLUGIN VERSION HERE */
-#define PLUGIN_VERSION "1.5.0f"
+#define PLUGIN_VERSION "1.6.0a"
+
+/* YOUR PLUGIN DATE HERE */
+#define PLUGIN_DATE "2009 - 2011"
 
 //=================================================================================
 // Includes
@@ -60,40 +63,45 @@
 class CSPE_Plugin: public IServerPluginCallbacks, public IGameEventListener2
 {
 public:
-	CSPE_Plugin();
-	~CSPE_Plugin();
+    CSPE_Plugin();
+    ~CSPE_Plugin();
 
-	// IServerPluginCallbacks methods
-	virtual bool			Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn gameServerFactory );
-	virtual void			Unload( void );
-	virtual void			Pause( void );
-	virtual void			UnPause( void );
-	virtual const char     *GetPluginDescription( void );      
-	virtual void			LevelInit( char const *pMapName );
-	virtual void			ServerActivate( edict_t *pEdictList, int edictCount, int clientMax );
-	virtual void			GameFrame( bool simulating );
-	virtual void			LevelShutdown( void );
-	virtual void			ClientActive( edict_t *pEntity );
-	virtual void			ClientDisconnect( edict_t *pEntity );
-	virtual void			ClientPutInServer( edict_t *pEntity, char const *playername );
-	virtual void			SetCommandClient( int index );
-	virtual void			ClientSettingsChanged( edict_t *pEdict );
-	virtual PLUGIN_RESULT	ClientConnect( bool *bAllowConnect, edict_t *pEntity, const char *pszName, const char *pszAddress, char *reject, int maxrejectlen );
+    // IServerPluginCallbacks methods
+    virtual bool            Load(   CreateInterfaceFn interfaceFactory, CreateInterfaceFn gameServerFactory );
+    virtual void            Unload( void );
+    virtual void            Pause( void );
+    virtual void            UnPause( void );
+    virtual const char     *GetPluginDescription( void );
+    virtual void            LevelInit( char const *pMapName );
+    virtual void            ServerActivate( edict_t *pEdictList, int edictCount, int clientMax );
+    virtual void            GameFrame( bool simulating );
+    virtual void            LevelShutdown( void );
+    virtual void            ClientActive( edict_t *pEntity );
+    virtual void            ClientDisconnect( edict_t *pEntity );
+    virtual void            ClientPutInServer( edict_t *pEntity, char const *playername );
+    virtual void            SetCommandClient( int index );
+    virtual void            ClientSettingsChanged( edict_t *pEdict );
+    virtual PLUGIN_RESULT   ClientConnect( bool *bAllowConnect, edict_t *pEntity, const char *pszName, const char *pszAddress, char *reject, int maxrejectlen );
 
 #if( ENGINE_VERSION >= 2 )
-	virtual PLUGIN_RESULT	ClientCommand(edict_t* pEdict, const CCommand &args);
-	void					OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *pPlayerEntity, EQueryCvarValueStatus eStatus, const char *pCvarName, const char *pCvarValue );
+    virtual PLUGIN_RESULT   ClientCommand(edict_t* pEdict, const CCommand &args);
+    void                    OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *pPlayerEntity, EQueryCvarValueStatus eStatus, const char *pCvarName, const char *pCvarValue );
 #else
-	virtual PLUGIN_RESULT	ClientCommand( edict_t *pEntity );
+    virtual PLUGIN_RESULT   ClientCommand( edict_t *pEntity );
 #endif
-	virtual PLUGIN_RESULT	NetworkIDValidated( const char *pszUserName, const char *pszNetworkID );
+    virtual PLUGIN_RESULT   NetworkIDValidated( const char *pszUserName, const char *pszNetworkID );
 
-	// IGameEventListener Interface
-	virtual void FireGameEvent( IGameEvent * event );
+    // IGameEventListener Interface
+    virtual void FireGameEvent( IGameEvent * event );
 
-	virtual int GetCommandIndex() { return m_iClientCommandIndex; }
+    // Added in the L4D sdk.
+#if( ENGINE_VERSION >= 3 )
+    virtual int GetEventDebugID( void ) { return 0; }
+#endif
+
+    virtual int GetCommandIndex() { return m_iClientCommandIndex; }
 private:
-	int m_iClientCommandIndex;
+    int m_iClientCommandIndex;
 };
 
 #endif // SPE_MAIN_H

@@ -1,13 +1,13 @@
 /**
 * =============================================================================
 * Source Python Extensions
-* Copyright (C) 2009 Deniz "your-name-here" Sezen.  All rights reserved.
+* Copyright (C) 2011 Deniz "your-name-here" Sezen.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License, version 3.0, as published by the
 * Free Software Foundation.
-* 
+*
 * This program is distributed in the hope that it will be useful, but WITHOUT
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
@@ -21,382 +21,131 @@
 * "Source Engine," and any Game MODs that run on software
 * by the Valve Corporation.  You must obey the GNU General Public License in
 * all respects for all other code used.  Additionally, I (Deniz Sezen) grants
-* this exception to all derivative works.  
+* this exception to all derivative works.
 */
 
 //=================================================================================
 // Includes
 //=================================================================================
-#include "spe_hook_manager.h"
-#include "spe_event_parser.h"
+
+// -----------------------------------
+// SPE includes
+// -----------------------------------
 #include "spe_python.h"
-#include <igameevents.h>
+#include "spe_callback.h"
+#include "spe_globals.h"
+
+// -----------------------------------
+// Dyndetours includes
+// -----------------------------------
+#include "dyndetours/detour_class.h"
+#include "dyndetours/detourman_class.h"
 
 //=================================================================================
-// Globals
+// Adds a callback.
 //=================================================================================
-CHookManager* g_pHookManager;
-
-//=================================================================================
-// Declare the sourcehook prototype!
-//=================================================================================
-SH_DECL_HOOK2(IGameEventManager2, FireEvent, SH_NOATTRIB, 0, bool, IGameEvent *, bool);
-
-//=================================================================================
-// Constructor
-//=================================================================================
-CHookManager::CHookManager( IGameEventManager2* pEvMan )
+DECLARE_PYCMD( hookFunction, "Detours a function." )
 {
-	// -----------------------------------
-	// Sanity check.
-	// -----------------------------------
-	if( !pEvMan ) {
-		Msg("[SPE]: Warning! pEvMan == NULL! Prehooking not available!\n");
-		return;
-	}
+    /* Parse out the python callback and the address. */
+    PyObject* pyCallback = NULL;
+    void*     pAddr      = NULL;
+    char*     szParms    = NULL;
+    eCallConv eConv;
+    eHookType eType;
 
-	// -----------------------------------
-	// Set the event manager.
-	// -----------------------------------
-	m_pManager = pEvMan;
+    if( !PyArg_ParseTuple(args, "isiiO", &pAddr, &szParms, &eConv, &eType, &pyCallback) )
+    {
+        DevMsg(1, "[SPE] Could not parse arguments for hookFunction!\n");
+        return NULL;
+    }
 
-	// -----------------------------------
-	// Add the eventmanager hook.
-	// -----------------------------------
-	SH_ADD_HOOK_MEMFUNC(IGameEventManager2, FireEvent, m_pManager, 
-		this, &CHookManager::EventFire_Pre, false);
+    /* Make sure the given address and callback are valid. */
+    if( !pAddr || !pyCallback || !szParms ) {
+        DevMsg(1, "[SPE] One or more arguments are invalid for hookFunction!\n");
+        return NULL;
+    }
+
+    /* Create (or return) a/the detour at this location. */
+    DevMsg("Stage 1: %d %s %d\n", pAddr, szParms, eConv);
+    CDetour* pDetour = g_DetourManager.Add_Detour( pAddr, szParms, eConv );
+
+    /* Does this detour instance contain a python callback handler? */
+    DevMsg("Adding callback.\n");
+    ICallbackManager* pCBM = pDetour->GetManager("py", eType);
+
+    /* If not, we need to create one and add it to the detour. */
+    if( !pCBM ) {
+        pCBM = new CPythonCallback();
+        pDetour->AddManager(pCBM, eType);
+    }
+
+    /* Add the python function to this callback. */
+    pCBM->Add((void *)pyCallback, eType);
+
+    /* Done. */
+    return Py_BuildValue("");
 }
 
 //=================================================================================
-// Destructor
+// Removes a callback from the list.
 //=================================================================================
-CHookManager::~CHookManager( void )
+DECLARE_PYCMD( unHookFunction, "Removes a python function callback from a detour." )
 {
-	// -----------------------------------
-	// Remove the hook.
-	// -----------------------------------
-	SH_REMOVE_HOOK_MEMFUNC(IGameEventManager2, FireEvent, m_pManager, 
-		this, &CHookManager::EventFire_Pre, false);
+    /* Only need the address and python object. */
+    PyObject* pyCallback = NULL;
+    void*     pAddr      = NULL;
+    eHookType eType;
 
-	// -----------------------------------
-	// Free up all the memory in the
-	// map.
-	// -----------------------------------
-	m_Hooks.Purge();
+    if( !PyArg_ParseTuple(args, "iiO", &pAddr, &eType, &pyCallback) )
+    {
+        DevMsg(1, "[SPE] Could not parse arguments for unHookFunction.");
+        return NULL;
+    }
 
-	// -----------------------------------
-	// Don't listen to events.
-	// -----------------------------------
-	m_pManager->RemoveListener( this );
+    /* Get the detour instance at this address. */
+    CDetour* pDetour = g_DetourManager.Find_Detour(pAddr);
+
+    /* Did we find it? */
+    if( !pDetour ) {
+        DevMsg(1, "[SPE] Could not find detour at %d!\n", pAddr);
+        return NULL;
+    }
+
+    /* Get the python callback manager (if there is one). */
+    ICallbackManager* pCBM = pDetour->GetManager("py", eType);
+
+    /* Did we find one? */
+    if( !pCBM ) {
+        DevMsg(1, "[SPE] Could not find a python callback manager.\n");
+        return NULL;
+    }
+
+    /* Remove the python object. */
+    pCBM->Remove(pyCallback, eType);
+
+    /* Done. */
+    return Py_BuildValue("");
 }
 
 //=================================================================================
-// Adds a prehook to the list.
+// Returns the address of the trampoline of a hooked function.
 //=================================================================================
-void CHookManager::AddHook( const char* szEventName, PyObject* pyFunc )
+DECLARE_PYCMD( getTrampoline, "Returns the address of the trampoline of a hooked function." )
 {
-	// -----------------------------------
-	// Sanity checking.
-	// -----------------------------------
-	if( !szEventName || !pyFunc )
-	{
-		DevMsg(1, "[SPE]: Warning! CHookManager::AddHook recieved NULL argument!\n");
-		return;
-	}
+    void* pAddr = NULL;
+    if (!PyArg_ParseTuple(args, "i", &pAddr))
+    {
+        DevMsg("[SPE] Could not parse arguments for getTrampoline.\n");
+        return NULL;
+    }
 
-	// -----------------------------------
-	// Do we already have an EventHook_t
-	// for this event?
-	// -----------------------------------
-	EventHook_t* pHook = NULL;
-	FOR_EACH_VEC( m_Hooks, i )
-	{
-		// -----------------------------------
-		// Compare names
-		// -----------------------------------
-		if( strcmp(m_Hooks[i]->szEventName, szEventName) == 0 )
-		{
-			// -----------------------------------
-			// Yay found it!
-			// -----------------------------------
-			pHook = m_Hooks[i];
+    CDetour* pDetour = g_DetourManager.Find_Detour(pAddr);
+    if (!pDetour)
+    {
+        DevMsg("[SPE] Could not find detour at %d!\n", pAddr);
+        return NULL;
+    }
 
-			// -----------------------------------
-			// Done.
-			// -----------------------------------
-			break;
-		}
-	}
-
-	// -----------------------------------
-	// Did we find it?
-	// -----------------------------------
-	if( !pHook ) 
-	{
-		// -----------------------------------
-		// Create one.
-		// -----------------------------------
-		pHook = new EventHook_t;
-
-		pHook->szEventName = strdup( szEventName );
-		pHook->pCallbacks = new CUtlVector<PyObject *>();
-
-		// -----------------------------------
-		// Add it to the hooks list.
-		// -----------------------------------
-		m_Hooks.AddToTail( pHook );
-	}
-
-	// -----------------------------------
-	// Add the python function to the
-	// list.
-	// -----------------------------------
-	pHook->pCallbacks->AddToTail( pyFunc );
+    void* pTrampoline = pDetour-> GetTrampoline();
+    return Py_BuildValue("i", pTrampoline);
 }
-
-//=================================================================================
-// Removes a prehook from the list.
-//=================================================================================
-void CHookManager::RemoveHook( const char* szEventName, PyObject* pyFunc )
-{
-	// -----------------------------------
-	// Sanity checking.
-	// -----------------------------------
-	if( !szEventName || !pyFunc )
-	{
-		DevMsg(1, "[SPE]: Warning! CHookManager::AddHook recieved NULL argument!\n");
-		return;
-	}
-
-	// -----------------------------------
-	// Do we have a hook structure for
-	// this event?
-	// -----------------------------------
-	EventHook_t* pHook = NULL;
-	FOR_EACH_VEC( m_Hooks, i )
-	{
-		if( strcmp(m_Hooks[i]->szEventName, szEventName) == 0 )
-		{
-			// -----------------------------------
-			// Yay found it!
-			// -----------------------------------
-			pHook = m_Hooks[i];
-
-			// -----------------------------------
-			// Done.
-			// -----------------------------------
-			break;
-		}
-	}
-
-	// -----------------------------------
-	// Did we find a hook structure?
-	// -----------------------------------
-	if( !pHook ) 
-	{
-		// -----------------------------------
-		// Can't continue.
-		// -----------------------------------
-		return;
-	}
-
-	// -----------------------------------
-	// Get the callback list.
-	// -----------------------------------
-	CUtlVector<PyObject *>* pCallbacks =
-		pHook->pCallbacks;
-
-	// -----------------------------------
-	// Find the python function in the
-	// vector.
-	// -----------------------------------
-	int idx = pCallbacks->Find( pyFunc );
-
-	// -----------------------------------
-	// Make sure it's valid.
-	// -----------------------------------
-	if( idx != pCallbacks->InvalidIndex() )
-	{
-		// -----------------------------------
-		// Remove it.
-		// -----------------------------------
-		pCallbacks->Remove( idx );
-	}
-
-	// -----------------------------------
-	// Are we at 0 hooks for this event?
-	// -----------------------------------
-	if( pCallbacks->Count() == 0 )
-	{
-		DevMsg(1, "[SPE]: %s has zero callbacks. Deleting from list..\n", szEventName);
-
-		// -----------------------------------
-		// Get rid of the event hook.
-		// -----------------------------------
-		pCallbacks->PurgeAndDeleteElements();
-		m_Hooks.FindAndRemove( pHook );
-		
-		delete pCallbacks;
-		delete pHook;
-	}
-}
-
-//=================================================================================
-// Called when an event is fired.
-//=================================================================================
-bool CHookManager::EventFire_Pre( IGameEvent *pEvent, bool bDontBroadcast )
-{
-	// -----------------------------------
-	// Sanity checking.
-	// -----------------------------------
-	if( !pEvent || !pEvent->GetName() )
-	{
-		RETURN_META_VALUE( MRES_HANDLED, false );
-	}
-
-	// -----------------------------------
-	// Do we have a hook registered for this
-	// event?
-	// -----------------------------------
-	const char* szEventName = pEvent->GetName();
-	DevMsg(2, "[SPE]: Event name is %s\n", szEventName);
-
-	// -----------------------------------
-	// Look for the vector that pairs
-	// with the given event name.
-	// -----------------------------------
-	CUtlVector<PyObject*>* pCallbackList = NULL;
-	
-	// -----------------------------------
-	// Do we have a hook structure for
-	// this event?
-	// -----------------------------------
-	FOR_EACH_VEC( m_Hooks, i )
-	{
-		if( strcmp(m_Hooks[i]->szEventName, szEventName) == 0 )
-		{
-			// -----------------------------------
-			// Yay found it!
-			// -----------------------------------
-			pCallbackList = m_Hooks[i]->pCallbacks;
-
-			// -----------------------------------
-			// Done.
-			// -----------------------------------
-			break;
-		}
-	}
-
-	// -----------------------------------
-	// If it's not valid, we can't
-	// continue.
-	// -----------------------------------
-	if( !pCallbackList )
-	{
-		DevMsg(2, "[SPE]: Could not find callback list for %s!\n", szEventName);
-		RETURN_META_VALUE( MRES_HANDLED, false );
-	}
-
-	// -----------------------------------
-	// Get the python representation for
-	// the event data.
-	// -----------------------------------
-	PyObject* pEventDict = g_pParser->GetEventVariables( pEvent );
-
-	// -----------------------------------
-	// Loop through all the callbacks and
-	// execute them.
-	// -----------------------------------
-	for( int i = 0; i < pCallbackList->Count(); i++ )
-	{
-		// -----------------------------------
-		// Get the python function.
-		// -----------------------------------
-		PyObject* pCallback = pCallbackList->Element(i);
-
-		// -----------------------------------
-		// Execute it.
-		// -----------------------------------
-		DevMsg(2, "[SPE]: Calling callback for %s!\n", szEventName);
-		PyObject* retVal = PyEval_CallFunction( pCallback, "(O)", pEventDict );
-
-		// -----------------------------------
-		// Decrement the reference count.
-		// -----------------------------------
-		Py_XDECREF( retVal );
-	}
-
-	Py_DECREF( pEventDict );
-
-	// -----------------------------------
-	// Done.
-	// -----------------------------------
-	RETURN_META_VALUE( MRES_HANDLED, true );
-}
-
-//=================================================================================
-// IGameEventListener2 override.
-//=================================================================================
-void CHookManager::FireGameEvent( IGameEvent *pEvent )
-{
-	// -----------------------------------
-	// Do nothing.
-	// -----------------------------------
-}
-
-//==================================================================================
-// Registers a prehook.
-//==================================================================================
-DECLARE_PYCMD( registerPreHook, "Registers an event prehook." )
-{
-	char	*szEventName;
-	PyObject *callback;
-
-	// -----------------------------------
-	// Parse arguments from python.
-	// -----------------------------------
-	if( !PyArg_ParseTuple(args, "sO", &szEventName, &callback) )
-	{
-		DevMsg(1, "[SPE]: spe_RegisterPreHook: Could not parse function arguments.\n");
-		return NULL;
-	}
-
-	// -----------------------------------
-	// Add the hook.
-	// -----------------------------------
-	g_pHookManager->AddHook(szEventName, callback);
-
-	// -----------------------------------
-	// Return.
-	// -----------------------------------
-	return Py_BuildValue("i", 0);
-}
-
-//==================================================================================
-// Unregisters a prehook
-//==================================================================================
-DECLARE_PYCMD( unregisterPreHook, "Unregisters an event prehook." )
-{
-	const char	*szEventName;
-	PyObject	*callback;
-
-	// -----------------------------------
-	// Parse arguments from python.
-	// -----------------------------------
-	if( !PyArg_ParseTuple(args, "sO", &szEventName, &callback) )
-	{
-		Msg("[SPE]: spe_unregisterPreHook: Could not parse function arguments.\n");
-		return NULL;
-	}
-
-	// -----------------------------------
-	// Remove the hook.
-	// -----------------------------------
-	g_pHookManager->RemoveHook(szEventName, callback);
-
-	// -----------------------------------
-	// Done.
-	// -----------------------------------
-	return Py_BuildValue("i", 0);
-}
-

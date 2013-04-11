@@ -4,40 +4,44 @@
 ###########################
 ### ADD OTHER SDKs HERE ###
 ###########################
-HL2SDK_OB  = ../../../sdk/sourcesdk-ob
-HL2SDK_L4D = ../../../sdk/sourcesdk-l4d
+HL2SDK_OB  = ../../../sdks/hl2sdk-ob-valve
+HL2SDK_L4D = ../../../sdks/hl2sdk-l4d
+HL2SDK_L4D2 = ../../../sdks/hl2sdk-l4d2
 
 #######################
 ### OTHER LIBRARIES ###
 #######################
 PYTHON  = ./python
 DYNCALL = ./dyncall
+DYNDETOURS = ./dyndetours
 
 ###################################
 ### SOURCE DEDICATED SERVER DIR ###
 ###################################
-SRCDS_BASE = ~/srcds
+SRCDS_BASE = ~/Desktop/srcds
 
 ####################
 ### SOURCE FILES ###
 ####################
 OBJECTS = spe_binutils.cpp \
-    spe_convar.cpp \
-    spe_dyncall.cpp \
-    spe_main.cpp \
-    spe_misc.cpp \
-    spe_player.cpp \
-    spe_python.cpp \
-    spe_scanner.cpp \
-	spe_sigcache.cpp
-    
+	spe_dyncall.cpp \
+	spe_hook_manager.cpp \
+	spe_main.cpp \
+	spe_misc.cpp \
+	spe_player.cpp \
+	spe_python.cpp \
+	spe_scanner.cpp \
+	spe_sigcache.cpp \
+	spe_callback.cpp \
+	spe_convar.cpp
+
 ######################
 ### COMPILER FLAGS ###
 ######################
-OPT_FLAGS = -O2 -funroll-loops -s -pipe
+OPT_FLAGS = -funroll-loops -pipe
 GCC4_FLAGS = -fvisibility=hidden -fvisibility-inlines-hidden
-DEBUG_FLAGS = -g -ggdb3
-CPP = /usr/bin/gcc34
+DEBUG_FLAGS = -g -g3 -ggdb3
+CPP = /usr/bin/gcc
 
 #################################
 ### ENGINE SPECIFIC VARIABLES ###
@@ -52,7 +56,19 @@ ifeq "$(ENGINE)" "l4d"
  CFLAGS = -DENGINE_VERSION=3
  INCLUDE += -I$(HL2SDK_L4D)/public/game/server
  SRCDS = $(SRCDS_BASE)/l4d
- BINARY = sp_extensions_l4d_i486.so
+ BINARY = sp_extensions_l4d.so
+ override ENGSET = true
+endif
+
+# Using the Left4Dead2 Engine?
+ifeq "${ENGINE}" "l4d2"
+ HL2SDK = $(HL2SDK_L4D2)
+ HL2PUB = $(HL2SDK_L4D2)/public
+ HL2LIB = $(HL2SDK_L4D2)/linux_sdk
+ CFLAGS = -DENGINE_VERSION=3
+ INCLUDE += -I$(HL2SDK_L4D2)/public/game/server
+ SRCDS = $(SRCDS_BASE)/l4d2
+ BINARY = sp_extensions_l4d2.so
  override ENGSET = true
 endif
 
@@ -67,8 +83,8 @@ ifeq "$(ENGINE)" "ob"
  BINARY = sp_extensions_ep2.so
  LINK += $(HL2LIB)/tier2_i486.a \
 	$(HL2LIB)/tier3_i486.a \
-	libtier0.so \
-	libvstdlib.so
+	libtier0_srv.so \
+	libvstdlib_srv.so
  override ENGSET = true
 endif
 
@@ -79,9 +95,11 @@ LINK += $(HL2LIB)/tier1_i486.a \
 	$(HL2LIB)/mathlib_i486.a \
 	$(DYNCALL)/lib/libdyncall_s.a \
 	$(DYNCALL)/lib/libdynload_s.a \
-	/usr/lib/gcc/i686-redhat-linux/3.4.6/libstdc++.a \
-	/usr/lib/gcc/i686-redhat-linux/3.4.6/libgcc_eh.a \
-	libpython2.5.so.1.0 -static-libgcc
+	/usr/lib/gcc/i486-linux-gnu/4.4.5/libstdc++.a \
+	/usr/lib/gcc/i486-linux-gnu/4.4.5/libgcc_eh.a \
+	$(DYNDETOURS)/libDynDetours.a \
+	$(DYNDETOURS)/AsmJit/lib/libAsmJit.a \
+	-static-libgcc
 
 LINK += -Wl,--rpath,\$$ORIGIN/eventscripts/_engines/python/Lib/plat-linux2
 
@@ -98,8 +116,9 @@ INCLUDE += -I. \
 	-I$(HL2SDK)/tier1 \
 	-I$(HL2SDK)/dlls \
 	-I$(PYTHON)/linux/Include \
-    -I$(SOURCEHOOK) \
-    -I$(DYNCALL)/include
+	-I$(DYNCALL)/include \
+	-I$(DYNDETOURS)/AsmJit \
+	-I$(DYNDETOURS)
 
 ifeq "$(DEBUG)" "true"
 	BIN_DIR = Debug
@@ -114,7 +133,7 @@ GCC_VERSION := $(shell $(CPP) -dumpversion >&1 | cut -b1)
 CFLAGS += -D_LINUX -DNDEBUG -Dstricmp=strcasecmp -D_stricmp=strcasecmp -D_strnicmp=strncasecmp \
 		-Dstrnicmp=strncasecmp -D_snprintf=snprintf -D_vsnprintf=vsnprintf -D_alloca=alloca \
 		-Dstrcmpi=strcasecmp -Wall -Wno-non-virtual-dtor -Wno-uninitialized -fPIC \
-		-fno-exceptions -fno-rtti -msse -msse2 -m32
+		-fno-exceptions -fno-rtti -msse -msse2 -m32 -g -g3 -ggdb3
 
 ifeq "$(GCC_VERSION)" "4"
 	CFLAGS += $(GCC4_FLAGS)
@@ -127,13 +146,14 @@ $(BIN_DIR)/%.o: %.cpp
 
 all: check
 	mkdir -p $(BIN_DIR)
+	mkdir -p ./Binaries
 
 	# Create links to the shared objects
-	cp $(HL2LIB)/libvstdlib.so libvstdlib.so
-	cp $(HL2LIB)/libvstdlib.so libtier0.so
+	cp $(HL2LIB)/libvstdlib_srv.so libvstdlib_srv.so
+	cp $(HL2LIB)/libtier0_srv.so libtier0_srv.so
 
 	# Copy python
-	cp $(PYTHON)/libs/libpython2.5.so.1.0 libpython2.5.so.1.0
+	#cp $(PYTHON)/libs/libpython2.5.so.1.0 libpython2.5.so.1.0
 
 	# Build SPE
 	$(MAKE) spe
@@ -143,23 +163,20 @@ all: check
 
 check:
 	if [ "$(ENGSET)" = "false" ]; then \
-		echo "You must supply ENGINE=orangebox or ENGINE=l4d."; \
+		echo "You must supply ENGINE={ob, l4d, l4d2}."; \
 		exit 1; \
 	fi
 
 spe: check $(OBJ_LINUX)
 	$(CPP) $(INCLUDE) -m32 $(CFLAGS) $(OBJ_LINUX) $(LINK) -shared -ldl -lm -o$(BIN_DIR)/$(BINARY)
 
-debug:	
+debug:
 	$(MAKE) all DEBUG=true
 
 default: all
 
 clean:
-	rm -rf Release/sourcehook/*.o
 	rm -rf Release/*.o
 	rm -rf Release/$(BINARY)
-	rm -rf Debug/sourcehook/*.o
 	rm -rf Debug/*.o
 	rm -rf Debug/$(BINARY)
-

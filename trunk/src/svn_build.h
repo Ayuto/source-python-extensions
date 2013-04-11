@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python Extensions
-* Copyright (C) 2011 Deniz "your-name-here" Sezen.  All rights reserved.
+* Copyright (C) 2009-2010 Deniz "your-name-here" Sezen.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -23,19 +23,10 @@
 * all respects for all other code used.  Additionally, I (Deniz Sezen) grants
 * this exception to all derivative works.
 */
+#ifndef SVN_BUILD_H
+#define SVN_BUILD_H
 
-#ifndef SPE_DYNCALL_H
-#define SPE_DYNCALL_H
+#define SVN_WC_REVISION "133"
+#define SVN_WC_DATE     "2010/09/19 09:32:41"
 
-#ifdef _WIN32
-#pragma once
 #endif
-
-//=================================================================================
-// Includes
-//=================================================================================
-#include "Python.h"
-#include "dyncall.h"
-#include "dyncall_signature.h"
-
-#endif // SPE_DYNCALL_H

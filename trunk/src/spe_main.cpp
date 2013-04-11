@@ -1,13 +1,13 @@
 /**
 * =============================================================================
 * Source Python Extensions
-* Copyright (C) 2009 Deniz "your-name-here" Sezen.  All rights reserved.
+* Copyright (C) 2011 Deniz "your-name-here" Sezen.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License, version 3.0, as published by the
 * Free Software Foundation.
-* 
+*
 * This program is distributed in the hope that it will be useful, but WITHOUT
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
@@ -21,16 +21,18 @@
 * "Source Engine," and any Game MODs that run on software
 * by the Valve Corporation.  You must obey the GNU General Public License in
 * all respects for all other code used.  Additionally, I (Deniz Sezen) grants
-* this exception to all derivative works.  
+* this exception to all derivative works.
 */
 
 //=================================================================================
 // Includes
 //=================================================================================
-#include "svn_build.h"
 #include "spe_main.h"
 #include "spe_globals.h"
 #include "spe_python.h"
+#include "svn_build.h"
+#include "playerinfomanager.h"
+
 
 #ifdef _LINUX
 #include <dlfcn.h>
@@ -41,14 +43,10 @@
 //=================================================================================
 // Interface declarations
 //=================================================================================
-IVEngineServer				*engine				= NULL;
-IFileSystem					*filesystem			= NULL;
-IGameEventManager2			*gameeventmanager	= NULL; 
-IPlayerInfoManager			*playerinfomanager	= NULL;
-IEngineTrace				*enginetrace		= NULL;
-CGlobalVars					*gpGlobals			= NULL;
-DCCallVM					*vm					= NULL;
-void						*laddr				= NULL;
+IVEngineServer* engine    = NULL;
+CGlobalVars*    gpGlobals = NULL;
+DCCallVM*       vm        = NULL;
+void*           laddr     = NULL;
 
 //=================================================================================
 // Function to initialize any cvars/command in this plugin
@@ -60,11 +58,6 @@ void InitCVars( CreateInterfaceFn cvarFactory );
 //=================================================================================
 CSPE_Plugin g_SPEPlugin;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CSPE_Plugin, IServerPluginCallbacks, INTERFACEVERSION_ISERVERPLUGINCALLBACKS, g_SPEPlugin);
-
-//=================================================================================
-// Purpose: Source Python Extensions version variable.
-//=================================================================================
-// static ConVar spe_version_var("spe_version_var", "", 0, "Version of Source Python Extensions.");
 
 //=================================================================================
 // Purpose: Source Python Extensions engine variable
@@ -85,88 +78,80 @@ static ConVar spe_engine_version("spe_engine", "l4d2", 0);
 //=================================================================================
 CSPE_Plugin::CSPE_Plugin()
 {
-	m_iClientCommandIndex = 0;
+    m_iClientCommandIndex = 0;
 }
 
 CSPE_Plugin::~CSPE_Plugin()
 {
-
 }
 
 //=================================================================================
-// Purpose: called when the plugin is loaded, load the interface we need from the 
-//			engine.
+// Purpose: called when the plugin is loaded, load the interface we need from the
+//          engine.
 //=================================================================================
-bool CSPE_Plugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn gameServerFactory )
+bool CSPE_Plugin::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn gameServerFactory )
 {
 #if( ENGINE_VERSION >= 2 )
-	ConnectTier1Libraries( &interfaceFactory, 1 );
-	ConnectTier2Libraries( &interfaceFactory, 1 );
-	ConVar_Register( 0 );
+    ConnectTier1Libraries( &interfaceFactory, 1 );
+    ConnectTier2Libraries( &interfaceFactory, 1 );
+    ConVar_Register( 0 );
 #else
-	InitCVars( interfaceFactory ); // register any cvars we have defined
+    InitCVars( interfaceFactory ); // register any cvars we have defined
 #endif
 
-	playerinfomanager = (IPlayerInfoManager *)gameServerFactory(INTERFACEVERSION_PLAYERINFOMANAGER,NULL);
-	if ( !playerinfomanager )
-	{
-		DevMsg( "Unable to load playerinfomanager, ignoring\n" ); // this isn't fatal, we just won't be able to access specific player data
-	}
-
-	// get the interfaces we want to use
-	if(	!(engine = (IVEngineServer*)interfaceFactory(INTERFACEVERSION_VENGINESERVER, NULL)) ||
-		!(gameeventmanager = (IGameEventManager2 *)interfaceFactory(INTERFACEVERSION_GAMEEVENTSMANAGER2,NULL)) ||
-		!(filesystem = (IFileSystem*)interfaceFactory(FILESYSTEM_INTERFACE_VERSION, NULL)) ||
-		!(enginetrace = (IEngineTrace *)interfaceFactory(INTERFACEVERSION_ENGINETRACE_SERVER,NULL))
-		)
-	{
-		return false; // we require all these interface to function
-	}
-
-	if ( playerinfomanager )
-	{
-		gpGlobals = playerinfomanager->GetGlobalVars();
-	}
-
-	// Setup dyncall
-	vm = dcNewCallVM(4026);
-
-	// Get the game directory
-	char szServerBinary[300];
-	engine->GetGameDir( szServerBinary, 300 );
-
-	// Add the bin dir
-	strcat( szServerBinary, "/bin/server");
-
-	// OS specific stuff
-#ifdef _WIN32
-	
-	// Use DLL extension
-	strcat( szServerBinary, ".dll" );
-
-	// Load library the handle
-	laddr = (void *)LoadLibrary(szServerBinary);
-
-#else 
-
-	// No extension.
-	strcat( szServerBinary, "_srv.so" );
-
-	// dlopen the library
-    laddr = dlopen( szServerBinary, RTLD_NOW );
-
-    if( laddr == NULL )
+    IPlayerInfoManager* playerinfomanager = (IPlayerInfoManager *) gameServerFactory(INTERFACEVERSION_PLAYERINFOMANAGER,NULL);
+    if ( !playerinfomanager )
     {
-        DevMsg("[SPE]: Failed to open server image.\n");
+        Msg("[SPE] Unable to load playerinfomanager.\n" );
         return false;
     }
 
-    Msg("[SPE]: Handle address is %d.\n", laddr);
+    engine = (IVEngineServer*) interfaceFactory(INTERFACEVERSION_VENGINESERVER, NULL);
+    if( !engine)
+    {
+        Msg("[SPE] Unable to load engine.\n");
+        return false;
+    }
 
+    gpGlobals = playerinfomanager->GetGlobalVars();
+
+    // Setup dyncall
+    vm = dcNewCallVM(4026);
+
+    if (!vm)
+    {
+        Msg("[SPE] Could not create a virtual machine.\n");
+        return false;
+    }
+
+    // Get the game directory
+    char szServerBinary[300];
+    engine->GetGameDir( szServerBinary, 300 );
+
+    // Add the bin dir
+    strcat( szServerBinary, "/bin/server");
+
+    // OS specific stuff
+#ifdef _WIN32
+    strcat( szServerBinary, ".dll" );
+    laddr = (void *) LoadLibrary(szServerBinary);
+#else
+    strcat( szServerBinary, "_srv.so" );
+    laddr = dlopen( szServerBinary, RTLD_NOW );
 #endif
 
+    if(!laddr)
+    {
+        Msg("[SPE] Failed to open server image.\n");
+        return false;
+    }
+
     // Initialize python
-	return EnablePython();
+    if (!EnablePython())
+        return false;
+
+    Msg("[SPE] Loaded succesfully.\n");
+    return true;
 }
 
 //=================================================================================
@@ -174,21 +159,19 @@ bool CSPE_Plugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn ga
 //=================================================================================
 void CSPE_Plugin::Unload( void )
 {
-
-	// Free dyncall virtual machine.
-	dcFree(vm);
+    // Free up memory from dyncall.
+    dcFree(vm);
 
 #if( ENGINE_VERSION >= 2 )
-	ConVar_Unregister();
-	DisconnectTier2Libraries();
-	DisconnectTier1Libraries();
+    ConVar_Unregister();
+    DisconnectTier2Libraries();
+    DisconnectTier1Libraries();
 #endif
 
 #ifdef _LINUX
-    if( laddr )
-	{
-        dlclose(laddr);
-	}
+    dlclose(laddr);
+#else
+    FreeLibrary((HMODULE) laddr);
 #endif
 }
 
@@ -213,7 +196,11 @@ void CSPE_Plugin::UnPause( void )
 //=================================================================================
 const char *CSPE_Plugin::GetPluginDescription( void )
 {
-	return "Source Python Extensions, 2009 - 2011, your-name-here";
+    return (PLUGIN_NAME ", "
+            PLUGIN_DATE ", "
+            PLUGIN_AUTHOR ", "
+            PLUGIN_VERSION ", r"
+            SVN_WC_REVISION);
 }
 
 //=================================================================================
@@ -226,7 +213,7 @@ void CSPE_Plugin::LevelInit( char const *pMapName )
 
 //=================================================================================
 // Purpose: called on level start, when the server is ready to accept client connections
-//		edictCount is the number of entities in the level, clientMax is the max client count
+//      edictCount is the number of entities in the level, clientMax is the max client count
 //=================================================================================
 void CSPE_Plugin::ServerActivate( edict_t *pEdictList, int edictCount, int clientMax )
 {
@@ -237,7 +224,7 @@ void CSPE_Plugin::ServerActivate( edict_t *pEdictList, int edictCount, int clien
 //=================================================================================
 void CSPE_Plugin::GameFrame( bool simulating )
 {
-	
+
 }
 
 //=================================================================================
@@ -263,7 +250,7 @@ void CSPE_Plugin::ClientDisconnect( edict_t *pEntity )
 }
 
 //=================================================================================
-// Purpose: called on 
+// Purpose: called on
 //=================================================================================
 void CSPE_Plugin::ClientPutInServer( edict_t *pEntity, char const *playername )
 {
@@ -275,7 +262,7 @@ void CSPE_Plugin::ClientPutInServer( edict_t *pEntity, char const *playername )
 //=================================================================================
 void CSPE_Plugin::SetCommandClient( int index )
 {
-	m_iClientCommandIndex = index;
+    m_iClientCommandIndex = index;
 }
 
 //=================================================================================
@@ -283,7 +270,7 @@ void CSPE_Plugin::SetCommandClient( int index )
 //=================================================================================
 void CSPE_Plugin::ClientSettingsChanged( edict_t *pEdict )
 {
-	
+
 }
 
 //=================================================================================
@@ -291,7 +278,7 @@ void CSPE_Plugin::ClientSettingsChanged( edict_t *pEdict )
 //=================================================================================
 PLUGIN_RESULT CSPE_Plugin::ClientConnect( bool *bAllowConnect, edict_t *pEntity, const char *pszName, const char *pszAddress, char *reject, int maxrejectlen )
 {
-	return PLUGIN_CONTINUE;
+    return PLUGIN_CONTINUE;
 }
 
 //=================================================================================
@@ -303,7 +290,7 @@ PLUGIN_RESULT CSPE_Plugin::ClientCommand(edict_t* pEdict, const CCommand &args)
 PLUGIN_RESULT CSPE_Plugin::ClientCommand( edict_t *pEntity )
 #endif
 {
-	return PLUGIN_CONTINUE;
+    return PLUGIN_CONTINUE;
 }
 
 //=================================================================================
@@ -311,7 +298,7 @@ PLUGIN_RESULT CSPE_Plugin::ClientCommand( edict_t *pEntity )
 //=================================================================================
 PLUGIN_RESULT CSPE_Plugin::NetworkIDValidated( const char *pszUserName, const char *pszNetworkID )
 {
-	return PLUGIN_CONTINUE;
+    return PLUGIN_CONTINUE;
 }
 
 //=================================================================================
@@ -326,21 +313,10 @@ void CSPE_Plugin::FireGameEvent( IGameEvent * event )
 // Called when a cvar query value is finished
 //=================================================================================
 #if( ENGINE_VERSION >= 2 )
-void CSPE_Plugin::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *pPlayerEntity, 
-										   EQueryCvarValueStatus eStatus, const char *pCvarName, 
-										   const char *pCvarValue )
+void CSPE_Plugin::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *pPlayerEntity,
+                                           EQueryCvarValueStatus eStatus, const char *pCvarName,
+                                           const char *pCvarValue )
 {
-	// Do nothing
+    // Do nothing
 }
 #endif
-
-//=================================================================================
-// Purpose: an example of how to implement a new command
-//=================================================================================
-CON_COMMAND( spe_version, "prints the version of the empty plugin" )
-{
- 	char szInfo[1024];
- 	V_snprintf(szInfo, 1024, "%s, %s revision %s, %s\n", PLUGIN_NAME, PLUGIN_VERSION, 
- 			SVN_WC_REVISION, PLUGIN_AUTHOR);
- 	Msg(szInfo);
-}

@@ -4,21 +4,16 @@
 ###########################
 ### ADD OTHER SDKs HERE ###
 ###########################
-HL2SDK_OB  = ../../../sdks/hl2sdk-ob-valve
-HL2SDK_L4D = ../../../sdks/hl2sdk-l4d
+HL2SDK_OB   = ../../../sdks/hl2sdk-ob-valve
+HL2SDK_L4D  = ../../../sdks/hl2sdk-l4d
 HL2SDK_L4D2 = ../../../sdks/hl2sdk-l4d2
 
 #######################
 ### OTHER LIBRARIES ###
 #######################
-PYTHON  = ./python
-DYNCALL = ./dyncall
+PYTHON     = ./python
+DYNCALL    = ./dyncall
 DYNDETOURS = ./dyndetours
-
-###################################
-### SOURCE DEDICATED SERVER DIR ###
-###################################
-SRCDS_BASE = ~/Desktop/srcds
 
 ####################
 ### SOURCE FILES ###
@@ -38,10 +33,10 @@ OBJECTS = spe_binutils.cpp \
 ######################
 ### COMPILER FLAGS ###
 ######################
-OPT_FLAGS = -funroll-loops -pipe
-GCC4_FLAGS = -fvisibility=hidden -fvisibility-inlines-hidden
+OPT_FLAGS   = -funroll-loops -pipe
+GCC4_FLAGS  = -fvisibility=hidden -fvisibility-inlines-hidden
 DEBUG_FLAGS = -g -g3 -ggdb3
-CPP = /usr/bin/gcc
+CPP         = /usr/bin/gcc
 
 #################################
 ### ENGINE SPECIFIC VARIABLES ###
@@ -55,7 +50,6 @@ ifeq "$(ENGINE)" "l4d"
  HL2LIB = $(HL2SDK_L4D)/linux_sdk
  CFLAGS = -DENGINE_VERSION=3
  INCLUDE += -I$(HL2SDK_L4D)/public/game/server
- SRCDS = $(SRCDS_BASE)/l4d
  BINARY = sp_extensions_l4d.so
  override ENGSET = true
 endif
@@ -67,7 +61,6 @@ ifeq "${ENGINE}" "l4d2"
  HL2LIB = $(HL2SDK_L4D2)/linux_sdk
  CFLAGS = -DENGINE_VERSION=3
  INCLUDE += -I$(HL2SDK_L4D2)/public/game/server
- SRCDS = $(SRCDS_BASE)/l4d2
  BINARY = sp_extensions_l4d2.so
  override ENGSET = true
 endif
@@ -79,7 +72,6 @@ ifeq "$(ENGINE)" "ob"
  HL2LIB = $(HL2SDK_OB)/lib/linux
  CFLAGS += -DENGINE_VERSION=2
  INCLUDE = -I$(HL2SDK_OB)/game/server
- SRCDS = $(SRCDS_BASE)/orangebox
  BINARY = sp_extensions_ep2.so
  LINK += $(HL2LIB)/tier2_i486.a \
 	$(HL2LIB)/tier3_i486.a \
@@ -132,8 +124,7 @@ GCC_VERSION := $(shell $(CPP) -dumpversion >&1 | cut -b1)
 
 CFLAGS += -D_LINUX -DNDEBUG -Dstricmp=strcasecmp -D_stricmp=strcasecmp -D_strnicmp=strncasecmp \
 		-Dstrnicmp=strncasecmp -D_snprintf=snprintf -D_vsnprintf=vsnprintf -D_alloca=alloca \
-		-Dstrcmpi=strcasecmp -Wall -Wno-non-virtual-dtor -Wno-uninitialized -fPIC \
-		-fno-exceptions -fno-rtti -msse -msse2 -m32 -g -g3 -ggdb3
+		-Dstrcmpi=strcasecmp -w -fPIC -fno-exceptions -fno-rtti -msse -msse2 -m32
 
 ifeq "$(GCC_VERSION)" "4"
 	CFLAGS += $(GCC4_FLAGS)
@@ -145,15 +136,13 @@ $(BIN_DIR)/%.o: %.cpp
 	$(CPP) $(INCLUDE) $(CFLAGS) -o $@ -c $<
 
 all: check
+	# Create directories
 	mkdir -p $(BIN_DIR)
 	mkdir -p ./Binaries
 
 	# Create links to the shared objects
 	cp $(HL2LIB)/libvstdlib_srv.so libvstdlib_srv.so
 	cp $(HL2LIB)/libtier0_srv.so libtier0_srv.so
-
-	# Copy python
-	#cp $(PYTHON)/libs/libpython2.5.so.1.0 libpython2.5.so.1.0
 
 	# Build SPE
 	$(MAKE) spe
@@ -168,7 +157,7 @@ check:
 	fi
 
 spe: check $(OBJ_LINUX)
-	$(CPP) $(INCLUDE) -m32 $(CFLAGS) $(OBJ_LINUX) $(LINK) -shared -ldl -lm -o$(BIN_DIR)/$(BINARY)
+	$(CPP) $(INCLUDE) $(CFLAGS) $(OBJ_LINUX) $(LINK) -shared -ldl -lm -o$(BIN_DIR)/$(BINARY)
 
 debug:
 	$(MAKE) all DEBUG=true

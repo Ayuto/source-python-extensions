@@ -91,8 +91,7 @@ LINK += $(HL2LIB)/tier1_i486.a \
 	/usr/lib/gcc/i486-linux-gnu/4.4.5/libgcc_eh.a \
 	$(DYNDETOURS)/libDynDetours.a \
 	$(DYNDETOURS)/AsmJit/lib/libAsmJit.a \
-	$(PYTHON)/libs/libpython25.a \
-	-static-libgcc
+	libpython2.5.so.1.0 -static-libgcc
 
 LINK += -Wl,--rpath,\$$ORIGIN/eventscripts/_engines/python/Lib/plat-linux2
 
@@ -144,6 +143,9 @@ all: check
 	# Create links to the shared objects
 	cp $(HL2LIB)/libvstdlib_srv.so libvstdlib_srv.so
 	cp $(HL2LIB)/libtier0_srv.so libtier0_srv.so
+
+	# Copy Python
+	cp $(PYTHON)/libs/libpython2.5.so.1.0 libpython2.5.so.1.0
 
 	# Build SPE
 	$(MAKE) spe

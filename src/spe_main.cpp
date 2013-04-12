@@ -91,6 +91,7 @@ CSPE_Plugin::~CSPE_Plugin()
 //=================================================================================
 bool CSPE_Plugin::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn gameServerFactory )
 {
+    Msg("[SPE] Loading Source-Python-Extensions " PLUGIN_VERSION ", r" SVN_WC_REVISION "...\n");
 #if( ENGINE_VERSION >= 2 )
     ConnectTier1Libraries( &interfaceFactory, 1 );
     ConnectTier2Libraries( &interfaceFactory, 1 );

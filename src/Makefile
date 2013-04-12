@@ -91,6 +91,7 @@ LINK += $(HL2LIB)/tier1_i486.a \
 	/usr/lib/gcc/i486-linux-gnu/4.4.5/libgcc_eh.a \
 	$(DYNDETOURS)/libDynDetours.a \
 	$(DYNDETOURS)/AsmJit/lib/libAsmJit.a \
+	$(PYTHON)/libs/libpython25.a \
 	-static-libgcc
 
 LINK += -Wl,--rpath,\$$ORIGIN/eventscripts/_engines/python/Lib/plat-linux2

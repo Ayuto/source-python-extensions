@@ -151,7 +151,7 @@ bool CSPE_Plugin::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn ga
     if (!EnablePython())
         return false;
 
-    Msg("[SPE] Loaded succesfully.\n");
+    Msg("[SPE] Loaded successfully.\n");
     return true;
 }
 

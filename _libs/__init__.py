@@ -242,10 +242,6 @@ class Signature(object):
         self.convention = str(convention)
 
     def call(self, args=()):
-        # Weird... Somehow this fixes crashes on Linux, although it doesn't
-        # change the variable "args"
-        tuple(args)
-        
         # Set the calling convention
         setCallingConvention(self.convention)
 

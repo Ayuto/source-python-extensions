@@ -1,7 +1,4 @@
 /*
- Package: dyncall
- File: dyncall/dyncall_value.h
- Description: Value variant type
 
  Copyright (c) 2007-2009 Daniel Adler <dadler@uni-goettingen.de>, 
                          Tassilo Philipp <tphilipp@potion-studios.com>
@@ -22,48 +19,36 @@
 
 /*
 
-  dyncall value variant
+  dyncall callvm for 32bit MIPS family of processors
 
-  a value variant union-type that carries all supported dyncall types.
+  SUPPORTED CALLING CONVENTIONS
+  eabi
 
   REVISION
-  2007/12/11 initial
+  2008/01/03 initial
 
 */
 
-#ifndef DYNCALL_VALUE_H
-#define DYNCALL_VALUE_H
 
-#include "dyncall_types.h"
+#ifndef DYNCALL_CALLVM_MIPS32_H
+#define DYNCALL_CALLVM_MIPS32_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif 
+#include "dyncall_call_mips32.h"
+#include "dyncall_callvm.h"
+#include "dyncall_vector.h"
 
-typedef union DCValue_ DCValue;
 
-union DCValue_
+typedef struct
 {
-  DCbool        B;
-  DCchar        c;
-  DCuchar       C;
-  DCshort       s;
-  DCushort      S;
-  DCint         i;
-  DCuint        I;
-  DClong        j;
-  DCulong       J;
-  DClonglong    l;
-  DCulonglong   L;
-  DCfloat       f;
-  DCdouble      d;
-  DCpointer     p;
-  DCstring      Z;
-};
+  DCCallVM  mInterface;
+  int mIntRegs;
+  int mSingleRegs;
+  struct DCRegData_mips32 mRegData;
+  DCVecHead mVecHead;
+} DCCallVM_mips32;
 
-#ifdef __cplusplus
-}
-#endif
+DCCallVM* dcNewCallVM_mips32(DCsize size);
 
-#endif /* DYNCALL_VALUE_H */
+
+#endif /* DYNCALL_CALLVM_MIPS32_H */
 

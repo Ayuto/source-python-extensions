@@ -1,7 +1,7 @@
 /*
  Package: dyncall
- File: dyncall/dyncall_value.h
- Description: Value variant type
+ File: dyncall/dyncall_vector.h
+ Description: Simple dynamic vector container type header
 
  Copyright (c) 2007-2009 Daniel Adler <dadler@uni-goettingen.de>, 
                          Tassilo Philipp <tphilipp@potion-studios.com>
@@ -20,50 +20,33 @@
 
 */
 
-/*
-
-  dyncall value variant
-
-  a value variant union-type that carries all supported dyncall types.
-
-  REVISION
-  2007/12/11 initial
-
-*/
-
-#ifndef DYNCALL_VALUE_H
-#define DYNCALL_VALUE_H
+#ifndef DC_VEC_HEAD_H
+#define DC_VEC_HEAD_H
 
 #include "dyncall_types.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif 
-
-typedef union DCValue_ DCValue;
-
-union DCValue_
+typedef struct
 {
-  DCbool        B;
-  DCchar        c;
-  DCuchar       C;
-  DCshort       s;
-  DCushort      S;
-  DCint         i;
-  DCuint        I;
-  DClong        j;
-  DCulong       J;
-  DClonglong    l;
-  DCulonglong   L;
-  DCfloat       f;
-  DCdouble      d;
-  DCpointer     p;
-  DCstring      Z;
-};
+  DCsize mTotal;
+  DCsize mSize;
+} DCVecHead;
 
-#ifdef __cplusplus
-}
-#endif
+#define DC_SIZEOF_DCVector(size) (sizeof(DCVecHead)+size)
 
-#endif /* DYNCALL_VALUE_H */
+#define dcVecInit(p,size)   (p)->mTotal=size;(p)->mSize=0
+#define dcVecReset(p)       (p)->mSize=0
+#define dcVecResize(p,size) (p)->mSize=(size)
+#define dcVecSkip(p,size)   (p)->mSize+=(size)
+#define dcVecData(p)        ( (unsigned char*) (((DCVecHead*)(p))+1) )
+#define dcVecAt(p,index)    ( dcVecData(p)+index )
+#define dcVecSize(p)        ( (p)->mSize )
+
+/*
+#include <string.h>
+ #define dcVecAppend(p,s,n) memcpy( dcVecData(p)+p->mSize, s, n );mSize+=n
+*/
+
+void dcVecAppend(DCVecHead* pHead, const void* source, size_t length);
+
+#endif /* DC_VEC_HEAD_H */
 

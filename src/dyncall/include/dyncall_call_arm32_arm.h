@@ -1,7 +1,4 @@
 /*
- Package: dyncall
- File: dyncall/dyncall_types.h
- Description: Typedefs
 
  Copyright (c) 2007-2009 Daniel Adler <dadler@uni-goettingen.de>, 
                          Tassilo Philipp <tphilipp@potion-studios.com>
@@ -22,49 +19,36 @@
 
 /*
 
-  dyncall argument- and return-types
+  dyncall 32bit ARM32 family interface (ARM mode)
 
   REVISION
   2007/12/11 initial
-  
+
 */
 
-#ifndef DYNCALL_TYPES_H
-#define DYNCALL_TYPES_H
 
-#include <stddef.h>
+#ifndef DYNCALL_CALL_ARM32_ARM_H
+#define DYNCALL_CALL_ARM32_ARM_H
 
-#include "dyncall_config.h"
+
+#include "dyncall_types.h"
 
 #ifdef __cplusplus
 extern "C" {
-#endif 
+#endif
 
-typedef void            DCvoid;
-typedef DC_BOOL         DCbool;
-typedef char            DCchar;
-typedef unsigned char   DCuchar;
-typedef short           DCshort;
-typedef unsigned short  DCushort;
-typedef int             DCint;
-typedef unsigned int    DCuint;
-typedef long            DClong;
-typedef unsigned long   DCulong;
-typedef DC_LONG_LONG    DClonglong;
-typedef unsigned DC_LONG_LONG DCulonglong;
-typedef float           DCfloat;
-typedef double          DCdouble;
-typedef DC_POINTER      DCpointer;
-typedef const char*     DCstring;
+/* 
+** arm32 arm mode calling convention calls 
+**
+** - hybrid return-type call (bool ... pointer)
+**
+*/
 
-typedef size_t          DCsize;
-
-#define DC_TRUE   1
-#define DC_FALSE  0
+void dcCall_arm32_arm(DCpointer target, DCpointer stackdata, DCsize size);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* DYNCALL_TYPES_H */
 
+#endif /* DYNCALL_CALL_ARM32_ARM_H */

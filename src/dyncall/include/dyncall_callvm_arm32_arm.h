@@ -1,7 +1,4 @@
 /*
- Package: dyncall
- File: dyncall/dyncall_value.h
- Description: Value variant type
 
  Copyright (c) 2007-2009 Daniel Adler <dadler@uni-goettingen.de>, 
                          Tassilo Philipp <tphilipp@potion-studios.com>
@@ -22,48 +19,34 @@
 
 /*
 
-  dyncall value variant
+  dyncall callvm for 32bit ARM32 family of processors
 
-  a value variant union-type that carries all supported dyncall types.
+  SUPPORTED CALLING CONVENTIONS
+  armcall
 
   REVISION
   2007/12/11 initial
 
 */
 
-#ifndef DYNCALL_VALUE_H
-#define DYNCALL_VALUE_H
 
-#include "dyncall_types.h"
+#ifndef DYNCALL_CALLVM_ARM32_ARM_H
+#define DYNCALL_CALLVM_ARM32_ARM_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif 
+#include "dyncall_call_arm32_arm.h"
+#include "dyncall_callvm.h"
+#include "dyncall_vector.h"
 
-typedef union DCValue_ DCValue;
 
-union DCValue_
+typedef struct
 {
-  DCbool        B;
-  DCchar        c;
-  DCuchar       C;
-  DCshort       s;
-  DCushort      S;
-  DCint         i;
-  DCuint        I;
-  DClong        j;
-  DCulong       J;
-  DClonglong    l;
-  DCulonglong   L;
-  DCfloat       f;
-  DCdouble      d;
-  DCpointer     p;
-  DCstring      Z;
-};
+  DCCallVM  mInterface;
+  DCpointer mpCallFunc;
+  DCVecHead mVecHead;
+} DCCallVM_arm32_arm;
 
-#ifdef __cplusplus
-}
-#endif
+DCCallVM* dcNewCallVM_arm32_arm(DCsize size);
 
-#endif /* DYNCALL_VALUE_H */
+
+#endif /* DYNCALL_CALLVM_ARM32_ARM_H */
 

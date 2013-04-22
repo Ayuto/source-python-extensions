@@ -86,7 +86,6 @@ endif
 LINK += $(HL2LIB)/tier1_i486.a \
 	$(HL2LIB)/mathlib_i486.a \
 	$(DYNCALL)/lib/libdyncall_s.a \
-	$(DYNCALL)/lib/libdynload_s.a \
 	/usr/lib/gcc/i486-linux-gnu/4.4.5/libstdc++.a \
 	/usr/lib/gcc/i486-linux-gnu/4.4.5/libgcc_eh.a \
 	$(DYNDETOURS)/libDynDetours.a \
@@ -124,7 +123,7 @@ GCC_VERSION := $(shell $(CPP) -dumpversion >&1 | cut -b1)
 
 CFLAGS += -D_LINUX -DNDEBUG -Dstricmp=strcasecmp -D_stricmp=strcasecmp -D_strnicmp=strncasecmp \
 		-Dstrnicmp=strncasecmp -D_snprintf=snprintf -D_vsnprintf=vsnprintf -D_alloca=alloca \
-		-Dstrcmpi=strcasecmp -w -fPIC -fno-exceptions -fno-rtti -msse -msse2 -m32
+		-Dstrcmpi=strcasecmp -Wall -fPIC -fno-exceptions -fno-rtti -msse -msse2 -m32
 
 ifeq "$(GCC_VERSION)" "4"
 	CFLAGS += $(GCC4_FLAGS)

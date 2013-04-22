@@ -1,7 +1,4 @@
 /*
- Package: dyncall
- File: dyncall/dyncall_value.h
- Description: Value variant type
 
  Copyright (c) 2007-2009 Daniel Adler <dadler@uni-goettingen.de>, 
                          Tassilo Philipp <tphilipp@potion-studios.com>
@@ -20,50 +17,38 @@
 
 */
 
+#ifndef DYNCALL_CALLVM_PPC32_H
+#define DYNCALL_CALLVM_PPC32_H
+
 /*
 
-  dyncall value variant
+  dyncall callvm for 32bit ppc architectures
 
-  a value variant union-type that carries all supported dyncall types.
+  SUPPORTED CALLING CONVENTIONS
+  standard and ... (ellipsis) calls
 
   REVISION
   2007/12/11 initial
 
 */
 
-#ifndef DYNCALL_VALUE_H
-#define DYNCALL_VALUE_H
 
-#include "dyncall_types.h"
+#include "dyncall_call_ppc32.h"
+#include "dyncall_callvm.h"
+#include "dyncall_vector.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif 
+typedef struct DCCallVM_ppc32_ DCCallVM_ppc32;
 
-typedef union DCValue_ DCValue;
-
-union DCValue_
+struct DCCallVM_ppc32_
 {
-  DCbool        B;
-  DCchar        c;
-  DCuchar       C;
-  DCshort       s;
-  DCushort      S;
-  DCint         i;
-  DCuint        I;
-  DClong        j;
-  DCulong       J;
-  DClonglong    l;
-  DCulonglong   L;
-  DCfloat       f;
-  DCdouble      d;
-  DCpointer     p;
-  DCstring      Z;
+  DCCallVM  mInterface;
+  int       mIntRegs;
+  int       mFloatRegs;
+  struct DCRegData_ppc32_ mRegData;
+  DCVecHead mVecHead;
 };
 
-#ifdef __cplusplus
-}
-#endif
+DCCallVM* dcNewCallVM_ppc32(DCsize size);
 
-#endif /* DYNCALL_VALUE_H */
+#endif /* DYNCALL_CALLVM_PPC32_H */
 

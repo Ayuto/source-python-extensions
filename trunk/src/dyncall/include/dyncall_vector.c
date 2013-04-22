@@ -1,7 +1,7 @@
 /*
  Package: dyncall
- File: dyncall/dyncall_value.h
- Description: Value variant type
+ File: dyncall/dyncall_vector.h
+ Description: Simple dynamic vector container type implementation
 
  Copyright (c) 2007-2009 Daniel Adler <dadler@uni-goettingen.de>, 
                          Tassilo Philipp <tphilipp@potion-studios.com>
@@ -20,50 +20,16 @@
 
 */
 
-/*
+#include "dyncall_vector.h"
+#include <string.h>
 
-  dyncall value variant
-
-  a value variant union-type that carries all supported dyncall types.
-
-  REVISION
-  2007/12/11 initial
-
-*/
-
-#ifndef DYNCALL_VALUE_H
-#define DYNCALL_VALUE_H
-
-#include "dyncall_types.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif 
-
-typedef union DCValue_ DCValue;
-
-union DCValue_
+void dcVecAppend(DCVecHead* pHead, const void* pData, size_t size)
 {
-  DCbool        B;
-  DCchar        c;
-  DCuchar       C;
-  DCshort       s;
-  DCushort      S;
-  DCint         i;
-  DCuint        I;
-  DClong        j;
-  DCulong       J;
-  DClonglong    l;
-  DCulonglong   L;
-  DCfloat       f;
-  DCdouble      d;
-  DCpointer     p;
-  DCstring      Z;
-};
-
-#ifdef __cplusplus
+  if (pHead->mSize+size <= pHead->mTotal) 
+  {
+    void* dst = (char*)dcVecData(pHead) + pHead->mSize;
+    memcpy(dst, pData, size); /* @@@ heavy for small types. */
+    pHead->mSize += size;
+  } 
 }
-#endif
-
-#endif /* DYNCALL_VALUE_H */
 

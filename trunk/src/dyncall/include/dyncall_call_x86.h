@@ -1,8 +1,9 @@
 /*
  Package: dyncall
- File: dyncall/dyncall_types.h
- Description: Typedefs
-
+ File: dyncall/dyncall_alloc.c
+ Description: heap memory management interface (header only)
+ License:
+ 
  Copyright (c) 2007-2009 Daniel Adler <dadler@uni-goettingen.de>, 
                          Tassilo Philipp <tphilipp@potion-studios.com>
 
@@ -22,49 +23,39 @@
 
 /*
 
-  dyncall argument- and return-types
+  dyncall 32bit Intel x86 family interface
 
   REVISION
-  2007/12/11 initial
-  
+  2007/12/10 initial
+
 */
 
-#ifndef DYNCALL_TYPES_H
-#define DYNCALL_TYPES_H
 
-#include <stddef.h>
+#ifndef DYNCALL_CALL_X86_H
+#define DYNCALL_CALL_X86_H
 
-#include "dyncall_config.h"
+
+#include "dyncall_types.h"
 
 #ifdef __cplusplus
 extern "C" {
-#endif 
+#endif
 
-typedef void            DCvoid;
-typedef DC_BOOL         DCbool;
-typedef char            DCchar;
-typedef unsigned char   DCuchar;
-typedef short           DCshort;
-typedef unsigned short  DCushort;
-typedef int             DCint;
-typedef unsigned int    DCuint;
-typedef long            DClong;
-typedef unsigned long   DCulong;
-typedef DC_LONG_LONG    DClonglong;
-typedef unsigned DC_LONG_LONG DCulonglong;
-typedef float           DCfloat;
-typedef double          DCdouble;
-typedef DC_POINTER      DCpointer;
-typedef const char*     DCstring;
+/* 
+** x86 calling convention calls 
+**
+** - hybrid return-type call (bool ... pointer)
+**
+*/
 
-typedef size_t          DCsize;
-
-#define DC_TRUE   1
-#define DC_FALSE  0
+void dcCall_x86_cdecl        (DCpointer target, DCpointer stackdata, DCsize size);
+void dcCall_x86_win32_std    (DCpointer target, DCpointer stackdata, DCsize size);
+void dcCall_x86_win32_fast   (DCpointer target, DCpointer stackdata, DCsize size);
+void dcCall_x86_win32_msthis (DCpointer target, DCpointer stackdata, DCsize size);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* DYNCALL_TYPES_H */
 
+#endif /* DYNCALL_CALL_X86_H */

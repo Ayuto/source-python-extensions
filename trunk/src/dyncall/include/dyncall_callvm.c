@@ -1,7 +1,4 @@
 /*
- Package: dyncall
- File: dyncall/dyncall_value.h
- Description: Value variant type
 
  Copyright (c) 2007-2009 Daniel Adler <dadler@uni-goettingen.de>, 
                          Tassilo Philipp <tphilipp@potion-studios.com>
@@ -20,50 +17,22 @@
 
 */
 
-/*
-
-  dyncall value variant
-
-  a value variant union-type that carries all supported dyncall types.
-
-  REVISION
-  2007/12/11 initial
-
-*/
-
-#ifndef DYNCALL_VALUE_H
-#define DYNCALL_VALUE_H
-
-#include "dyncall_types.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif 
-
-typedef union DCValue_ DCValue;
-
-union DCValue_
-{
-  DCbool        B;
-  DCchar        c;
-  DCuchar       C;
-  DCshort       s;
-  DCushort      S;
-  DCint         i;
-  DCuint        I;
-  DClong        j;
-  DCulong       J;
-  DClonglong    l;
-  DCulonglong   L;
-  DCfloat       f;
-  DCdouble      d;
-  DCpointer     p;
-  DCstring      Z;
-};
-
-#ifdef __cplusplus
-}
+#include "dyncall_macros.h"
+#if defined(DC__Arch_Intel_x86)
+#  include "dyncall_callvm_x86.c"
+#elif defined(DC__Arch_AMD64)
+#  include "dyncall_callvm_x64.c"
+#elif defined(DC__Arch_PowerPC)
+#  include "dyncall_callvm_ppc32.c"
+#elif defined(DC__Arch_PPC64)
+#  include "dyncall_callvm_ppc64.c"
+#elif defined(DC__Arch_MIPS)
+#  include "dyncall_callvm_mips.c"
+#elif defined(DC__Arch_ARM_ARM)
+#  include "dyncall_callvm_arm32_arm.c"
+#elif defined(DC__Arch_ARM_THUMB)
+#  include "dyncall_callvm_arm32_thumb.c"
+#else
+#  error unsupported platform
 #endif
-
-#endif /* DYNCALL_VALUE_H */
 

@@ -1,7 +1,4 @@
 /*
- Package: dyncall
- File: dyncall/dyncall_value.h
- Description: Value variant type
 
  Copyright (c) 2007-2009 Daniel Adler <dadler@uni-goettingen.de>, 
                          Tassilo Philipp <tphilipp@potion-studios.com>
@@ -20,50 +17,39 @@
 
 */
 
-/*
-
-  dyncall value variant
-
-  a value variant union-type that carries all supported dyncall types.
-
-  REVISION
-  2007/12/11 initial
-
-*/
-
-#ifndef DYNCALL_VALUE_H
-#define DYNCALL_VALUE_H
+#ifndef DYNCALL_PPC32_H
+#define DYNCALL_PPC32_H
 
 #include "dyncall_types.h"
 
 #ifdef __cplusplus
 extern "C" {
-#endif 
+#endif
 
-typedef union DCValue_ DCValue;
-
-union DCValue_
+struct DCRegData_ppc32_
 {
-  DCbool        B;
-  DCchar        c;
-  DCuchar       C;
-  DCshort       s;
-  DCushort      S;
-  DCint         i;
-  DCuint        I;
-  DClong        j;
-  DCulong       J;
-  DClonglong    l;
-  DCulonglong   L;
-  DCfloat       f;
-  DCdouble      d;
-  DCpointer     p;
-  DCstring      Z;
+  DCint     mIntData[8];
+  DCdouble  mFloatData[13];
 };
+
+/* 
+** PowerPC 32-bit calling convention call
+**
+** - hybrid return-type call (bool ... pointer)
+**
+*/
+
+/* Darwin ABI */
+
+void     dcCall_ppc32_darwin (DCpointer target, struct DCRegData_ppc32_* ppc32data, DCsize stksize, DCpointer stkdata);
+
+/* System V (Linux) ABI */
+
+void     dcCall_ppc32_sysv (DCpointer target, struct DCRegData_ppc32_* ppc32data, DCsize stksize, DCpointer stkdata);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* DYNCALL_VALUE_H */
+#endif /* DYNCALL_PPC32_H */
 

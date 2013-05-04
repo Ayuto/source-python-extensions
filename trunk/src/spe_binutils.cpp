@@ -31,6 +31,7 @@
 #include "spe_python.h"
 #include "spe_scanner.h"
 #include "spe_sigcache.h"
+#include "spe_binutils.h"
 
 #ifdef _LINUX
 #   include <fcntl.h>
@@ -78,10 +79,8 @@ DECLARE_PYCMD( dealloc, "Deallocates memory" )
         return Py_BuildValue("");
     }
 
-    if( !addr )
-        return Py_BuildValue("");
-
-    free( addr );
+    if( addr )
+        free( addr );
 
     return Py_BuildValue("");
 }
@@ -102,37 +101,27 @@ DECLARE_PYCMD( setLocVal, "Sets the contents of a particular memory location" )
     }
 
     if(!addr)
-        return Py_BuildValue("");
+        return PyErr_Format(PyExc_ValueError, "Invalid address");
 
     switch(type)
     {
-        case DC_SIGCHAR_BOOL:
+        case 'c':
         {
-            bool b;
-            PyArg_ParseTuple( val, "i", &b );
-            *(bool *)((char *)addr) = b;
-        }
+            char* value = PyString_AsString(val);
+            if (!value || strlen(value) != 1)
+                return PyErr_Format(PyExc_ValueError, "Expected string of size 1");
 
-        case DC_SIGCHAR_POINTER:
-        case DC_SIGCHAR_INT:
-        {
-            int v = PyInt_AsLong( val );
-            *(int *)((char *)addr) = v;
+            SetAddr<char>(addr, *value);
         } break;
-
-        case DC_SIGCHAR_FLOAT:
-        {
-            float f;
-            f = (float) PyFloat_AsDouble( val );
-            *(float *)((char *)addr) = f;
-        } break;
-
-        default:
-        {
-            DevMsg("[SPE] setLocVal: A valid type indicator was not passed in!\n");
-        } break;
+        case 'p':
+        case 'B': // Backward compatibility
+        case 'b': 
+        case 'i': SetAddr<int>(addr, PyInt_AsLong(val)); break;
+        case 'f': SetAddr<float>(addr, (float) PyFloat_AsDouble(val)); break;
+        case 'd': SetAddr<double>(addr, PyFloat_AsDouble(val)); break;
+        case 's': return PyErr_Format(PyExc_NotImplementedError, "Setting strings is currently not supported");
+        default: return PyErr_Format(PyExc_ValueError, "Invalid type indicator: %c", type);
     }
-
     return Py_BuildValue("");
 }
 
@@ -151,27 +140,26 @@ DECLARE_PYCMD( getLocVal, "Gets the contents of a particular memory location" )
     }
 
     if(!addr)
-        return Py_BuildValue("");
+        return PyErr_Format(PyExc_ValueError, "Invalid address");
 
     switch(type)
     {
-        case DC_SIGCHAR_BOOL:
-            return Py_BuildValue("b", *(bool *)((char *)addr));
-
-        case DC_SIGCHAR_POINTER:
-        case DC_SIGCHAR_INT:
-            return Py_BuildValue("i", *(int *)((char *)addr));
-
-        case DC_SIGCHAR_FLOAT:
-            return Py_BuildValue("f", *(float *)((char *)addr));
-
-        default:
+        case 'B': // Backward compatibility
+        case 'b':
         {
-            DevMsg("[SPE] getLocVal: A valid type indicator was not passed in!\n");
-        } break;
-    }
+            if (ReadAddr<bool>(addr))
+                Py_RETURN_TRUE;
 
-    return Py_BuildValue("");
+            Py_RETURN_FALSE;
+        }
+        case 'c': return Py_BuildValue("c", ReadAddr<char>(addr));
+        case 'p':
+        case 'i': return Py_BuildValue("i", ReadAddr<int>(addr));
+        case 'f': return Py_BuildValue("f", ReadAddr<float>(addr));
+        case 'd': return Py_BuildValue("d", ReadAddr<double>(addr));
+        case 's': return Py_BuildValue("s", ReadAddr<char *>(addr));
+    }
+    return PyErr_Format(PyExc_ValueError, "Invalid type indicator: %c", type);
 }
 
 //=================================================================================
@@ -191,6 +179,9 @@ DECLARE_PYCMD( findVirtualFunc, "Returns the address of a function in the given 
         return NULL;
     }
 
+    if(!pThisPtr)
+        return PyErr_Format(PyExc_ValueError, "Invalid address");
+
     // Linux offsets are 1 greater.
 #ifdef __linux__
     vFuncIdx++;
@@ -198,7 +189,12 @@ DECLARE_PYCMD( findVirtualFunc, "Returns the address of a function in the given 
 
     // This method borrowed from:
     // http://wiki.alliedmods.net/Vfunc_offsets_(SourceMM)
-    return Py_BuildValue("i", (int) (*(void ***)pThisPtr)[vFuncIdx]);
+    void* pAddr = NULL;
+    START_CATCH_EXC
+    pAddr = (*(void ***)pThisPtr)[vFuncIdx];
+    END_CATCH_EXC
+
+    return Py_BuildValue("i", (int) pAddr);
 }
 
 //=================================================================================

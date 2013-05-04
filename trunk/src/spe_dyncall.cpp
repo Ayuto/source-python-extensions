@@ -30,6 +30,7 @@
 #include "spe_globals.h"
 #include "spe_python.h"
 #include "spe_dyncall.h"
+#include "spe_exceptions.h"
 
 //=================================================================================
 // Sets the calling convention of the VM
@@ -117,90 +118,38 @@ DECLARE_PYCMD( callFunction, "Calls the sigscanned function." )
     while ( (ch = *ptr) != '\0' && ch != ')' )
     {
         /* Create a pyobject to hold the argument */
-        PyObject* arg;
-
-        //Increment the index
-        //int index = pos + 1;
-
-        arg = PyTuple_GetItem( func_args, pos );
+        PyObject* arg = PyTuple_GetItem( func_args, pos );
 
         /* Do some comparisons */
         switch( ch )
         {
-            case DC_SIGCHAR_BOOL:
-            {
-                DCbool b;
-                PyArg_ParseTuple( arg, "i", &b );
-                dcArgBool( vm, b );
-
-            } break;
-
+            case DC_SIGCHAR_BOOL: dcArgBool( vm, PyInt_AsLong(arg) ); break;
             case DC_SIGCHAR_CHAR:
             {
-                DCchar c;
-                size_t l;
-                char* s;
-                l = PyString_GET_SIZE(arg);
-
-                if (l != 1)
+                if (PyString_GET_SIZE(arg) != 1)
                 {
                     DevMsg("[SPE] String mismatch. Expected a string!");
                     return Py_BuildValue("");
                 }
-
-                s = PyString_AsString(arg);
-                c = (DCchar) s[0];
-                dcArgChar( vm, c );
-
+                dcArgChar( vm, *PyString_AsString(arg) );
             } break;
 
             case DC_SIGCHAR_SHORT:
             {
-                DCshort s;
-                long v;
-                v = PyInt_AS_LONG(arg);
-
+                long v = PyInt_AS_LONG(arg);
                 if ( (v < SHRT_MIN) || (v > SHRT_MAX) )
                 {
                     DevMsg( "[SPE] CallFunction: value out of range at argument %d - expecting a short value\n" );
                     return Py_BuildValue("");
                 }
-
-                s = (DCshort) v;
-                dcArgShort( vm, s);
+                dcArgShort( vm, (DCshort) v);
 
             } break;
 
-            case DC_SIGCHAR_INT:
-            {
-                int v;
-                v = PyInt_AsLong( arg );
-                dcArgInt( vm, (DCint) v );
-            } break;
-
-            case DC_SIGCHAR_FLOAT:
-            {
-                DCfloat f;
-                f = (float) PyFloat_AsDouble( arg );
-                dcArgFloat( vm, f );
-
-            } break;
-
-            case DC_SIGCHAR_POINTER:
-            {
-                DCpointer ptr;
-                ptr = (DCpointer) ( (DCint) PyLong_AsLongLong(arg) );
-                dcArgPointer( vm, ptr );
-            } break;
-
-            case 'S':
-            {
-                char* p;
-                p = PyString_AsString(arg);
-                dcArgPointer( vm, (DCpointer) p );
-
-            } break;
-
+            case DC_SIGCHAR_INT:     dcArgInt( vm, (DCint) PyInt_AsLong( arg ) );            break;
+            case DC_SIGCHAR_FLOAT:   dcArgFloat( vm, (float) PyFloat_AsDouble( arg ) );      break;
+            case DC_SIGCHAR_POINTER: dcArgPointer( vm, (DCpointer) PyInt_AsLong(arg) );      break;
+            case 'S':                dcArgPointer( vm, (DCpointer) PyString_AsString(arg) ); break;
             default:
             {
                 DevMsg("[SPE] Unknown char signature!\n");
@@ -226,37 +175,24 @@ DECLARE_PYCMD( callFunction, "Calls the sigscanned function." )
 
     ch = *++ptr;
 
-    PyObject* p;
+    PyObject* p = NULL;
+    START_CATCH_EXC
     switch(ch)
     {
-        case DC_SIGCHAR_VOID: dcCallVoid( vm, function_pointer ); p = Py_BuildValue(""); break;
-        case DC_SIGCHAR_BOOL: p = Py_BuildValue("i", dcCallBool( vm, function_pointer ) ); break;
-        case DC_SIGCHAR_INT: p = Py_BuildValue("i", dcCallInt( vm, function_pointer ) ); break;
+        case DC_SIGCHAR_VOID:     p = Py_BuildValue(""); dcCallVoid( vm, function_pointer ); break;
+        case DC_SIGCHAR_BOOL:     p = Py_BuildValue("i", dcCallBool( vm, function_pointer ) ); break;
+        case DC_SIGCHAR_INT:      p = Py_BuildValue("i", dcCallInt( vm, function_pointer ) ); break;
         case DC_SIGCHAR_LONGLONG: p = Py_BuildValue("L", (unsigned long long) dcCallLongLong( vm, function_pointer ) ); break;
-        case DC_SIGCHAR_FLOAT: p = Py_BuildValue("f", dcCallFloat( vm, function_pointer ) ); break;
-        case DC_SIGCHAR_DOUBLE: p = Py_BuildValue("d", dcCallDouble( vm, function_pointer ) ); break;
-        case 's': p = Py_BuildValue("s", dcCallPointer( vm, function_pointer ) ); break;
-        case DC_SIGCHAR_POINTER:
-        {
-            /* Call the function */
-            void* ptr = dcCallPointer(vm, function_pointer);
-
-            /* Is it valid*/
-            if( !ptr )
-                return Py_BuildValue("");
-
-            /* Assign it to p otherwise */
-            p = Py_BuildValue("i", (int)ptr);
-
-            break;
-        }
-
+        case DC_SIGCHAR_FLOAT:    p = Py_BuildValue("f", dcCallFloat( vm, function_pointer ) ); break;
+        case DC_SIGCHAR_DOUBLE:   p = Py_BuildValue("d", dcCallDouble( vm, function_pointer ) ); break;
+        case 's':                 p = Py_BuildValue("s", dcCallPointer( vm, function_pointer ) ); break;
+        case DC_SIGCHAR_POINTER:  p = Py_BuildValue("i", (int) dcCallPointer(vm, function_pointer)); break;
         default:
         {
-            DevMsg("[SPE] Invalid p = type signature.\n" );
+            DevMsg("[SPE] Invalid return type: %c\n", ch);
             return Py_BuildValue("");
         }
     }
-
-    return p;
+    END_CATCH_EXC
+    return p ? p : Py_BuildValue("");
 }

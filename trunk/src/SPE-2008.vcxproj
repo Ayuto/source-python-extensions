@@ -400,7 +400,8 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\sdks\hl2sdk-ob-valve\lib\public;..\..\..\sdks\hl2sdk-ob-valve\lib\common;.\dyncall\lib;.\python\libs;.\dyndetours;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>msvcrt.lib</IgnoreSpecificDefaultLibraries>
-      <DelayLoadDLLs>python25.dll;</DelayLoadDLLs>
+      <DelayLoadDLLs>
+      </DelayLoadDLLs>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <ProgramDatabaseFile>
       </ProgramDatabaseFile>
@@ -423,6 +424,7 @@
     <ClCompile Include="spe_callback.cpp" />
     <ClCompile Include="spe_convar.cpp" />
     <ClCompile Include="spe_dyncall.cpp" />
+    <ClCompile Include="spe_exceptions.cpp" />
     <ClCompile Include="spe_hook_manager.cpp" />
     <ClCompile Include="spe_main.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
@@ -458,8 +460,10 @@
     <ClCompile Include="spe_sigcache.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="spe_binutils.h" />
     <ClInclude Include="spe_callback.h" />
     <ClInclude Include="spe_dyncall.h" />
+    <ClInclude Include="spe_exceptions.h" />
     <ClInclude Include="spe_globals.h" />
     <ClInclude Include="spe_main.h" />
     <ClInclude Include="spe_python.h" />

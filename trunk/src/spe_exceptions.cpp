@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python Extensions
-* Copyright (C) 2009-2010 Deniz "your-name-here" Sezen.  All rights reserved.
+* Copyright (C) 2011 Deniz "your-name-here" Sezen.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -23,10 +23,22 @@
 * all respects for all other code used.  Additionally, I (Deniz Sezen) grants
 * this exception to all derivative works.
 */
-#ifndef SVN_BUILD_H
-#define SVN_BUILD_H
 
-#define SVN_WC_REVISION "146"
-#define SVN_WC_DATE     "2010/09/19 09:32:41"
+//=================================================================================
+// Includes
+//=================================================================================
+// SDK
+#include "dbg.h"
 
-#endif
+// SPE
+#include "spe_exceptions.h"
+
+int exceptionHandler(EXCEPTION_POINTERS* info, unsigned long code)
+{
+    DevMsg(0, "[SPE] ==============================\n");
+    DevMsg(0, "[SPE] Caught a critical exception!\n");
+    DevMsg(0, "[SPE] Exception code   : %u\n", code);
+    DevMsg(0, "[SPE] Exception address: %p\n", info->ExceptionRecord->ExceptionAddress);
+    DevMsg(0, "[SPE] ==============================\n");
+    return EXCEPTION_EXECUTE_HANDLER;
+}

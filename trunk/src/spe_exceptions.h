@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python Extensions
-* Copyright (C) 2009-2010 Deniz "your-name-here" Sezen.  All rights reserved.
+* Copyright (C) 2011 Deniz "your-name-here" Sezen.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -23,10 +23,32 @@
 * all respects for all other code used.  Additionally, I (Deniz Sezen) grants
 * this exception to all derivative works.
 */
-#ifndef SVN_BUILD_H
-#define SVN_BUILD_H
 
-#define SVN_WC_REVISION "146"
-#define SVN_WC_DATE     "2010/09/19 09:32:41"
+#ifndef SPE_EXCEPTIONS_H
+#define SPE_EXCEPTIONS_H
 
+//=================================================================================
+// Includes
+//=================================================================================
+#ifdef _WIN32
+    #include <Windows.h>
+
+
+//=================================================================================
+// MACROS
+//=================================================================================
+#define START_CATCH_EXC __try {
+#define END_CATCH_EXC } __except(exceptionHandler(GetExceptionInformation(), GetExceptionCode())) {}
+
+
+//=================================================================================
+// This function will be called, when a critical error occurs
+//=================================================================================
+int exceptionHandler(EXCEPTION_POINTERS* info, unsigned long code);
+#else
+// Not implemented at the moment
+#define START_CATCH_EXC
+#define END_CATCH_EXC
 #endif
+
+#endif // SPE_EXCEPTIONS_H

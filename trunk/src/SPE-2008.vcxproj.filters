@@ -56,6 +56,9 @@
     <ClCompile Include="spe_convar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="spe_exceptions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="spe_dyncall.h">
@@ -77,6 +80,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="spe_sigcache.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="spe_exceptions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="spe_binutils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,11 +1,34 @@
+/**
+* =============================================================================
+* Source Python Extensions
+* Copyright (C) 2011 Deniz "your-name-here" Sezen.  All rights reserved.
+* =============================================================================
+*
+* This program is free software; you can redistribute it and/or modify it under
+* the terms of the GNU General Public License, version 3.0, as published by the
+* Free Software Foundation.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+* FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+* details.
+*
+* You should have received a copy of the GNU General Public License along with
+* this program.  If not, see <http://www.gnu.org/licenses/>.
+*
+* As a special exception, I (Deniz Sezen) give you permission to link the
+* code of this program (as well as its derivative works) to "Half-Life 2," the
+* "Source Engine," and any Game MODs that run on software
+* by the Valve Corporation.  You must obey the GNU General Public License in
+* all respects for all other code used.  Additionally, I (Deniz Sezen) grants
+* this exception to all derivative works.
+*/
+
 // =======================================================================
 // Includes
 // =======================================================================
-
-// -------------------------------------------
-// PyGameLib includes
-// -------------------------------------------
 #include "spe_callback.h"
+#include "spe_binutils.h"
 
 // -------------------------------------------
 // Dyndetours includes
@@ -23,26 +46,6 @@
 #ifdef __linux__
 #  define INT32 int32_t
 #endif
-
-// =======================================================================
-// Reads an argument out of ESP.
-// TODO: Fix this to work with non-atomic data types.
-// =======================================================================
-template<class T>
-T ReadArg( void* addr )
-{
-    return *((T *)(addr));
-}
-
-// =======================================================================
-// Places an argument back into the stack.
-// TODO: Fix this to work with non-atomic data types.
-// =======================================================================
-template<class T>
-void SetArg( void* addr, T value )
-{
-    *((T *)addr) = value;
-}
 
 // =======================================================================
 // Reads arguments off the stack.
@@ -114,7 +117,7 @@ void CPythonStack::ReadArgs( CDetour* pDetour )
         //i++;
 
         /* Parse out the this pointer as the first object. */
-        void* pArg = ReadArg<void*>((void *)(pRegisters->r_esp + 4));
+        void* pArg = ReadAddr<void*>((void *)(pRegisters->r_esp + 4));
 #else
         /* This is stored in ecx on windows. */
         void* pArg = (void *)(pRegisters->r_ecx);
@@ -154,16 +157,16 @@ void CPythonStack::ReadArgs( CDetour* pDetour )
             case TYPE_INT32:
             case TYPE_INT32_PTR:
             case TYPE_BOOL:
-                pVal = Py_BuildValue("i", ReadArg<long>(pArgAddr));
+                pVal = Py_BuildValue("i", ReadAddr<long>(pArgAddr));
                 break;
             case TYPE_FLOAT:
-                pVal = Py_BuildValue("f", ReadArg<float>(pArgAddr));
+                pVal = Py_BuildValue("f", ReadAddr<float>(pArgAddr));
                 break;
 
             /* String args. */
             case TYPE_CHAR_PTR:
             {
-                char* strarg = ReadArg<char*>(pArgAddr);
+                char* strarg = ReadAddr<char*>(pArgAddr);
                 DevMsg("Char arg: %s\n", strarg);
                 pVal = Py_BuildValue("s", strarg);
                 break;
@@ -208,7 +211,7 @@ void CPythonStack::PutArgs( CDetour* pDetour )
     CRegisterObj* Registers = pDetour->GetAsmBridge()->GetConv()->GetRegisters();
 
     // Define i outside of the loop. We use it later again
-    int i = 0;
+    unsigned int i = 0;
     for(i; i < Function->GetNumArgs(); i++ )
     {
         /* Get information about the argument. */
@@ -241,7 +244,7 @@ void CPythonStack::PutArgs( CDetour* pDetour )
                 INT32 val;
                 PyArg_Parse(PyArgVal, "i", &val);
                 DevMsg("Argument %d is an integer arg with new value of %d\n", i, val);
-                SetArg<INT32>((void *)(Registers->r_esp + StkOffset + 4), val);
+                SetAddr<INT32>((void *)(Registers->r_esp + StkOffset + 4), val);
                 break;
 
             /* String args. */
@@ -249,7 +252,7 @@ void CPythonStack::PutArgs( CDetour* pDetour )
             char* strval = NULL;
                 PyArg_Parse(PyArgVal, "s", &strval);
                 DevMsg("Argument %d is a string with new value of %s\n", i, strval);
-                SetArg<char*>((void *)(Registers->r_esp + StkOffset + 4), strval);
+                SetAddr<char*>((void *)(Registers->r_esp + StkOffset + 4), strval);
                 break;
         }
     }

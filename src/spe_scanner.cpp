@@ -147,7 +147,7 @@ void *CSigMngr::ResolveSig(void *memInBase, const char *pattern, int siglen)
     const char *paddr = (const char *)sig.allocBase;
     bool found;
 
-    register unsigned int j;
+    register int j;
 
     sig.memSize -= sig.siglen;      //prevent a crash maybe?
 

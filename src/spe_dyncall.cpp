@@ -147,6 +147,7 @@ DECLARE_PYCMD( callFunction, "Calls the sigscanned function." )
             } break;
 
             case DC_SIGCHAR_INT:     dcArgInt( vm, (DCint) PyInt_AsLong( arg ) );            break;
+            case DC_SIGCHAR_UINT:    dcArgLong( vm, (DCuint) PyLong_AsLong( arg ));          break;
             case DC_SIGCHAR_FLOAT:   dcArgFloat( vm, (float) PyFloat_AsDouble( arg ) );      break;
             case DC_SIGCHAR_POINTER: dcArgPointer( vm, (DCpointer) PyInt_AsLong(arg) );      break;
             case 'S':                dcArgPointer( vm, (DCpointer) PyString_AsString(arg) ); break;

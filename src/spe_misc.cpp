@@ -37,6 +37,7 @@
     #undef GetClassName
 #endif
 
+
 //=================================================================================
 // Converts a CBaseEntity instance to an edict.
 // Courtesy of the SourceMod Team.
@@ -51,6 +52,7 @@ edict_t* BaseEntityToEdict( CBaseEntity* pEntity )
 
     return pNet->GetEdict();
 }
+
 
 //=================================================================================
 // Returns the index of an entity.

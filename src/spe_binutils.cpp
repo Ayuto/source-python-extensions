@@ -157,7 +157,7 @@ DECLARE_PYCMD( getLocVal, "Gets the contents of a particular memory location" )
         case 'i': return Py_BuildValue("i", ReadAddr<int>(addr));
         case 'f': return Py_BuildValue("f", ReadAddr<float>(addr));
         case 'd': return Py_BuildValue("d", ReadAddr<double>(addr));
-        case 's': return Py_BuildValue("s", ReadAddr<char *>(addr));
+        case 's': return Py_BuildValue("s", addr);
     }
     return PyErr_Format(PyExc_ValueError, "Invalid type indicator: %c", type);
 }
@@ -254,7 +254,7 @@ DECLARE_PYCMD( findSymbol, "Returns the address of a symbol." )
 
 #ifdef _WIN32
     // On Windows we can search for public symbols
-    void* sym_addr = GetProcAddress((HMODULE) laddr, symbol);
+    void* sym_addr = GetProcAddress(laddr, symbol);
 #else
 
     // -----------------------------------------
@@ -378,4 +378,31 @@ DECLARE_PYCMD( findSymbol, "Returns the address of a symbol." )
     DevMsg("************************************\n");
 #endif // _WIN32
     return Py_BuildValue("i", (int) sym_addr);
+}
+
+DECLARE_PYCMD( findInterface, "Returns the address of an interface.")
+{
+    char* szPath = NULL;
+    char* szSymbol = NULL;
+    if (!PyArg_ParseTuple(args, "ss", &szPath, &szSymbol))
+    {
+        DevMsg("[SPE] spe_findInterface: The arguments could not be parsed.\n");
+        return Py_BuildValue("");
+    }
+
+    HMODULE pModule = LoadLibrary(szPath);
+    if (!pModule)
+    {
+        DevMsg("[SPE] spe_findInterface: Could not load '%s'.\n", szPath);
+        return Py_BuildValue("");
+    }
+    
+    CreateInterfaceFn pFunc = (CreateInterfaceFn) GetProcAddress(pModule, "CreateInterface");
+    if (!pFunc)
+    {
+        DevMsg("[SPE] spe_findInterface: Could not find 'CreateInterface'.\n");
+        return Py_BuildValue("");
+    }
+
+    return Py_BuildValue("i", pFunc(szSymbol, NULL));
 }

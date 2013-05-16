@@ -37,6 +37,11 @@
 #include "Python.h"
 #include "eiface.h"
 #include "spe_dyncall.h"
+#ifdef _WIN32
+    #include <Windows.h>
+#else
+    #include <dlfcn.h>
+#endif
 
 //=================================================================================
 // Some useful definitions
@@ -53,7 +58,7 @@ extern CGlobalVars                  *gpGlobals;
 // Global variables.
 //=================================================================================
 extern DCCallVM                     *vm;
-extern void                         *laddr;
+extern HMODULE                       laddr;
 
 //=================================================================================
 // Useful helper func.
@@ -62,6 +67,26 @@ inline bool FStrEq(const char *sz1, const char *sz2)
 {
     return(Q_stricmp(sz1, sz2) == 0);
 }
+
+//=================================================================================
+// Make some Windows functions available on Linux.
+//=================================================================================
+#ifdef __linux__
+inline HMODULE LoadLibrary(char* szPath)
+{
+    return dlopen(szPath, RTLD_NOW);
+}
+
+inline void FreeLibrary(HMODULE pModule)
+{
+    dlclose(pModule);
+}
+
+inline HMODULE GetProcAddress(HMODULE pModule, char* szSymbol)
+{
+    return dlsym(pModule, szSymbol);
+}
+#endif
 
 //=================================================================================
 // Need these for L4D.

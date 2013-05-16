@@ -34,19 +34,13 @@
 #include "playerinfomanager.h"
 
 
-#ifdef _LINUX
-#include <dlfcn.h>
-#else
-#include <windows.h>
-#endif
-
 //=================================================================================
 // Interface declarations
 //=================================================================================
 IVEngineServer* engine    = NULL;
 CGlobalVars*    gpGlobals = NULL;
 DCCallVM*       vm        = NULL;
-void*           laddr     = NULL;
+HMODULE         laddr     = NULL;
 
 //=================================================================================
 // Function to initialize any cvars/command in this plugin
@@ -135,11 +129,10 @@ bool CSPE_Plugin::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn ga
     // OS specific stuff
 #ifdef _WIN32
     strcat( szServerBinary, ".dll" );
-    laddr = (void *) LoadLibrary(szServerBinary);
 #else
     strcat( szServerBinary, "_srv.so" );
-    laddr = dlopen( szServerBinary, RTLD_NOW );
 #endif
+    laddr = LoadLibrary(szServerBinary);
 
     if(!laddr)
     {
@@ -168,12 +161,7 @@ void CSPE_Plugin::Unload( void )
     DisconnectTier2Libraries();
     DisconnectTier1Libraries();
 #endif
-
-#ifdef _LINUX
-    dlclose(laddr);
-#else
-    FreeLibrary((HMODULE) laddr);
-#endif
+    FreeLibrary(laddr);
 }
 
 //=================================================================================

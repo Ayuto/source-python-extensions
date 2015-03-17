@@ -1,0 +1,1 @@
+This plugin was designed to allow python scripters to utilize Signature Scanning". It is open source and under the GNU GPL V3 license. It currently works on all Episode One Source Engine games (linux and windows), and if you compile from the SVN, works on Orange Box games as well.

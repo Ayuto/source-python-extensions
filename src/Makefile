@@ -86,8 +86,8 @@ endif
 LINK += $(HL2LIB)/tier1_i486.a \
 	$(HL2LIB)/mathlib_i486.a \
 	$(DYNCALL)/lib/libdyncall_s.a \
-	/usr/lib/gcc/i486-linux-gnu/4.4.5/libstdc++.a \
-	/usr/lib/gcc/i486-linux-gnu/4.4.5/libgcc_eh.a \
+	/usr/lib/gcc/i686-linux-gnu/4.8/libstdc++.a \
+	/usr/lib/gcc/i686-linux-gnu/4.8/libgcc_eh.a \
 	$(DYNDETOURS)/libDynDetours.a \
 	$(DYNDETOURS)/AsmJit/lib/libAsmJit.a \
 	libpython2.5.so.1.0 -static-libgcc

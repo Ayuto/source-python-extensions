@@ -1,0 +1,8 @@
+src/Release*
+src/SPE-2008.opensdf
+src/SPE-2008.sdf
+src/Binaries/*
+src/libvstdlib_srv.so
+src/libpython2.5.so.1.0
+src/libtier0_srv.so
+src/SPE-2008.suo

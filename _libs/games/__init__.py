@@ -1,4 +1,0 @@
-"""
-$Rev$
-$LastChangedDate$
-"""

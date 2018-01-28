@@ -30,7 +30,6 @@
 #include "spe_main.h"
 #include "spe_globals.h"
 #include "spe_python.h"
-#include "svn_build.h"
 #include "playerinfomanager.h"
 
 
@@ -188,8 +187,7 @@ const char *CSPE_Plugin::GetPluginDescription( void )
     return (PLUGIN_NAME ", "
             PLUGIN_DATE ", "
             PLUGIN_AUTHOR ", "
-            PLUGIN_VERSION ", r"
-            SVN_WC_REVISION);
+            PLUGIN_VERSION );
 }
 
 //=================================================================================
